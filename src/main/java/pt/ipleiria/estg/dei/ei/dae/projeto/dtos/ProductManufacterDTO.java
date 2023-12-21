@@ -1,58 +1,24 @@
-package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
+package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Id;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.UserType;
 
-import java.io.Serializable;
 import java.util.Date;
 
-@Entity
-@Table(name = "users")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-// Extra: try the other strategies… what happens to the database?
-public class User extends Versionable implements Serializable{
-    @Id
+public class ProductManufacterDTO {
     private String username;
-    @NotNull
     private String password;
-    @NotNull
     private String name;
-    @NotNull
     private UserType userType;
-    @Email
-    @NotNull
     private String email;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date created_at;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updated_at;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date deleted_at;
-    @Version
-    private int version;
-    public User() {
-
+    public ProductManufacterDTO() {
     }
 
-    @PrePersist
-    protected void onCreate() {
-        created_at = new Date();
-    }
-    @PreRemove
-    public void setDeleted_at() {
-        this.deleted_at = new Date();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updated_at = new Date();
-    }
-
-    public User(String username, String password, String name, UserType userType, String email) {
+    public ProductManufacterDTO(String username, String password, String name, UserType userType, String email) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -60,16 +26,7 @@ public class User extends Versionable implements Serializable{
         this.email = email;
     }
 
-    public Date getCreated_at() {
-        return created_at;
-    }
-
-    public Date getUpdated_at() {
-        return updated_at;
-    }
-
-    public Date getDeleted_at() {
-        return deleted_at;
+    public ProductManufacterDTO(String username, String name, UserType userType, String email) {
     }
 
     public String getUsername() {
