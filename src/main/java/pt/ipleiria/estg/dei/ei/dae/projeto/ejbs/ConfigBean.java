@@ -16,30 +16,27 @@ public class ConfigBean {
     @EJB
     private ProductManufacterBean productManufacterBean;
 
-    private static final Logger logger = Logger.getLogger("ejbs.ConfigBean");
-
+    @EJB
+    private PackageBean packageBean;
 
     @EJB
     private ProductBean productBean;
-
-    @EJB
-    private PackageBean packageBean;
 
     private static final Logger logger = Logger.getLogger("ejbs.ConfigBean");
 
     @PostConstruct
     public void populateDB() throws MyConstraintViolationException, MyEntityExistsException {
-        productManufacterBean.create("rolo009", "123", "Pedro Rolo", "prolo@mail.pt", UserType.PRODUCT_MANUFACTER);
-        productManufacterBean.create("diogo", "123", "Diogo", "diogo@mail.pt", UserType.PRODUCT_MANUFACTER);
-        productManufacterBean.create("carlos", "123", "Carlos", "carlos@mail.pt", UserType.PRODUCT_MANUFACTER);
-        productManufacterBean.create("joao", "123", "Joao", "joao@mail.pt", UserType.PRODUCT_MANUFACTER);
-        productManufacterBean.create("gustavo", "123", "Gustavo", "gustavo@mail.pt", UserType.PRODUCT_MANUFACTER);
-
-        productManufacterBean.remove("carlos");
-        productManufacterBean.find("rolo009");
-        productManufacterBean.update("joao", "123", "João Neves", "j_neves@mail.com");
-        
         try {
+            productManufacterBean.create("rolo009", "123", "Pedro Rolo", "prolo@mail.pt", UserType.PRODUCT_MANUFACTER);
+            productManufacterBean.create("diogo", "123", "Diogo", "diogo@mail.pt", UserType.PRODUCT_MANUFACTER);
+            productManufacterBean.create("carlos", "123", "Carlos", "carlos@mail.pt", UserType.PRODUCT_MANUFACTER);
+            productManufacterBean.create("joao", "123", "Joao", "joao@mail.pt", UserType.PRODUCT_MANUFACTER);
+            productManufacterBean.create("gustavo", "123", "Gustavo", "gustavo@mail.pt", UserType.PRODUCT_MANUFACTER);
+
+            productManufacterBean.remove("carlos");
+            productManufacterBean.find("rolo009");
+            productManufacterBean.update("joao", "123", "João Neves", "j_neves@mail.com");
+
             packageBean.create(1, "primário", "tinteiro", "em preparação", new Date());
             packageBean.create(2, "secundário", "tinteiro", "em preparação", new Date());
             packageBean.create(3, "terciário", "tinteiro", "em preparação", new Date());
