@@ -20,7 +20,7 @@ public class PackageDTO {
     String status;
 
     // data de fabrico
-    Date manufactoringDate;
+    Date manufacturingDate;
 
     //QualityControl qualityControlData;
 
@@ -31,13 +31,12 @@ public class PackageDTO {
     public PackageDTO() {
     }
 
-    public PackageDTO(long code, String type, String material, Product product, String status, Date manufactoringDate) {
+    public PackageDTO(long code, String type, String material, String status, Date manufacturingDate) {
         this.code = code;
         this.type = type;
         this.material = material;
-        this.product = product;
         this.status = status;
-        this.manufactoringDate = manufactoringDate;
+        this.manufacturingDate = manufacturingDate;
     }
 
     public long getCode() {
@@ -64,14 +63,6 @@ public class PackageDTO {
         this.material = material;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -80,12 +71,12 @@ public class PackageDTO {
         this.status = status;
     }
 
-    public Date getManufactoringDate() {
-        return manufactoringDate;
+    public Date getManufacturingDate() {
+        return manufacturingDate;
     }
 
-    public void setManufactoringDate(Date manufactoringDate) {
-        this.manufactoringDate = manufactoringDate;
+    public void setManufacturingDate(Date manufacturingDate) {
+        this.manufacturingDate = manufacturingDate;
     }
 
     public Date getCreatedAt() {

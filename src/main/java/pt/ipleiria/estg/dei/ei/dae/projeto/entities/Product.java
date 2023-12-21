@@ -21,6 +21,9 @@ public class Product extends Versionable implements Serializable {
     @NotNull
     String name;
 
+    @ManyToOne @JoinColumn(name = "package_code") @NotNull
+    Package pack;
+
     @Column(name = "created_at")
     Date createdAt;
 
@@ -30,9 +33,10 @@ public class Product extends Versionable implements Serializable {
     public Product() {
     }
 
-    public Product(long code, String name) {
+    public Product(long code, String name, Package pack) {
         this.code = code;
         this.name = name;
+        this.pack = pack;
     }
 
     public long getCode() {
@@ -58,6 +62,14 @@ public class Product extends Versionable implements Serializable {
     @PrePersist
     public void onCreate() {
         this.createdAt = new Date();
+    }
+
+    public Package getPackage() {
+        return pack;
+    }
+
+    public void setPackage(Package pack) {
+        this.pack = pack;
     }
 
     public Date getUpdatedAt() {

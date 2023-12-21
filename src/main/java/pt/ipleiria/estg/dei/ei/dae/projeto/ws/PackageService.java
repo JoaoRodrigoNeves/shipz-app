@@ -32,9 +32,8 @@ public class PackageService {
                 pack.getCode(),
                 pack.getType(),
                 pack.getMaterial(),
-                pack.getProduct(),
                 pack.getStatus(),
-                pack.getManufactoringDate()
+                pack.getManufacturingDate()
         );
     }
 
@@ -51,9 +50,8 @@ public class PackageService {
                 packageDTO.getCode(),
                 packageDTO.getType(),
                 packageDTO.getMaterial(),
-                packageDTO.getProduct(),
                 packageDTO.getStatus(),
-                packageDTO.getManufactoringDate()
+                packageDTO.getManufacturingDate()
         );
         Package newPackage = packageBean.find(packageDTO.getCode());
         return Response.status(Response.Status.CREATED).entity(packageToDTO(newPackage)).build();

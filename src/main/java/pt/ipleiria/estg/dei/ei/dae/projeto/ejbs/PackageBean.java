@@ -24,10 +24,10 @@ public class PackageBean {
     }
 
     //TODO CRUD operations for Course entity
-    public void create(long code, String type, String material, Product product, String status, Date manufactoringDate) throws MyEntityExistsException {
+    public void create(long code, String type, String material, String status, Date manufacturingDate) throws MyEntityExistsException {
         if (exists(code))
             throw new MyEntityExistsException("Package with code: " + code + " already exists");
-        Package pack = new Package(code, type, material, product, status, manufactoringDate);
+        Package pack = new Package(code, type, material, status, manufacturingDate);
         entityManager.persist(pack);
     }
 
@@ -38,13 +38,12 @@ public class PackageBean {
         return pack;
     }
 
-    public void update(long code, String type, String material, Product product, String status, Date manufactoringDate) throws MyEntityNotFoundException {
+    public void update(long code, String type, String material, String status, Date manufacturingDate) throws MyEntityNotFoundException {
         Package pack = this.find(code);
         pack.setType(type);
         pack.setMaterial(material);
-        pack.setProduct(product);
         pack.setStatus(status);
-        pack.setManufactoringDate(manufactoringDate);
+        pack.setManufacturingDate(manufacturingDate);
         entityManager.merge(pack);
     }
 
