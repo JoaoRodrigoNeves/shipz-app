@@ -4,23 +4,26 @@ import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
 
-import java.time.LocalDateTime;
-
 @Startup
 @Singleton
 public class ConfigBean {
     @EJB
     private LogisticOperatorBean logisticOperatorBean;
+
+    @EJB
+    private OrdeBean ordeBean;
     @PostConstruct
     public void populateDB() {
         try {
-            logisticOperatorBean.create("logisticOperator1", "logisticOperator1", "logisticOperator1", "logisticOperator1@mail.pt",
-                    12.0, 12.0, 20, 30, 1, 0, true, true);
-            logisticOperatorBean.create("logisticOperator2", "logisticOperator2", "logisticOperator2", "logisticOperator2@mail.pt",
-                    12.0, 12.0, 20, 30, 1, 0, true, true);
-            logisticOperatorBean.update("logisticOperator1", "logisticOperator123", "logisticOperator123", "logisticOperator123@mail.pt",
-                    10, 10, 25, 50, 2, 0, false, false);
+
+            logisticOperatorBean.create("logisticOperator1", "logisticOperator1", "logisticOperator1", "logisticOperator1@mail.pt");
+            logisticOperatorBean.create("logisticOperator2", "logisticOperator2", "logisticOperator2", "logisticOperator2@mail.pt");
+            logisticOperatorBean.update("logisticOperator1", "logisticOperator123", "logisticOperator123", "logisticOperator123@mail.pt");
+            ordeBean.create(1, "logisticOperator1");
+            ordeBean.create(2, "logisticOperator1");
+            ordeBean.create(3, "logisticOperator1");
             logisticOperatorBean.delete("logisticOperator2");
+            logisticOperatorBean.find("logisticOperator1");
         }catch (Exception e){
             System.out.println("Error creating");
         }

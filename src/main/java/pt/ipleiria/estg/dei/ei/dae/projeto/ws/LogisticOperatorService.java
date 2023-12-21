@@ -5,8 +5,10 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.LogisticOperatorDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.OrdeDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.LogisticOperatorBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.LogisticOperator;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Orde;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 
 import java.util.List;
@@ -21,25 +23,31 @@ public class LogisticOperatorService {
     private LogisticOperatorBean logisticOperatorBean;
 
     private LogisticOperatorDTO toDTO(LogisticOperator logisticOperator) {
-        return new LogisticOperatorDTO(
+
+        LogisticOperatorDTO logisticOperatorDTO = new LogisticOperatorDTO(
                 logisticOperator.getUsername(),
                 logisticOperator.getPassword(),
                 logisticOperator.getName(),
-                logisticOperator.getEmail(),
-                logisticOperator.getLatitude(),
-                logisticOperator.getLongitude(),
-                logisticOperator.getTemperature(),
-                logisticOperator.getHumidity(),
-                logisticOperator.getAcceleration(),
-                logisticOperator.getOtherAmbientalData(),
-                logisticOperator.isOpened(),
-                logisticOperator.isAutorized()
+                logisticOperator.getEmail()
         );
+        logisticOperatorDTO.setOrdes(ordeToDTOs(logisticOperator.getOrdes()));
+        return logisticOperatorDTO;
     }
 
-    private List<LogisticOperatorDTO> toDTOs(List<LogisticOperator> students) {
-        return students.stream().map(this::toDTO).collect(Collectors.toList());
+    private OrdeDTO ordeToDTO(Orde orde) {
+        return new OrdeDTO(
+                orde.getId()
+        );
     }
+    public List<OrdeDTO> ordeToDTOs(List<Orde> orde) {
+        return orde.stream().map(this::ordeToDTO).collect(Collectors.toList());
+    }
+
+    private List<LogisticOperatorDTO> toDTOs(List<LogisticOperator> logisticOperators) {
+        return logisticOperators.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+
 
     @GET // means: to call this endpoint, we need to use the HTTP GET method
     @Path("/") // means: the relative url path is “/api/logisticOperators/”
@@ -64,15 +72,7 @@ public class LogisticOperatorService {
                 logisticOperatorDTO.getUsername(),
                 logisticOperatorDTO.getPassword(),
                 logisticOperatorDTO.getName(),
-                logisticOperatorDTO.getEmail(),
-                logisticOperatorDTO.getLatitude(),
-                logisticOperatorDTO.getLongitude(),
-                logisticOperatorDTO.getTemperature(),
-                logisticOperatorDTO.getHumidity(),
-                logisticOperatorDTO.getAcceleration(),
-                logisticOperatorDTO.getOtherAmbientalData(),
-                logisticOperatorDTO.isOpened(),
-                logisticOperatorDTO.isAuthorized()
+                logisticOperatorDTO.getEmail()
         );
 
         LogisticOperator newLogisticOperator = logisticOperatorBean.find(logisticOperatorDTO.getUsername());
