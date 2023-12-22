@@ -30,7 +30,7 @@ public class LogisticOperatorService {
                 logisticOperator.getName(),
                 logisticOperator.getEmail()
         );
-        logisticOperatorDTO.setOrdes(ClientOrderToDTOs(logisticOperator.getOrdes()));
+        logisticOperatorDTO.setOrders(ClientOrderToDTOs(logisticOperator.getOrders()));
         return logisticOperatorDTO;
     }
 

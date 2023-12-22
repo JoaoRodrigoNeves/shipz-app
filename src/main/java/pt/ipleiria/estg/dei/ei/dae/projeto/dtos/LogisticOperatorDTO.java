@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class LogisticOperatorDTO extends User implements Serializable {
-    private List<ClientOrderDTO> ordes;
+    private List<ClientOrderDTO> orders;
     public LogisticOperatorDTO(String username, String password, String name, String email) {
         super(username, password, name, email);
     }
@@ -14,11 +14,11 @@ public class LogisticOperatorDTO extends User implements Serializable {
     public LogisticOperatorDTO() {
     }
 
-    public List<ClientOrderDTO> getOrdes() {
-        return ordes;
+    public List<ClientOrderDTO> getOrders() {
+        return orders;
     }
 
-    public void setOrdes(List<ClientOrderDTO> ordes) {
-        this.ordes = ordes;
+    public void setOrders(List<ClientOrderDTO> orders) {
+        this.orders = orders;
     }
 }
