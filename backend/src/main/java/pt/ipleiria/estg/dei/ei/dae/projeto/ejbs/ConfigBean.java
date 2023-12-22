@@ -4,7 +4,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductPackage;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 
@@ -65,11 +64,16 @@ public class ConfigBean {
             logisticOperatorBean.create("logisticOperator1", "logisticOperator1", "logisticOperator1", "logisticOperator1@mail.pt");
             logisticOperatorBean.create("logisticOperator2", "logisticOperator2", "logisticOperator2", "logisticOperator2@mail.pt");
             logisticOperatorBean.update("logisticOperator1", "logisticOperator123", "logisticOperator123", "logisticOperator123@mail.pt");
-            clientOrderBean.create(1, "logisticOperator1");
-            clientOrderBean.create(2, "logisticOperator1");
-            clientOrderBean.create(3, "logisticOperator1");
             logisticOperatorBean.delete("logisticOperator2");
             logisticOperatorBean.find("logisticOperator1");
+            clientOrderBean.create(123,"logisticOperator1");
+            clientOrderBean.create(124,"logisticOperator1");
+            clientOrderBean.addProduct(123,1);
+            clientOrderBean.addProduct(123,2);
+            clientOrderBean.addProduct(123,3);
+
+
+
 
 
         } catch (Exception e) {

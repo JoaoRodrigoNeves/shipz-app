@@ -1,23 +1,44 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientOrderDTO implements Serializable {
+    private long code;
+    private String logisticOperator;
+    private List<ProductDTO> productsDTO;
 
-    private long id;
-
-    public ClientOrderDTO(long id) {
-        this.id = id;
+    public ClientOrderDTO(long code, String logisticOperator) {
+        this.code = code;
+        this.logisticOperator = logisticOperator;
+        this.productsDTO = new ArrayList<>();
     }
+
     public ClientOrderDTO() {
     }
 
-    public long getId() {
-        return id;
+    public long getCode() {
+        return code;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setCode(long code) {
+        this.code = code;
     }
 
+    public String getLogisticOperator() {
+        return logisticOperator;
+    }
+
+    public void setLogisticOperator(String logisticOperator) {
+        this.logisticOperator = logisticOperator;
+    }
+
+    public List<ProductDTO> getProductsDTO() {
+        return productsDTO;
+    }
+
+    public void setProductsDTO(List<ProductDTO> productsDTO) {
+        this.productsDTO = productsDTO;
+    }
 }

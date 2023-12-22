@@ -39,8 +39,7 @@ public class ProductCatalogService {
     private ProductDTO productDTO(Product product) {
         return new ProductDTO(
                 product.getCode(),
-                product.getName(),
-                product.getProductCatalog().getCode()
+                product.getName()
         );
     }
 

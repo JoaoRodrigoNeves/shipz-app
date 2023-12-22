@@ -31,6 +31,10 @@ public class Product extends Versionable implements Serializable {
     @NotNull
     ProductCatalog productCatalog;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "client_order_id")
+    private ClientOrder clientOrder;
+
     public Product() {
     }
 
@@ -79,5 +83,13 @@ public class Product extends Versionable implements Serializable {
 
     public void setProductCatalog(ProductCatalog productCatalog) {
         this.productCatalog = productCatalog;
+    }
+
+    public ClientOrder getClientOrder() {
+        return clientOrder;
+    }
+
+    public void setClientOrder(ClientOrder clientOrder) {
+        this.clientOrder = clientOrder;
     }
 }
