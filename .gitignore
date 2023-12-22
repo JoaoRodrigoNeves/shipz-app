@@ -2,6 +2,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/java,maven,macos,dotenv,jetbrains+all,visualstudiocode,sublimetext,netbeans,eclipse
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,maven,macos,dotenv,jetbrains+all,visualstudiocode,sublimetext,netbeans,eclipse
 
+### node_modules ###
+node_modules/
+
 ### dotenv ###
 .env
 
@@ -297,3 +300,5 @@ GitHub.sublime-settings
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/java,maven,macos,dotenv,jetbrains+all,visualstudiocode,sublimetext,netbeans,eclipse
+
+projeto.mdj
