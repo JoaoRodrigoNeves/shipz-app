@@ -21,4 +21,4 @@ public class MyEntityExistsExceptionMapper
                 .entity(errorMsg)
                 .build();
     }
-} 
+}
