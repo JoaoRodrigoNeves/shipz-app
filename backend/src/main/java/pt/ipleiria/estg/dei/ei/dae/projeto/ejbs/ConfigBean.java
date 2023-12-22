@@ -21,7 +21,7 @@ public class ConfigBean {
     @EJB
     private ProductPackageBean productPackageBean;
     @EJB
-    private ProductCatalogBean poductCatalogBean;
+    private FinalCostumerBean finalCostumerBean;
     @EJB
     private ProductBean productBean;
     @EJB
@@ -36,6 +36,11 @@ public class ConfigBean {
             productManufacterBean.create("carlos", "123", "Carlos", "carlos@mail.pt");
             productManufacterBean.create("joao", "123", "Joao", "joao@mail.pt");
             productManufacterBean.create("gustavo", "123", "Gustavo", "gustavo@mail.pt");
+
+            finalCostumerBean.create("gustavom", "123", "Gustavo", "gustavom@hotmail.pt", "Rua Tenente Aragão");
+            finalCostumerBean.find("gustavom");
+            finalCostumerBean.update("gustavom", "123", "Pedro", "dioguinho@mail.pt", "Rua da ribafria");
+            //finalCostumerBean.delete("gustavom");
 
             productManufacterBean.remove("carlos");
             productManufacterBean.find("rolo009");
