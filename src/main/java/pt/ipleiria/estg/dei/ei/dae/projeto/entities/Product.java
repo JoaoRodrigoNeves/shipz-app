@@ -4,16 +4,18 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @NamedQueries({
         @NamedQuery(
                 name = "getAllProducts",
-                query = "SELECT p FROM Product p ORDER BY p.createdAt DESC" //JPQL
+                query = "SELECT p FROM Product p ORDER BY p.code DESC" //JPQL
         )
 })
-@Table(name="products")
+@Table(name = "products")
 public class Product extends Versionable implements Serializable {
     @Id
     long code;
@@ -21,27 +23,21 @@ public class Product extends Versionable implements Serializable {
     @NotNull
     String name;
 
-    @ManyToOne @JoinColumn(name = "package_code") @NotNull
-    Package pack;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "products")
+    List<ProductPackage> productPackages;
 
     @ManyToOne
     @JoinColumn(name = "product_catalog_code")
     @NotNull
-    private ProductCatalog productCatalog;
-
-    @Column(name = "created_at")
-    Date createdAt;
-
-    @Column(name = "updated_at")
-    Date updatedAt;
+    ProductCatalog productCatalog;
 
     public Product() {
     }
 
-    public Product(long code, String name, Package pack, ProductCatalog productCatalog) {
+    public Product(long code, String name, ProductCatalog productCatalog) {
         this.code = code;
         this.name = name;
-        this.pack = pack;
+        this.productPackages = new ArrayList<ProductPackage>();
         this.productCatalog = productCatalog;
     }
 
@@ -61,8 +57,20 @@ public class Product extends Versionable implements Serializable {
         this.name = name;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public List<ProductPackage> getProductPackages() {
+        return productPackages;
+    }
+
+    public void setProductPackages(List<ProductPackage> productPackages) {
+        this.productPackages = productPackages;
+    }
+
+    public void addProductPackage(ProductPackage productPackage) {
+        this.productPackages.add(productPackage);
+    }
+
+    public void removeProductPackage(ProductPackage productPackage) {
+        this.productPackages.remove(productPackage);
     }
 
     public ProductCatalog getProductCatalog() {
@@ -71,27 +79,5 @@ public class Product extends Versionable implements Serializable {
 
     public void setProductCatalog(ProductCatalog productCatalog) {
         this.productCatalog = productCatalog;
-    }
-
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = new Date();
-    }
-
-    public Package getPackage() {
-        return pack;
-    }
-
-    public void setPackage(Package pack) {
-        this.pack = pack;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = new Date();
     }
 }

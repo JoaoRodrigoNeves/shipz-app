@@ -22,7 +22,7 @@ public class PackageBean {
         return packageCheck != null;
     }
 
-    //TODO CRUD operations for Course entity
+    //TODO CRUD operations for Package entity
     public void create(long code, String type, String material, String status, Date manufacturingDate) throws MyEntityExistsException {
         if (exists(code))
             throw new MyEntityExistsException("Package with code: " + code + " already exists");

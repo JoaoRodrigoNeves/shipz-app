@@ -21,32 +21,11 @@ public class User extends Versionable implements Serializable{
     @Email
     @NotNull
     private String email;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date created_at;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updated_at;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date deleted_at;
     @Version
     private int version;
     public User() {
 
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        created_at = new Date();
-    }
-    @PreRemove
-    public void setDeleted_at() {
-        this.deleted_at = new Date();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updated_at = new Date();
     }
 
     public User(String username, String password, String name, String email) {
@@ -54,18 +33,6 @@ public class User extends Versionable implements Serializable{
         this.password = password;
         this.name = name;
         this.email = email;
-    }
-
-    public Date getCreated_at() {
-        return created_at;
-    }
-
-    public Date getUpdated_at() {
-        return updated_at;
-    }
-
-    public Date getDeleted_at() {
-        return deleted_at;
     }
 
     public String getUsername() {

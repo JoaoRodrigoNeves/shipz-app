@@ -48,20 +48,4 @@ public class ProductDTO {
     public void setPackageCode(long packageCode) {
         this.packageCode = packageCode;
     }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt() {
-        this.createdAt = new Date();
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt() {
-        this.updatedAt = new Date();
-    }
 }

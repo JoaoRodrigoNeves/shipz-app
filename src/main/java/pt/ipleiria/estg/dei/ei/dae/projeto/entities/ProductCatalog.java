@@ -15,46 +15,30 @@ import java.util.List;
                 query = "SELECT p FROM ProductCatalog p" // JPQL
         )
 })
-@Table(name="productsCatalogs")
+@Table(name = "products_catalogs")
 public class ProductCatalog extends Versionable implements Serializable {
     @Id
     long code;
 
     @NotNull
     String name;
-    @OneToMany(mappedBy = "productCatalog", cascade = CascadeType.REMOVE) @NotNull
+    @OneToMany(mappedBy = "products_catalogs", cascade = CascadeType.REMOVE)
+    @NotNull
     List<Product> products;
     @ManyToOne
     @JoinColumn(name = "product_manufacter_code")
     @NotNull
     private ProductManufacter productManufacter;
-    @Column(name = "created_at")
-    Date createdAt;
 
-    @Column(name = "updated_at")
-    Date updatedAt;
-
-    @Column(name = "deleted_at")
-    Date deletedAt;
-
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = new Date();
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = new Date();
-    }
     public ProductCatalog() {
 
     }
+
     public ProductCatalog(long code, String name, ProductManufacter productManufacter) {
         this.code = code;
         this.name = name;
         this.productManufacter = productManufacter;
         this.products = new ArrayList<Product>();
-
     }
 
     public long getCode() {
@@ -81,18 +65,6 @@ public class ProductCatalog extends Versionable implements Serializable {
         this.products = products;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public Date getDeletedAt() {
-        return deletedAt;
-    }
-
     public ProductManufacter getProductManufacter() {
         return productManufacter;
     }
@@ -101,11 +73,11 @@ public class ProductCatalog extends Versionable implements Serializable {
         this.productManufacter = productManufacter;
     }
 
-    public void addProduct(Product product){
+    public void addProduct(Product product) {
         this.products.add(product);
     }
 
-    public void removeProduct(Product product){
+    public void removeProduct(Product product) {
         this.products.remove(product);
     }
 }

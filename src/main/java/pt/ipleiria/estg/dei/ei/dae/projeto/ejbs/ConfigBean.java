@@ -49,9 +49,9 @@ public class ConfigBean {
             packageBean.create(2, "secundário", "tinteiro", "em preparação", new Date());
             packageBean.create(3, "terciário", "tinteiro", "em preparação", new Date());
 
-            productBean.create(1, "tinteiro azul", 1, 1);
-            productBean.create(2, "tinteiro vermelho", 2, 2);
-            productBean.create(3, "tinteiro verde", 3, 3);
+            productBean.create(1, "tinteiro azul", 1);
+            productBean.create(2, "tinteiro vermelho", 2);
+            productBean.create(3, "tinteiro verde", 3);
 
             productCatalogBean.addProductToProductCatalog(1,1);
             productCatalogBean.addProductToProductCatalog(1,2);

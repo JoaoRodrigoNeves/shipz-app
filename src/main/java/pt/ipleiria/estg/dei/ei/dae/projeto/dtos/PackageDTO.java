@@ -13,9 +13,7 @@ public class PackageDTO {
 
     String material;
 
-    Product product;
-
-    //Set<SensorData> observations;
+    //Set<Sensor> observations;
 
     String status;
 
@@ -23,10 +21,6 @@ public class PackageDTO {
     Date manufacturingDate;
 
     //QualityControl qualityControlData;
-
-    Date createdAt;
-
-    Date updatedAt;
 
     public PackageDTO() {
     }
@@ -77,21 +71,5 @@ public class PackageDTO {
 
     public void setManufacturingDate(Date manufacturingDate) {
         this.manufacturingDate = manufacturingDate;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt() {
-        this.createdAt = new Date();
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt() {
-        this.updatedAt = new Date();
     }
 }

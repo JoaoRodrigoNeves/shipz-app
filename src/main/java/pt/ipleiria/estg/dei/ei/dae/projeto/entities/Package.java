@@ -14,10 +14,11 @@ import java.util.Objects;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllPackages",
-                query = "SELECT p FROM Package p ORDER BY p.createdAt DESC" //JPQL
+                query = "SELECT p FROM Package p ORDER BY p.code DESC" //JPQL
         )
 })
 @Table(name = "packages")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Package extends Versionable implements Serializable {
     @Id
     long code;
@@ -28,11 +29,8 @@ public class Package extends Versionable implements Serializable {
     @NotNull
     String material;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pack", cascade = CascadeType.REMOVE)
-    List<Product> products;
-
     // conjunto de valores observados -> temperatura, humidade...
-    //Set<SensorData> observations;
+    //Set<Sensor> observations;
 
     // {"em trânsito", "pendente", "entregue" , "em prepação"}...
     @NotNull
@@ -47,12 +45,6 @@ public class Package extends Versionable implements Serializable {
 
     //QualityControl qualityControlData;
 
-    @Column(name = "created_at")
-    Date createdAt;
-
-    @Column(name = "updated_at")
-    Date updatedAt;
-
     public Package() {
     }
 
@@ -62,7 +54,6 @@ public class Package extends Versionable implements Serializable {
         this.material = material;
         this.status = status;
         this.manufacturingDate = manufacturingDate;
-        this.products = new ArrayList<Product>();
     }
 
     public long getCode() {
@@ -89,22 +80,6 @@ public class Package extends Versionable implements Serializable {
         this.material = material;
     }
 
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
-
-    public void addProduct(Product product) {
-        this.products.add(product);
-    }
-
-    public void remoteProduct(Product product) {
-        this.products.remove(product);
-    }
-
     public String getStatus() {
         return status;
     }
@@ -121,34 +96,16 @@ public class Package extends Versionable implements Serializable {
         this.manufacturingDate = manufacturingDate;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = new Date();
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = new Date();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Package aPackage = (Package) o;
-        return code == aPackage.code && Objects.equals(type, aPackage.type) && Objects.equals(material, aPackage.material) && Objects.equals(products, aPackage.products) && Objects.equals(status, aPackage.status) && Objects.equals(manufacturingDate, aPackage.manufacturingDate) && Objects.equals(createdAt, aPackage.createdAt) && Objects.equals(updatedAt, aPackage.updatedAt);
+        return code == aPackage.code && Objects.equals(type, aPackage.type) && Objects.equals(material, aPackage.material) && Objects.equals(status, aPackage.status) && Objects.equals(manufacturingDate, aPackage.manufacturingDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, type, material, products, status, manufacturingDate, createdAt, updatedAt);
+        return Objects.hash(code, type, material, status, manufacturingDate);
     }
 }

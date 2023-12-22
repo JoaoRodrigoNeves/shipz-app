@@ -15,10 +15,10 @@ import java.util.List;
                 query = "SELECT p FROM ProductManufacter p" // JPQL
         )
 })
-@Table(name="productManufacters")
+@Table(name="product_manufacters")
 public class ProductManufacter extends User implements Serializable {
 
-    @OneToMany(mappedBy = "productManufacter", cascade = CascadeType.REMOVE) @NotNull
+    @OneToMany(mappedBy = "product_manufacters", cascade = CascadeType.REMOVE) @NotNull
     List<ProductCatalog> productsCatalog;
 
     public ProductManufacter() {
