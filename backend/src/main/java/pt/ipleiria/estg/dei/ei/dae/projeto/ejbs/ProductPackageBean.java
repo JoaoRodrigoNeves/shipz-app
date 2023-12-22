@@ -56,7 +56,7 @@ public class ProductPackageBean {
     //TODO get all productPackages
 
     public List<ProductPackage> getProductPackages() {
-        return entityManager.createNamedQuery("getAllPackages", ProductPackage.class).getResultList();
+        return entityManager.createNamedQuery("getAllProductPackages", ProductPackage.class).getResultList();
     }
 
     //TODO get all products of a product package

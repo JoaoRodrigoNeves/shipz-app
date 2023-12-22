@@ -22,7 +22,7 @@ public class ProductCatalog extends Versionable implements Serializable {
 
     @NotNull
     String name;
-    @OneToMany(mappedBy = "products_catalogs", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "productCatalog", cascade = CascadeType.REMOVE)
     @NotNull
     List<Product> products;
     @ManyToOne

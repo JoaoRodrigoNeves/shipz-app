@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @NamedQueries({
         @NamedQuery(
-                name = "getAllPackages",
+                name = "getAllProductPackages",
                 query = "SELECT p FROM ProductPackage p ORDER BY p.code DESC" //JPQL
         )
 })

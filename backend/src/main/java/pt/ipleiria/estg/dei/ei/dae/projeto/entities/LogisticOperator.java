@@ -7,10 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(
-        name = "users",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"username"})
-)
 @NamedQueries({
         @NamedQuery(
                 name = "getAllLogisticOperators",
