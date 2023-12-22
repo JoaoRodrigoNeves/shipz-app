@@ -13,9 +13,7 @@ public class PackageDTO {
 
     String material;
 
-    Product product;
-
-    //Set<SensorData> observations;
+    //Set<Sensor> observations;
 
     String status;
 
@@ -23,10 +21,6 @@ public class PackageDTO {
     Date manufacturingDate;
 
     //QualityControl qualityControlData;
-
-    Date createdAt;
-
-    Date updatedAt;
 
     public PackageDTO() {
     }

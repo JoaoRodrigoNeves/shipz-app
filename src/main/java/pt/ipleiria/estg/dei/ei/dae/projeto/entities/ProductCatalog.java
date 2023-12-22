@@ -15,14 +15,14 @@ import java.util.List;
                 query = "SELECT p FROM ProductCatalog p" // JPQL
         )
 })
-@Table(name = "productsCatalogs")
+@Table(name = "products_catalogs")
 public class ProductCatalog extends Versionable implements Serializable {
     @Id
     long code;
 
     @NotNull
     String name;
-    @OneToMany(mappedBy = "productCatalog", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "products_catalogs", cascade = CascadeType.REMOVE)
     @NotNull
     List<Product> products;
     @ManyToOne
