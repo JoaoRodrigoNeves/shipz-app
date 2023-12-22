@@ -1,8 +1,11 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductPackage;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ProductDTO {
 
@@ -10,19 +13,15 @@ public class ProductDTO {
 
     String name;
 
-    long packageCode;
-
-    Date createdAt;
-
-    Date updatedAt;
+    List<ProductPackage> productPackages;
 
     public ProductDTO() {
     }
 
-    public ProductDTO(long code, String name, long packageCode) {
+    public ProductDTO(long code, String name) {
         this.code = code;
         this.name = name;
-        this.packageCode = packageCode;
+        this.productPackages = new ArrayList<>();
     }
 
     public long getCode() {
@@ -41,11 +40,11 @@ public class ProductDTO {
         this.name = name;
     }
 
-    public long getPackageCode() {
-        return packageCode;
+    public List<ProductPackage> getProductPackages() {
+        return productPackages;
     }
 
-    public void setPackageCode(long packageCode) {
-        this.packageCode = packageCode;
+    public void setProductPackages(List<ProductPackage> productPackages) {
+        this.productPackages = productPackages;
     }
 }

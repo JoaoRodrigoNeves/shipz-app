@@ -42,8 +42,7 @@ public class ClientOrderService {
     private ProductDTO productToDTO(Product product) {
         return new ProductDTO(
                 product.getCode(),
-                product.getName(),
-                product.getPackage().getCode()
+                product.getName()
         );
     }
     private List<ProductDTO> productsToDTOs(List<Product> products) {
@@ -59,7 +58,7 @@ public class ClientOrderService {
 
     @GET // means: to call this endpoint, we need to use the HTTP GET method
     @Path("/{code}") // means: the relative url path is “/api/clientOrder/{code}”
-    public Response getLogisticOperatorDetails(@PathParam("code") long code) throws MyEntityExistsException, MyEntityNotFoundException {
+    public Response getDetails(@PathParam("code") long code) throws MyEntityExistsException, MyEntityNotFoundException {
         var clientOrder = clientOrderBean.findClientOrderWithProducts(code);
         if (clientOrder == null) {
             throw new MyEntityNotFoundException("ClientOrder with code: " + code + " doesn't exist");

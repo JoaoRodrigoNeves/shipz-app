@@ -71,7 +71,7 @@ public class ClientOrderBean {
         return clientOrder;
     }
 
-    public void enrollProduct(long code, long productCode) throws MyEntityNotFoundException {
+    public void addProduct(long code, long productCode) throws MyEntityNotFoundException {
         ClientOrder clientOrder = find(code);
         Product product = em.find(Product.class, productCode);
         if (product == null) {
@@ -81,7 +81,7 @@ public class ClientOrderBean {
         product.setClientOrder(clientOrder);
     }
 
-    public void unrollProduct(long code, long productCode) throws MyEntityNotFoundException {
+    public void removeProduct(long code, long productCode) throws MyEntityNotFoundException {
         ClientOrder clientOrder = find(code);
         Product product = em.find(Product.class, productCode);
         if (product == null) {

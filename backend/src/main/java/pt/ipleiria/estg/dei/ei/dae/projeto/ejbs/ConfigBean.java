@@ -6,10 +6,7 @@ import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.ws.ProductService;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 import java.util.Date;
 @Startup
@@ -71,9 +68,9 @@ public class ConfigBean {
             logisticOperatorBean.find("logisticOperator1");
             clientOrderBean.create(123,"logisticOperator1");
             clientOrderBean.create(124,"logisticOperator1");
-            clientOrderBean.enrollProduct(123,1);
-            clientOrderBean.enrollProduct(123,2);
-            clientOrderBean.enrollProduct(123,3);
+            clientOrderBean.addProduct(123,1);
+            clientOrderBean.addProduct(123,2);
+            clientOrderBean.addProduct(123,3);
 
 
 
