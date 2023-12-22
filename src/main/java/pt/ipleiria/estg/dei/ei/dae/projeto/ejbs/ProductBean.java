@@ -74,4 +74,34 @@ public class ProductBean {
         product.getProductCatalog().removeProduct(product);
         product.getProductPackages().forEach(productPackage -> productPackage.removeProduct(product));
     }
+
+    //TODO associate / disassociate product with product package
+
+    public void addProductInPackage(long productCode, long productPackageCode) throws MyEntityNotFoundException, MyEntityExistsException{
+        ProductPackage productPackage = entityManager.find(ProductPackage.class, productPackageCode);
+        if (productPackage == null)
+            throw new MyEntityNotFoundException("Package with code: " + productPackageCode + " not found");
+
+        Product product = this.find(productCode);
+
+        if (product.getProductPackages().contains(productPackage))
+            throw new MyEntityExistsException("Product with code: " + productCode + " already added to Package: " + productPackage);
+
+        product.addProductPackage(productPackage);
+        productPackage.addProduct(product);
+    }
+
+    public void removeProductFromPackage(long productCode, long productPackageCode) throws MyEntityNotFoundException, MyEntityExistsException{
+        ProductPackage productPackage = entityManager.find(ProductPackage.class, productPackageCode);
+        if (productPackage == null)
+            throw new MyEntityNotFoundException("Package with code: " + productPackageCode + " not found");
+
+        Product product = this.find(productCode);
+
+        if (!product.getProductPackages().contains(productPackage))
+            throw new MyEntityExistsException("Product with code: " + productCode + " not added to Package: " + productPackage);
+
+        product.removeProductPackage(productPackage);
+        productPackage.removeProduct(product);
+    }
 }
