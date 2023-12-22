@@ -1,37 +1,24 @@
-package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
+package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 
-import java.io.Serializable;
-
-@Entity
-@Table(name = "users")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-// Extra: try the other strategies… what happens to the database?
-public class User extends Versionable implements Serializable{
-    @Id
+public class FinalCostumerDTO {
     private String username;
-    @NotNull
     private String password;
-    @NotNull
     private String name;
-    @Email
-    @NotNull
     private String email;
-
-    @Version
-    private int version;
-
-    public User() {
+    private String address;
+    public FinalCostumerDTO() {
     }
 
-    public User(String username, String password, String name, String email) {
+    public FinalCostumerDTO(String username, String password, String name, String email, String address) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.email = email;
+        this.address = address;
+    }
+
+    public FinalCostumerDTO(String username, String name, String email) {
     }
 
     public String getUsername() {
@@ -64,5 +51,13 @@ public class User extends Versionable implements Serializable{
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
