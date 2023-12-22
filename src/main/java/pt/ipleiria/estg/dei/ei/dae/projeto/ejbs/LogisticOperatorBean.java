@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.LogisticOperator;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
@@ -23,7 +24,6 @@ public class LogisticOperatorBean {
         if (exists(username)) {
             throw new MyEntityExistsException("LogisticOperator with username: " + username + " already exists");
         }
-
         LogisticOperator logisticOperator = new LogisticOperator(username, password, name, email);
         em.persist(logisticOperator);
     }
@@ -66,21 +66,12 @@ public class LogisticOperatorBean {
         return em.find(LogisticOperator.class, username);
     }
 
-    public void enrrollInOrder(String username, long id) throws MyEntityNotFoundException{
-        LogisticOperator logisticOperator = em.find(LogisticOperator.class, username);
-        if (logisticOperator == null) {
-            throw new MyEntityNotFoundException("LogisticOperator with username: " + username + " doesn't exist");
+    public LogisticOperator findLogisticOperatorWithClientOrder(String username) throws MyEntityNotFoundException {
+        if (!exists(username)) {
+            throw new MyEntityNotFoundException("Logistic Operator with username '" + username + "' not found");
         }
-        logisticOperator.addOrder(em.find(ClientOrder.class, id));
-        em.merge(logisticOperator);
-    }
-
-    public void unenrrollInOrder(String username, long id) throws MyEntityNotFoundException{
         LogisticOperator logisticOperator = em.find(LogisticOperator.class, username);
-        if (logisticOperator == null) {
-            throw new MyEntityNotFoundException("LogisticOperator with username: " + username + " doesn't exist");
-        }
-        logisticOperator.removeOrder(em.find(ClientOrder.class, id));
-        em.merge(logisticOperator);
+        Hibernate.initialize(logisticOperator.getClientorders());
+        return logisticOperator;
     }
 }

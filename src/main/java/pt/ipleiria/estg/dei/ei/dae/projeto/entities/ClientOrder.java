@@ -1,7 +1,10 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 
 import jakarta.persistence.*;
-import java.io.Serializable;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NamedQueries({
@@ -10,27 +13,34 @@ import java.io.Serializable;
                 query = "SELECT o FROM ClientOrder o ORDER BY o.id" // JPQL
         )
 })
-public class ClientOrder implements Serializable {
-
+public class ClientOrder {
     @Id
-    private long id;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @NotNull
+    private long code;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "logisticoperator_username")
     private LogisticOperator logisticOperator;
 
-    public ClientOrder(long id, LogisticOperator logisticOperator) {
-        this.id = id;
-        setLogisticOperator(logisticOperator);
+    @OneToMany(mappedBy = "clientOrder", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private List<Product> products;
+
+    public ClientOrder( long code, LogisticOperator logisticOperator) {
+        this.code = code;
+        this.logisticOperator = logisticOperator;
+        products = new ArrayList<>();
     }
+
     public ClientOrder() {
+        products = new ArrayList<>();
     }
 
-    public long getId() {
-        return id;
+    public long getCode() {
+        return code;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setCode(long code) {
+        this.code = code;
     }
 
     public LogisticOperator getLogisticOperator() {
@@ -40,4 +50,21 @@ public class ClientOrder implements Serializable {
     public void setLogisticOperator(LogisticOperator logisticOperator) {
         this.logisticOperator = logisticOperator;
     }
+
+    public void addProduct(Product product){
+        products.add(product);
+    }
+
+    public void removeProduct(Product product){
+        products.remove(product);
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
 }

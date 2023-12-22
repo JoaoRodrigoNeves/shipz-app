@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @NamedQueries({
@@ -28,6 +29,10 @@ public class Product extends Versionable implements Serializable {
     @JoinColumn(name = "product_catalog_code")
     @NotNull
     private ProductCatalog productCatalog;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "client_order_id")
+    private ClientOrder clientOrder;
 
     @Column(name = "created_at")
     Date createdAt;
@@ -93,5 +98,13 @@ public class Product extends Versionable implements Serializable {
     @PreUpdate
     public void onUpdate() {
         this.updatedAt = new Date();
+    }
+
+    public ClientOrder getClientOrder() {
+        return clientOrder;
+    }
+
+    public void setClientOrder(ClientOrder clientOrder) {
+        this.clientOrder = clientOrder;
     }
 }
