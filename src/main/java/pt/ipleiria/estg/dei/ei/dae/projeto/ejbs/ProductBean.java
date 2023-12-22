@@ -77,7 +77,7 @@ public class ProductBean {
 
     //TODO associate / disassociate product with product package
 
-    public void addProductInPackage(long productCode, long productPackageCode) throws MyEntityNotFoundException, MyEntityExistsException{
+    public void addProductToPackage(long productCode, long productPackageCode) throws MyEntityNotFoundException, MyEntityExistsException{
         ProductPackage productPackage = entityManager.find(ProductPackage.class, productPackageCode);
         if (productPackage == null)
             throw new MyEntityNotFoundException("Package with code: " + productPackageCode + " not found");
