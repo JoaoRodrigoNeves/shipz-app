@@ -3,8 +3,10 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.UserType;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Table(name = "users")
@@ -17,22 +19,57 @@ public class User extends Versionable implements Serializable{
     private String password;
     @NotNull
     private String name;
-
+    @NotNull
+    private UserType userType;
     @Email
     @NotNull
     private String email;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date created_at;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updated_at;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date deleted_at;
     @Version
     private int version;
-
     public User() {
+
     }
 
-    public User(String username, String password, String name, String email) {
+    @PrePersist
+    protected void onCreate() {
+        created_at = new Date();
+    }
+    @PreRemove
+    public void setDeleted_at() {
+        this.deleted_at = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated_at = new Date();
+    }
+
+    public User(String username, String password, String name, UserType userType, String email) {
         this.username = username;
         this.password = password;
         this.name = name;
+        this.userType = userType;
         this.email = email;
+    }
+
+    public Date getCreated_at() {
+        return created_at;
+    }
+
+    public Date getUpdated_at() {
+        return updated_at;
+    }
+
+    public Date getDeleted_at() {
+        return deleted_at;
     }
 
     public String getUsername() {
@@ -57,6 +94,14 @@ public class User extends Versionable implements Serializable{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 
     public String getEmail() {

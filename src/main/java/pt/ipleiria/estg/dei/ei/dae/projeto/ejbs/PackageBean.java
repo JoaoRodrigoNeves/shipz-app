@@ -18,9 +18,8 @@ public class PackageBean {
     private EntityManager entityManager;
 
     public boolean exists(long code) {
-        Query query = entityManager.createQuery("SELECT COUNT (p.code) FROM Package p WHERE p.code = :code", Long.class);
-        query.setParameter("code", code);
-        return (long) query.getSingleResult() > 0L;
+        Package packageCheck = entityManager.find(Package.class, code);
+        return packageCheck != null;
     }
 
     //TODO CRUD operations for Course entity

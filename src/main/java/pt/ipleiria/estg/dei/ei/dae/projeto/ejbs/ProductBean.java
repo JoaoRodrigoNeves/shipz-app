@@ -7,6 +7,7 @@ import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
@@ -17,23 +18,28 @@ public class ProductBean {
     private EntityManager entityManager;
 
     public boolean exists(long code) {
-        Query query = entityManager.createQuery("SELECT COUNT (p.code) FROM Product p WHERE p.code = :code", Long.class);
-        query.setParameter("code", code);
-        return (long) query.getSingleResult() > 0L;
+        Product product = entityManager.find(Product.class, code);
+        return product != null;
     }
 
     //TODO CRUD operations for Product entity
-    public void create(long code, String name, long packageCode) throws MyEntityExistsException {
+    public void create(long code, String name, long packageCode, long productCatalogCode) throws MyEntityExistsException {
         if (exists(code))
             throw new MyEntityExistsException("Product with code: " + code + " already exists");
+
+        ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, productCatalogCode);
+
+        if (productCatalog == null)
+            throw new MyEntityExistsException("Product Catalog with code: " + productCatalogCode + " already exists");
 
         Package pack = entityManager.find(Package.class, packageCode);
 
         if (pack == null)
             throw new MyEntityExistsException("Package with code: " + packageCode + " already exists");
         try {
-            Product product = new Product(code, name, pack);
+            Product product = new Product(code, name, pack, productCatalog);
             pack.addProduct(product);
+            productCatalog.addProduct(product);
             entityManager.persist(product);
             entityManager.flush();
         } catch (ConstraintViolationException e) {
