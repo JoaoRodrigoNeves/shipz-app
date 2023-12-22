@@ -49,8 +49,9 @@ public class ProductPackageBean {
     }
 
     public void delete(long code) throws MyEntityNotFoundException {
-        Package pack = this.find(code);
-        entityManager.remove(pack);
+        ProductPackage productPackage = this.find(code);
+        entityManager.remove(productPackage);
+        productPackage.getProducts().forEach(product -> product.removeProductPackage(productPackage));
     }
 
     //TODO get all productPackages
