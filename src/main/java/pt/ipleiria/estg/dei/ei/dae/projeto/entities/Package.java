@@ -47,12 +47,6 @@ public class Package extends Versionable implements Serializable {
 
     //QualityControl qualityControlData;
 
-    @Column(name = "created_at")
-    Date createdAt;
-
-    @Column(name = "updated_at")
-    Date updatedAt;
-
     public Package() {
     }
 
@@ -121,34 +115,17 @@ public class Package extends Versionable implements Serializable {
         this.manufacturingDate = manufacturingDate;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = new Date();
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = new Date();
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Package aPackage = (Package) o;
-        return code == aPackage.code && Objects.equals(type, aPackage.type) && Objects.equals(material, aPackage.material) && Objects.equals(products, aPackage.products) && Objects.equals(status, aPackage.status) && Objects.equals(manufacturingDate, aPackage.manufacturingDate) && Objects.equals(createdAt, aPackage.createdAt) && Objects.equals(updatedAt, aPackage.updatedAt);
+        return code == aPackage.code && Objects.equals(type, aPackage.type) && Objects.equals(material, aPackage.material) && Objects.equals(products, aPackage.products) && Objects.equals(status, aPackage.status) && Objects.equals(manufacturingDate, aPackage.manufacturingDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, type, material, products, status, manufacturingDate, createdAt, updatedAt);
+        return Objects.hash(code, type, material, products, status, manufacturingDate);
     }
 }

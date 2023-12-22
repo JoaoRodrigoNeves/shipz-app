@@ -78,20 +78,4 @@ public class PackageDTO {
     public void setManufacturingDate(Date manufacturingDate) {
         this.manufacturingDate = manufacturingDate;
     }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt() {
-        this.createdAt = new Date();
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt() {
-        this.updatedAt = new Date();
-    }
 }

@@ -10,10 +10,10 @@ import java.util.Date;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllProducts",
-                query = "SELECT p FROM Product p ORDER BY p.createdAt DESC" //JPQL
+                query = "SELECT p FROM Product p ORDER BY p.code DESC" //JPQL
         )
 })
-@Table(name="products")
+@Table(name = "products")
 public class Product extends Versionable implements Serializable {
     @Id
     long code;
@@ -21,19 +21,15 @@ public class Product extends Versionable implements Serializable {
     @NotNull
     String name;
 
-    @ManyToOne @JoinColumn(name = "package_code") @NotNull
+    @ManyToOne
+    @JoinColumn(name = "package_code")
+    @NotNull
     Package pack;
 
     @ManyToOne
     @JoinColumn(name = "product_catalog_code")
     @NotNull
     private ProductCatalog productCatalog;
-
-    @Column(name = "created_at")
-    Date createdAt;
-
-    @Column(name = "updated_at")
-    Date updatedAt;
 
     public Product() {
     }
@@ -61,10 +57,6 @@ public class Product extends Versionable implements Serializable {
         this.name = name;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
     public ProductCatalog getProductCatalog() {
         return productCatalog;
     }
@@ -73,25 +65,11 @@ public class Product extends Versionable implements Serializable {
         this.productCatalog = productCatalog;
     }
 
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = new Date();
-    }
-
     public Package getPackage() {
         return pack;
     }
 
     public void setPackage(Package pack) {
         this.pack = pack;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = new Date();
     }
 }
