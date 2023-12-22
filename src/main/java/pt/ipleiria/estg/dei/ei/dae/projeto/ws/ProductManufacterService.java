@@ -33,6 +33,7 @@ public class ProductManufacterService {
     private ProductManufacterDTO productManufacterToDTONoPackages(ProductManufacter productManufacter) {
         return new ProductManufacterDTO(
                 productManufacter.getUsername(),
+                productManufacter.getPassword(),
                 productManufacter.getName(),
                 productManufacter.getUserType(),
                 productManufacter.getEmail()
@@ -45,12 +46,9 @@ public class ProductManufacterService {
                 .collect(Collectors.toList());
     }
 
-
-
-
     @GET // means: to call this endpoint, we need to use the HTTP GET method
     @Path("/") // means: the relative url path is “/api/students/”
-    public List<ProductManufacterDTO> getAllStudents() {
+    public List<ProductManufacterDTO> getAllProductManufacters() {
         return productManufacterToDTOsNoPackages(productManufacterBean.getAll());
     }
 
@@ -72,7 +70,7 @@ public class ProductManufacterService {
     @GET
     @Path("{username}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    @RolesAllowed({"Student"})
+    @RolesAllowed({"ProductsManufacters"})
     public Response getStudentDetails(@PathParam("username") String username) {
         var principal = securityContext.getUserPrincipal();
         if(!principal.getName().equals(username)) {

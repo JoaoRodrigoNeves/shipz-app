@@ -26,9 +26,6 @@ public class ProductManufacterDTO {
         this.email = email;
     }
 
-    public ProductManufacterDTO(String username, String name, UserType userType, String email) {
-    }
-
     public String getUsername() {
         return username;
     }

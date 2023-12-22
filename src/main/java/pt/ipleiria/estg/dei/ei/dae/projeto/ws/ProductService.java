@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class ProductService {
 
-    @EJB
+    /*@EJB
     private ProductBean productBean;
 
     private ProductDTO productToDTO(Product product) {
@@ -42,5 +42,5 @@ public class ProductService {
         );
         Product newProduct = productBean.find(productDTO.getCode());
         return Response.status(Response.Status.CREATED).entity(productToDTO(newProduct)).build();
-    }
+    }*/
 }
