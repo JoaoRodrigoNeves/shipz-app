@@ -38,7 +38,7 @@ public class ProductPackage extends Package implements Serializable {
         this.products.add(product);
     }
 
-    public void remoteProduct(Product product) {
+    public void removeProduct(Product product) {
         this.products.remove(product);
     }
 }

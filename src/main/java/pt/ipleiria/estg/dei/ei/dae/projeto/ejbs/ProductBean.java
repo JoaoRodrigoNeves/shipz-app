@@ -72,6 +72,6 @@ public class ProductBean {
 
         entityManager.remove(product);
         product.getProductCatalog().removeProduct(product);
-        product.getProductPackages().forEach(productPackage -> productPackage.remoteProduct(product));
+        product.getProductPackages().forEach(productPackage -> productPackage.removeProduct(product));
     }
 }
