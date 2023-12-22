@@ -1,15 +1,16 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.ejbs;
 
 import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.LogisticOperator;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.projeto.security.Hasher;
 
 import java.util.List;
 
@@ -19,12 +20,15 @@ public class LogisticOperatorBean {
     @PersistenceContext
     private EntityManager em;
 
+    @Inject
+    private Hasher hasher;
+
     public void create(String username, String password, String name, String email)
     throws MyEntityExistsException {
         if (exists(username)) {
             throw new MyEntityExistsException("LogisticOperator with username: " + username + " already exists");
         }
-        LogisticOperator logisticOperator = new LogisticOperator(username, password, name, email);
+        LogisticOperator logisticOperator = new LogisticOperator(username, hasher.hash(password), name, email);
         em.persist(logisticOperator);
     }
 
