@@ -10,7 +10,6 @@ import jakarta.ws.rs.core.SecurityContext;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductManufacterDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductManufacterBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.UserType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
@@ -35,7 +34,6 @@ public class ProductManufacterService {
                 productManufacter.getUsername(),
                 productManufacter.getPassword(),
                 productManufacter.getName(),
-                productManufacter.getUserType(),
                 productManufacter.getEmail()
         );
     }
@@ -60,8 +58,7 @@ public class ProductManufacterService {
                 productManufacterDTO.getUsername(),
                 productManufacterDTO.getPassword(),
                 productManufacterDTO.getName(),
-                productManufacterDTO.getEmail(),
-                UserType.PRODUCT_MANUFACTER
+                productManufacterDTO.getEmail()
         );
         ProductManufacter productManufacter = productManufacterBean.find(productManufacterDTO.getUsername());
         return Response.status(Response.Status.CREATED).entity(productManufacterToDTONoPackages(productManufacter)).build();
