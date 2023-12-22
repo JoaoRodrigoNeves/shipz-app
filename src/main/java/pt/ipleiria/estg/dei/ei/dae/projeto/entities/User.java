@@ -3,7 +3,6 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.UserType;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -19,8 +18,6 @@ public class User extends Versionable implements Serializable{
     private String password;
     @NotNull
     private String name;
-    @NotNull
-    private UserType userType;
     @Email
     @NotNull
     private String email;
@@ -52,11 +49,10 @@ public class User extends Versionable implements Serializable{
         updated_at = new Date();
     }
 
-    public User(String username, String password, String name, UserType userType, String email) {
+    public User(String username, String password, String name, String email) {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.userType = userType;
         this.email = email;
     }
 
@@ -94,14 +90,6 @@ public class User extends Versionable implements Serializable{
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public UserType getUserType() {
-        return userType;
-    }
-
-    public void setUserType(UserType userType) {
-        this.userType = userType;
     }
 
     public String getEmail() {

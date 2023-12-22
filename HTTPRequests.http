@@ -1,0 +1,24 @@
+##### logisticsOperator-api
+GET http://localhost:8080/projeto/api/logisticOperators
+Accept: application/json
+###
+POST http://localhost:8080/projeto/api/logisticOperators
+Content-Type: application/json
+{
+  "username": "LogisticOperator3",
+  "password": "logisticOperator3",
+  "name": "LogisticOperator3",
+  "email": "LogisticOperator3@mail.pt",
+  "latitude": 41.14961,
+  "longitude": -8.61099,
+  "lastUpate": "2023-12-21",
+  "temperature": 10.0,
+  "humidity": 30.0,
+  "acceleration": 0.0,
+  "otherAmbientalData": 1,
+  "isOpened": true,
+  "isAutorized": true,
+}
+
+###
+GET http://localhost:8080/projeto/api/logisticOperators/logisticOperator1

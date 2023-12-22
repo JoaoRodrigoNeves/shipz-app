@@ -4,7 +4,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.UserType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 
@@ -14,8 +13,11 @@ import java.util.Date;
 @Singleton
 public class ConfigBean {
     @EJB
+    private LogisticOperatorBean logisticOperatorBean;
+    @EJB
+    private ClientOrderBean clientOrderBean;
+    @EJB
     private ProductManufacterBean productManufacterBean;
-
     @EJB
     private PackageBean packageBean;
     @EJB
@@ -29,11 +31,11 @@ public class ConfigBean {
     @PostConstruct
     public void populateDB() throws MyConstraintViolationException, MyEntityExistsException {
         try {
-            productManufacterBean.create("rolo009", "123", "Pedro Rolo", "prolo@mail.pt", UserType.PRODUCT_MANUFACTER);
-            productManufacterBean.create("diogo", "123", "Diogo", "diogo@mail.pt", UserType.PRODUCT_MANUFACTER);
-            productManufacterBean.create("carlos", "123", "Carlos", "carlos@mail.pt", UserType.PRODUCT_MANUFACTER);
-            productManufacterBean.create("joao", "123", "Joao", "joao@mail.pt", UserType.PRODUCT_MANUFACTER);
-            productManufacterBean.create("gustavo", "123", "Gustavo", "gustavo@mail.pt", UserType.PRODUCT_MANUFACTER);
+            productManufacterBean.create("rolo009", "123", "Pedro Rolo", "prolo@mail.pt");
+            productManufacterBean.create("diogo", "123", "Diogo", "diogo@mail.pt");
+            productManufacterBean.create("carlos", "123", "Carlos", "carlos@mail.pt");
+            productManufacterBean.create("joao", "123", "Joao", "joao@mail.pt");
+            productManufacterBean.create("gustavo", "123", "Gustavo", "gustavo@mail.pt");
 
             productManufacterBean.remove("carlos");
             productManufacterBean.find("rolo009");
@@ -54,6 +56,15 @@ public class ConfigBean {
             productCatalogBean.addProductToProductCatalog(1,1);
             productCatalogBean.addProductToProductCatalog(1,2);
             productCatalogBean.removeProductToProductCatalog(1,1);
+            
+            logisticOperatorBean.create("logisticOperator1", "logisticOperator1", "logisticOperator1", "logisticOperator1@mail.pt");
+            logisticOperatorBean.create("logisticOperator2", "logisticOperator2", "logisticOperator2", "logisticOperator2@mail.pt");
+            logisticOperatorBean.update("logisticOperator1", "logisticOperator123", "logisticOperator123", "logisticOperator123@mail.pt");
+            clientOrderBean.create(1, "logisticOperator1");
+            clientOrderBean.create(2, "logisticOperator1");
+            clientOrderBean.create(3, "logisticOperator1");
+            logisticOperatorBean.delete("logisticOperator2");
+            logisticOperatorBean.find("logisticOperator1");
 
 
         } catch (Exception e) {

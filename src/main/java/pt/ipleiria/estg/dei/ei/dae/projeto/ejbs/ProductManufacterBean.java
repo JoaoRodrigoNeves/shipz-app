@@ -7,7 +7,6 @@ import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.validation.ConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.UserType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.security.Hasher;
@@ -22,13 +21,13 @@ public class ProductManufacterBean {
 
     @Inject
     private Hasher hasher;
-    public void create(String username, String password, String name, String email, UserType userType) throws MyEntityExistsException, MyConstraintViolationException {
+    public void create(String username, String password, String name, String email) throws MyEntityExistsException, MyConstraintViolationException {
         ProductManufacter studentCheck = entityManager.find(ProductManufacter.class, username);
         if(studentCheck != null)
             throw new MyEntityExistsException("O username " + username + " já existe.");
 
         try {
-            var productManufacter = new ProductManufacter(username, hasher.hash(password), name, userType, email);
+            var productManufacter = new ProductManufacter(username, hasher.hash(password), name, email);
             entityManager.persist(productManufacter);
             entityManager.flush();
 
