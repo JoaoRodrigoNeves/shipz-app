@@ -5,10 +5,10 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.LogisticOperatorDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.OrdeDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ClientOrderDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.LogisticOperatorBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.LogisticOperator;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Orde;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 
 import java.util.List;
@@ -30,17 +30,17 @@ public class LogisticOperatorService {
                 logisticOperator.getName(),
                 logisticOperator.getEmail()
         );
-        logisticOperatorDTO.setOrdes(ordeToDTOs(logisticOperator.getOrdes()));
+        logisticOperatorDTO.setOrdes(ClientOrderToDTOs(logisticOperator.getOrdes()));
         return logisticOperatorDTO;
     }
 
-    private OrdeDTO ordeToDTO(Orde orde) {
-        return new OrdeDTO(
-                orde.getId()
+    private ClientOrderDTO ClientOrderToDTO(ClientOrder clientOrder) {
+        return new ClientOrderDTO(
+                clientOrder.getId()
         );
     }
-    public List<OrdeDTO> ordeToDTOs(List<Orde> orde) {
-        return orde.stream().map(this::ordeToDTO).collect(Collectors.toList());
+    public List<ClientOrderDTO> ClientOrderToDTOs(List<ClientOrder> clientOrders) {
+        return clientOrders.stream().map(this::ClientOrderToDTO).collect(Collectors.toList());
     }
 
     private List<LogisticOperatorDTO> toDTOs(List<LogisticOperator> logisticOperators) {
@@ -52,7 +52,9 @@ public class LogisticOperatorService {
     @GET // means: to call this endpoint, we need to use the HTTP GET method
     @Path("/") // means: the relative url path is “/api/logisticOperators/”
     public List<LogisticOperatorDTO> getAllLogisticOperators() {
-        return toDTOs(logisticOperatorBean.getAll());
+        var logisticOperators = logisticOperatorBean.getAll();
+        //Hibernate.initialize(logisticOperators);
+        return toDTOs(logisticOperators);
     }
 
     @GET // means: to call this endpoint, we need to use the HTTP GET method

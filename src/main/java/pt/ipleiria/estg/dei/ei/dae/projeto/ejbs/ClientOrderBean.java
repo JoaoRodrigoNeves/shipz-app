@@ -4,11 +4,13 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.LogisticOperator;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Orde;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
+import java.util.List;
+
 @Stateless
-public class OrdeBean {
+public class ClientOrderBean {
 
     @PersistenceContext
     private EntityManager em;
@@ -18,7 +20,12 @@ public class OrdeBean {
         if (logisticOperator == null) {
             throw new MyEntityNotFoundException("LogisticOperator with username: " + LO + " doesn't exist");
         }
-        Orde orde = new Orde(id , logisticOperator);
+
+        ClientOrder orde = new ClientOrder(id , logisticOperator);
         em.persist(orde);
+    }
+
+    public List<ClientOrder> getAll(){
+        return em.createNamedQuery("getAllOrders", ClientOrder.class).getResultList();
     }
 }

@@ -2,14 +2,14 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
 import java.io.Serializable;
 
-public class OrdeDTO implements Serializable {
+public class ClientOrderDTO implements Serializable {
 
     private long id;
 
-    public OrdeDTO(long id) {
+    public ClientOrderDTO(long id) {
         this.id = id;
     }
-    public OrdeDTO() {
+    public ClientOrderDTO() {
     }
 
     public long getId() {

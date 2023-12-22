@@ -7,22 +7,22 @@ import java.io.Serializable;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllOrders",
-                query = "SELECT o FROM Orde o ORDER BY o.id" // JPQL
+                query = "SELECT o FROM ClientOrder o ORDER BY o.id" // JPQL
         )
 })
-public class Orde implements Serializable {
+public class ClientOrder implements Serializable {
 
     @Id
     private long id;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "logisticOperator_username")
+    @JoinColumn(name = "logisticoperator_username")
     private LogisticOperator logisticOperator;
 
-    public Orde(long id, LogisticOperator logisticOperator) {
+    public ClientOrder(long id, LogisticOperator logisticOperator) {
         this.id = id;
         setLogisticOperator(logisticOperator);
     }
-    public Orde() {
+    public ClientOrder() {
     }
 
     public long getId() {

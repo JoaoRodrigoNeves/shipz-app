@@ -6,6 +6,7 @@ import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.LogisticOperator;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
@@ -65,4 +66,21 @@ public class LogisticOperatorBean {
         return em.find(LogisticOperator.class, username);
     }
 
+    public void enrrollInOrder(String username, long id) throws MyEntityNotFoundException{
+        LogisticOperator logisticOperator = em.find(LogisticOperator.class, username);
+        if (logisticOperator == null) {
+            throw new MyEntityNotFoundException("LogisticOperator with username: " + username + " doesn't exist");
+        }
+        logisticOperator.addOrder(em.find(ClientOrder.class, id));
+        em.merge(logisticOperator);
+    }
+
+    public void unenrrollInOrder(String username, long id) throws MyEntityNotFoundException{
+        LogisticOperator logisticOperator = em.find(LogisticOperator.class, username);
+        if (logisticOperator == null) {
+            throw new MyEntityNotFoundException("LogisticOperator with username: " + username + " doesn't exist");
+        }
+        logisticOperator.removeOrder(em.find(ClientOrder.class, id));
+        em.merge(logisticOperator);
+    }
 }

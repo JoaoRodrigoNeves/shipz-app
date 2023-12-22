@@ -19,7 +19,7 @@ import java.util.List;
 })
 public class LogisticOperator extends User implements Serializable {
     @OneToMany(mappedBy = "logisticOperator", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
-    private List<Orde> ordes;
+    private List<ClientOrder> ordes;
 
     public LogisticOperator(String username, String password, String name, String email) {
         super(username, password, name, email);
@@ -30,15 +30,15 @@ public class LogisticOperator extends User implements Serializable {
         ordes = new ArrayList<>();
     }
 
-    public void addOrder(Orde orde){
+    public void addOrder(ClientOrder orde){
         ordes.add(orde);
     }
 
-    public void removeOrder(Orde orde){
+    public void removeOrder(ClientOrder orde){
         ordes.remove(orde);
     }
 
-    public List<Orde> getOrdes() {
+    public List<ClientOrder> getOrdes() {
         return ordes;
     }
 }
