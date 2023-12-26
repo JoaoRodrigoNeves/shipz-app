@@ -68,12 +68,7 @@ public class ProductCatalogService {
     }
 
 
-    @GET
-    @Path("/")
-    public List<ProductCatalogDTO> getAllProductCatalog() {
-        return productCatalogsToDTOs(productCatalogBean.getAll());
-    }
-
+    //TODO create a new product-catalog
     @POST
     @Path("/")
     public Response create(ProductCatalogDTO productCatalogDTO)
@@ -87,34 +82,71 @@ public class ProductCatalogService {
         return Response.status(Response.Status.CREATED).entity(productCatalogsToDTO(productCatalog)).build();
     }
 
+    //TODO get product catalog by code
     @GET
-    @Path("{productCatalogCode}")
-    @RolesAllowed({"ProductsManufacters"})
-    public Response getProductCatalogDetails(@PathParam("productCatalogCode") long productCatalogCode) throws MyEntityNotFoundException {
-        ProductCatalog productCatalog = productCatalogBean.find(productCatalogCode);
+    @Path("{code}")
+    @RolesAllowed({"ProductManufacter"})
+    public Response getProductCatalogDetails(@PathParam("code") long code) throws MyEntityNotFoundException {
+        ProductCatalog productCatalog = productCatalogBean.find(code);
         return Response.ok(productCatalogsToDTO(productCatalog)).build();
     }
 
     @GET
-    @Path("{productCatalogCode}/products")
+    @Path("{code}/products")
     @RolesAllowed({"ProductsManufacters"})
-    public Response getProductCatalogProducts(@PathParam("productCatalogCode") long productCatalogCode) throws MyEntityNotFoundException {
-        ProductCatalog productCatalog = productCatalogBean.find(productCatalogCode);
-        return Response.ok(productsToDTOs(productCatalog.getProducts())).build();
+    public Response getProductCatalogProducts(@PathParam("code") long code) throws MyEntityNotFoundException {
+        ProductCatalog productCatalog = productCatalogBean.getProductCatalogProducts(code);
+
+        var dtos = productsToDTOs(productCatalog.getProducts());
+        return Response.ok(dtos).build();
     }
 
+    //TODO update a product-catalog
+    @PUT
+    @Path("{code}")
+    @RolesAllowed({"ProductsManufacter"})
+    public Response updateProductCatalog(@PathParam("code") long code, ProductCatalogDTO productCatalogDTO) throws MyEntityNotFoundException {
+        ProductCatalog productCatalog = productCatalogBean.find(code);
+        productCatalogBean.update(
+                code,
+                productCatalogDTO.getName(),
+                productCatalogDTO.getProductManufacterUsername()
+        );
+
+        return Response.status(Response.Status.OK).entity(productCatalogsToDTO(productCatalog)).build();
+    }
+
+    //TODO delete a product-catalog
+    @DELETE
+    @Path("{code}")
+    public Response deleteProductCatalog(@PathParam("code") long code) throws MyEntityNotFoundException {
+        ProductCatalog productCatalog = productCatalogBean.find(code);
+        productCatalogBean.remove(code);
+        return Response.status(Response.Status.OK).entity("Success").build();
+    }
+
+    //TODO get all product-catalogs
+    @GET
+    @Path("/")
+    public List<ProductCatalogDTO> getAll() {
+        return productCatalogsToDTOs(productCatalogBean.getAll());
+    }
+
+    //TODO add product to product-catalog
     @POST
-    @Path("/{productCatalogCode}")
-    @RolesAllowed({"ProductsManufacters"})
+    @Path("{productCatalogCode}")
+    @RolesAllowed({"ProductManufacter"})
     public Response addProduct(@PathParam("productCatalogCode") long productCatalogCode, ProductDTO productDTO) throws MyEntityNotFoundException, MyEntityExistsException {
         productCatalogBean.addProduct(productCatalogCode, productDTO.getCode());
         return Response.status(Response.Status.OK).entity("Product added").build();
     }
 
+    //TODO remove product from product-catalog
     @DELETE
-    @Path("/{productCatalogCode}/{productCode}")
-    public Response removeProduct(@PathParam("productCatalogCode") long productCatalogCode, @PathParam("productCode") long productCode) throws MyEntityNotFoundException, MyEntityExistsException {
-        productCatalogBean.removeProduct(productCatalogCode, productCode);
+    @Path("{productCatalogCode}")
+    @RolesAllowed({"ProductManufacter"})
+    public Response removeProduct(@PathParam("productCatalogCode") long productCatalogCode, ProductDTO productDTO) throws MyEntityNotFoundException, MyEntityExistsException {
+        productCatalogBean.removeProduct(productCatalogCode, productDTO.getCode());
         return Response.status(Response.Status.OK).entity("Product removed").build();
     }
 }

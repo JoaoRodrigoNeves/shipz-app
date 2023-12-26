@@ -47,10 +47,10 @@ watch(
         <td>
           {{ item.code }}
         </td>
-        <td class="text-center">
+        <td class="text-center" style="width: 100%;">
           {{ item.name }}
         </td>
-        <td class="d-flex align-center justify-center gap-x-2">
+        <td class="d-flex align-center justify-center gap-x-2" style="width: fit-content;">
           <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('product-catalog/' + item.code)">
             <VIcon
             size="20"

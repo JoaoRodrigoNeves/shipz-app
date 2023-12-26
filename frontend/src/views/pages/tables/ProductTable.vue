@@ -27,7 +27,7 @@ watch(
 </script>
 
 <template>
-  <VTable fixed-header>
+  <VTable fixed-header v-if="products.length > 0">
     <thead>
       <tr>
         <th class="text-uppercase">
@@ -47,10 +47,10 @@ watch(
         <td>
           {{ item.code }}
         </td>
-        <td class="text-center">
+        <td class="text-center" style="width: 100%;">
           {{ item.name }}
         </td>
-        <td class="d-flex align-center justify-center gap-x-2">
+        <td class="d-flex align-center justify-center gap-x-2" style="width: fit-content;">
           <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('product-/' + item.code)">
             <VIcon
             size="20"
@@ -81,4 +81,13 @@ watch(
       </tr>
     </tbody>
   </VTable>
+  <div v-else class="no-products">
+    Não tem produtos associados a este catálogo
+  </div>
 </template>
+<style scoped>
+
+.no-products{
+  padding: 0 24px 24px 24px;
+}
+</style>

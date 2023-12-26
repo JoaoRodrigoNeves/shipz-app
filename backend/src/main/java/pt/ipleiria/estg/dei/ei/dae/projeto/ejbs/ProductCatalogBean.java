@@ -6,6 +6,7 @@ import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
+import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
@@ -55,18 +56,20 @@ public class ProductCatalogBean {
         return productCatalog;
     }
 
-    public void update(long code, String name, List<Product> products) throws MyEntityNotFoundException {
+    public void update(long code, String name, String productManufacterUsername) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = this.find(code);
         entityManager.lock(productCatalog, LockModeType.OPTIMISTIC);
         productCatalog.setName(name);
-        productCatalog.setProducts(products);
+        ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, productManufacterUsername);
+        if (productManufacter == null)
+            throw new MyEntityNotFoundException("Product Manufacter with username: '" + productManufacterUsername + "' not found");
+        productCatalog.setProductManufacter(productManufacter);
         entityManager.merge(productCatalog);
     }
 
     public void remove(long code) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = this.find(code);
-
-        ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, productCatalog.getProductManufacter());
+        ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, productCatalog.getProductManufacter().getUsername());
         entityManager.remove(productCatalog);
         productManufacter.removeProductCatalog(productCatalog);
     }
@@ -107,5 +110,12 @@ public class ProductCatalogBean {
 
         product.setProductCatalog(null);
         productCatalog.removeProduct(product);
+    }
+
+    //TODO get products - product catalogs
+    public ProductCatalog getProductCatalogProducts(long code) throws MyEntityNotFoundException {
+        ProductCatalog productCatalog = this.find(code);
+        Hibernate.initialize(productCatalog.getProducts());
+        return productCatalog;
     }
 }
