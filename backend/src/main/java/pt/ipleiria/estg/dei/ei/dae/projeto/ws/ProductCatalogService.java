@@ -94,6 +94,15 @@ public class ProductCatalogService {
         ProductCatalog productCatalog = productCatalogBean.find(productCatalogCode);
         return Response.ok(productCatalogsToDTO(productCatalog)).build();
     }
+
+    @GET
+    @Path("{productCatalogCode}/products")
+    @RolesAllowed({"ProductsManufacters"})
+    public Response getProductCatalogProducts(@PathParam("productCatalogCode") long productCatalogCode) throws MyEntityNotFoundException {
+        ProductCatalog productCatalog = productCatalogBean.find(productCatalogCode);
+        return Response.ok(productsToDTOs(productCatalog.getProducts())).build();
+    }
+
     @POST
     @Path("/{productCatalogCode}")
     @RolesAllowed({"ProductsManufacters"})

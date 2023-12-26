@@ -1,5 +1,7 @@
 <script setup>
 import avatar1 from '@images/avatars/avatar-1.png'
+
+const user_info = JSON.parse(sessionStorage.getItem('user_info'))
 </script>
 
 <template>
@@ -48,9 +50,9 @@ import avatar1 from '@images/avatars/avatar-1.png'
             </template>
 
             <VListItemTitle class="font-weight-semibold">
-              John Doe
+              {{ user_info.name }}
             </VListItemTitle>
-            <VListItemSubtitle>Admin</VListItemSubtitle>
+            <VListItemSubtitle>{{ user_info.role }}</VListItemSubtitle>
           </VListItem>
           <VDivider class="my-2" />
 
@@ -78,32 +80,6 @@ import avatar1 from '@images/avatars/avatar-1.png'
             </template>
 
             <VListItemTitle>Settings</VListItemTitle>
-          </VListItem>
-
-          <!-- 👉 Pricing -->
-          <VListItem link>
-            <template #prepend>
-              <VIcon
-                class="me-2"
-                icon="bx-dollar"
-                size="22"
-              />
-            </template>
-
-            <VListItemTitle>Pricing</VListItemTitle>
-          </VListItem>
-
-          <!-- 👉 FAQ -->
-          <VListItem link>
-            <template #prepend>
-              <VIcon
-                class="me-2"
-                icon="bx-help-circle"
-                size="22"
-              />
-            </template>
-
-            <VListItemTitle>FAQ</VListItemTitle>
           </VListItem>
 
           <!-- Divider -->

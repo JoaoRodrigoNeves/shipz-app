@@ -2,7 +2,7 @@
 import { ref, inject } from 'vue'
 import logo from '@images/logo.svg?raw'
 import { useRouter } from 'vue-router';
-import {useToast} from "primevue/usetoast";
+import { useToast } from "primevue/usetoast";
 
 const axios = inject('axios')
 const router = useRouter()
@@ -20,7 +20,7 @@ const submit = (async () => {
   try {
     const response = await axios.post('auth/login', form.value)
     axios.defaults.headers.common.Authorization = "Bearer " + response.data.access_token
-    sessionStorage.setItem("token", JSON.stringify(response.data));
+    sessionStorage.setItem("user_info", JSON.stringify(response.data));
     router.push({ path: 'dashboard' })
     return true
   } catch (error) {

@@ -2,7 +2,7 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.mappers;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
-import pt.ipleiria.estg.dei.ei.dae.academics.exceptions.MyConstraintViolationException;
+import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 
 import java.util.logging.Logger;
 

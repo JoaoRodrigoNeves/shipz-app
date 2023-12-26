@@ -35,6 +35,9 @@ public class AuthService {
             JsonObject userInfo = Json.createObjectBuilder()
                     .add("token", token)
                     .add("role", role)
+                    .add("name", user.getName())
+                    .add("email", user.getEmail())
+                    .add("username", user.getUsername())
                     .build();
 
             return Response.ok(userInfo).build();

@@ -55,6 +55,11 @@ h6,
       inline-size: 22px;
     }
   }
+
+  .v-btn--size-default{
+    min-width: 0;
+    padding: 0 12px;
+  }
 }
 
 // 👉 Card

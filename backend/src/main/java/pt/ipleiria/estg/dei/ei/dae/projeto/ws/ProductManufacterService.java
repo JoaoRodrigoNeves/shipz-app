@@ -101,7 +101,6 @@ public class ProductManufacterService {
     @GET
     @Path("{username}/product-catalogs")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    @RolesAllowed({"ProductManufacter"})
     public Response getCatalogs(@PathParam("username") String username) throws MyEntityNotFoundException {
         var principal = securityContext.getUserPrincipal();
         if(!principal.getName().equals(username)) {
