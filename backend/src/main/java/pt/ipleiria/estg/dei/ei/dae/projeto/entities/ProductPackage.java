@@ -15,7 +15,6 @@ import java.util.Objects;
                 query = "SELECT p FROM ProductPackage p ORDER BY p.code DESC" //JPQL
         )
 })
-@Table(name = "product_packages")
 public class ProductPackage extends Package implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY)
