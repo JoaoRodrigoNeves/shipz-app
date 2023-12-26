@@ -33,26 +33,22 @@ public class ConfigBean {
     @PostConstruct
     public void populateDB() throws MyConstraintViolationException, MyEntityExistsException, MyEntityNotFoundException {
 
-        productManufacterBean.create("rolo009", "123", "Pedro Rolo", "prolo@mail.pt");
-        productManufacterBean.create("diogo", "123", "Diogo", "diogo@mail.pt");
-        productManufacterBean.create("carlos", "123", "Carlos", "carlos@mail.pt");
-        productManufacterBean.create("joao", "123", "Joao", "joao@mail.pt");
-        productManufacterBean.create("gustavo", "123", "Gustavo", "gustavo@mail.pt");
+        // USERS
+        logisticOperatorBean.create("logisticOperator1", "logisticOperator1", "Logistic Operator 1", "logistic.operator1@mail.pt");
+        logisticOperatorBean.create("logisticOperator2", "logisticOperator2", "Logistic Operator 2", "logistic.operator2@mail.pt");
+        productManufacterBean.create("productManufacter1", "productManufacter1", "Product Manufacter 1", "product.manufacter1@mail.pt");
+        productManufacterBean.create("productManufacter2", "productManufacter2", "Product Manufacter 2", "product.manufacter2@mail.pt");
+        finalCostumerBean.create("finalCostumer1", "finalCostumer1", "Final Costumer 1", "final.costumer1@mail.pt", "Some address, N1");
+        finalCostumerBean.create("finalCostumer2", "finalCostumer2", "Final Costumer 2", "final.costumer2@mail.pt", "Some address, N2");
 
-        finalCostumerBean.create("gustavom", "123", "Gustavo", "gustavom@hotmail.pt", "Rua Tenente Aragão");
-
-        productCatalogBean.create(1, "PC1", "rolo009");
-        productCatalogBean.create(2, "PC2", "diogo");
-        productCatalogBean.create(3, "PC3", "joao");
+        productCatalogBean.create(1, "PC1", "productManufacter1");
+        productCatalogBean.create(2, "PC2", "productManufacter1");
+        productCatalogBean.create(3, "PC3", "productManufacter2");
 
         productPackageBean.create(1, "primário", "tinteiro", "em preparação", new Date());
         productPackageBean.create(2, "secundário", "tinteiro", "em preparação", new Date());
         productPackageBean.create(3, "terciário", "tinteiro", "em preparação", new Date());
-
-        productBean.create(1);
-        productBean.create(2);
-        productBean.create(3);
-
+        
         /*
         productBean.addProductToPackage(1, 3);
         productBean.addProductToPackage(2, 3);
@@ -62,11 +58,6 @@ public class ConfigBean {
         productCatalogBean.addProductToProductCatalog(1, 2);
         productCatalogBean.removeProductToProductCatalog(1, 1);
 
-        logisticOperatorBean.create("logisticOperator1", "logisticOperator1", "logisticOperator1", "logisticOperator1@mail.pt");
-        logisticOperatorBean.create("logisticOperator2", "logisticOperator2", "logisticOperator2", "logisticOperator2@mail.pt");
-        logisticOperatorBean.update("logisticOperator1", "logisticOperator123", "logisticOperator123", "logisticOperator123@mail.pt");
-        logisticOperatorBean.delete("logisticOperator2");
-        logisticOperatorBean.find("logisticOperator1");
         clientOrderBean.create(123, "logisticOperator1");
         clientOrderBean.create(124, "logisticOperator1");
         clientOrderBean.addProduct(123, 1);
