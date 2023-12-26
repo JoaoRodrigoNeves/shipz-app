@@ -4,15 +4,12 @@ import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.LogisticOperatorBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.*;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +37,7 @@ public class LogisticOperatorService {
                 logisticOperator.getName(),
                 logisticOperator.getEmail()
         );
-         logisticOperatorDTO.setClientOrdersDTO(clientOrderstoDTOs(logisticOperator.getClientorders()));
+         logisticOperatorDTO.setClientOrdersDTO(clientOrderToDTOs(logisticOperator.getClientorders()));
          return logisticOperatorDTO;
     }
 
@@ -54,17 +51,30 @@ public class LogisticOperatorService {
         );
     }
 
-    private ProductDTO productToDTO(Product product) {
+    private ProductDTO productToDTONoClientOrder(Product product) {
         return new ProductDTO(
                 product.getCode(),
-                product.getName()
+                product.getProductCatalog().getCode()
         );
     }
 
-    private List<ProductDTO> producttoDTOs(List<Product> products) {
+    private List<ProductDTO> productDTOsNoClientOrder(List<Product> products) {
+        return products.stream().map(this::productToDTONoClientOrder).collect(Collectors.toList());
+    }
+
+    private ProductDTO productToDTO(Product product) {
+        ProductDTO productDTO = new ProductDTO(
+                product.getCode(),
+                product.getProductCatalog().getCode()
+        );
+        productDTO.setClientOrderCode(product.getClientOrder().getCode());
+        return productDTO;
+    }
+
+    private List<ProductDTO> productsToDTOs(List<Product> products) {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
-    private List<ClientOrderDTO> clientOrderstoDTOs(List<ClientOrder> clientOrders) {
+    private List<ClientOrderDTO> clientOrderToDTOs(List<ClientOrder> clientOrders) {
         return clientOrders.stream().map(this::clientOrderToDTO).collect(Collectors.toList());
     }
 

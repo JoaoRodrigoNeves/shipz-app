@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NamedQueries({
@@ -15,7 +16,7 @@ import java.util.List;
                 query = "SELECT p FROM ProductCatalog p" // JPQL
         )
 })
-@Table(name = "products_catalogs")
+@Table(name = "products_catalogs", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class ProductCatalog extends Versionable implements Serializable {
     @Id
     long code;
@@ -28,7 +29,7 @@ public class ProductCatalog extends Versionable implements Serializable {
     @ManyToOne
     @JoinColumn(name = "product_manufacter_code")
     @NotNull
-    private ProductManufacter productManufacter;
+    ProductManufacter productManufacter;
 
     public ProductCatalog() {
 
@@ -79,5 +80,18 @@ public class ProductCatalog extends Versionable implements Serializable {
 
     public void removeProduct(Product product) {
         this.products.remove(product);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductCatalog that = (ProductCatalog) o;
+        return code == that.code && Objects.equals(name, that.name) && Objects.equals(products, that.products) && Objects.equals(productManufacter, that.productManufacter);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, name, products, productManufacter);
     }
 }

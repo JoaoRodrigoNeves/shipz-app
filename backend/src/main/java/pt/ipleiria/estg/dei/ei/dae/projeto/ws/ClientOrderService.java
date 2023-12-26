@@ -22,12 +22,6 @@ public class ClientOrderService {
     @EJB
     private ClientOrderBean clientOrderBean;
 
-    private ClientOrderDTO toDTONoProducts(ClientOrder clientOrder) {
-        return new ClientOrderDTO(
-                clientOrder.getCode(),
-                clientOrder.getLogisticOperator().getUsername()
-        );
-    }
     private ClientOrderDTO toDTO(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
                 clientOrder.getCode(),
@@ -36,15 +30,36 @@ public class ClientOrderService {
         clientOrderDTO.setProductsDTO(productsToDTOs(clientOrder.getProducts()));
         return clientOrderDTO;
     }
+    private ClientOrderDTO toDTONoProducts(ClientOrder clientOrder) {
+        return new ClientOrderDTO(
+                clientOrder.getCode(),
+                clientOrder.getLogisticOperator().getUsername()
+        );
+    }
     private List<ClientOrderDTO> toDTOsNoProducts(List<ClientOrder> clientOrders) {
         return clientOrders.stream().map(this::toDTONoProducts).collect(Collectors.toList());
     }
-    private ProductDTO productToDTO(Product product) {
+
+    private ProductDTO productToDTONoClientOrder(Product product) {
         return new ProductDTO(
                 product.getCode(),
-                product.getName()
+                product.getProductCatalog().getCode()
         );
     }
+
+    private List<ProductDTO> productDTOsNoClientOrder(List<Product> products) {
+        return products.stream().map(this::productToDTONoClientOrder).collect(Collectors.toList());
+    }
+
+    private ProductDTO productToDTO(Product product) {
+        ProductDTO productDTO = new ProductDTO(
+                product.getCode(),
+                product.getProductCatalog().getCode()
+        );
+        productDTO.setClientOrderCode(product.getClientOrder().getCode());
+        return productDTO;
+    }
+
     private List<ProductDTO> productsToDTOs(List<Product> products) {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }

@@ -7,8 +7,10 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductCatalogDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductManufacterDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductManufacterBean;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
@@ -18,11 +20,11 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.security.Authenticated;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Path("productsManufacters")
+@Path("product-manufacters")
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
 @Authenticated
-@RolesAllowed({"ProductsManufacters", "Administrator"})
+@RolesAllowed({"ProductManufacter", "Administrator"})
 public class ProductManufacterService {
     @Context
     private SecurityContext securityContext;
@@ -44,8 +46,22 @@ public class ProductManufacterService {
                 .collect(Collectors.toList());
     }
 
-    @GET // means: to call this endpoint, we need to use the HTTP GET method
-    @Path("/") // means: the relative url path is “/api/students/”
+    private ProductCatalogDTO productCatalogToDTO(ProductCatalog productCatalog) {
+        return new ProductCatalogDTO(
+                productCatalog.getCode(),
+                productCatalog.getName(),
+                productCatalog.getProductManufacter().getUsername()
+        );
+    }
+
+    private List<ProductCatalogDTO> productCatalogToDTOs(List<ProductCatalog> productCatalog) {
+        return productCatalog.stream()
+                .map(this::productCatalogToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("/") // means: the relative url path is “/api/product-manufacters/”
     public List<ProductManufacterDTO> getAllProductManufacters() {
         return productManufacterToDTOsNoPackages(productManufacterBean.getAll());
     }
@@ -67,19 +83,34 @@ public class ProductManufacterService {
     @GET
     @Path("{username}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    @RolesAllowed({"ProductsManufacters"})
-    public Response getStudentDetails(@PathParam("username") String username) {
+    @RolesAllowed({"ProductManufacter"})
+    public Response getUserDetails(@PathParam("username") String username) throws MyEntityNotFoundException {
         var principal = securityContext.getUserPrincipal();
         if(!principal.getName().equals(username)) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         ProductManufacter productManufacter = productManufacterBean.find(username);
-        if (productManufacter != null) {
-            return Response.ok(productManufacterToDTONoPackages(productManufacter)).build();
+        if (productManufacter == null)
+            throw new MyEntityNotFoundException("Product Manufacter: '" + username + "' not found");
+
+        return Response.ok(productManufacter).build();
+    }
+
+    //TODO get product manufacter catalogs
+    @GET
+    @Path("{username}/product-catalogs")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    @RolesAllowed({"ProductManufacter"})
+    public Response getCatalogs(@PathParam("username") String username) throws MyEntityNotFoundException {
+        var principal = securityContext.getUserPrincipal();
+        if(!principal.getName().equals(username)) {
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
-        return Response.status(Response.Status.NOT_FOUND)
-                .entity("ERROR_FINDING_PRODUCT_MANUFACTER")
-                .build();
+
+        var productManufacter = productManufacterBean.getManufacterCatalogs(username);
+
+        var dtos = productCatalogToDTOs(productManufacter.getProductsCatalog());
+        return Response.ok(dtos).build();
     }
 }

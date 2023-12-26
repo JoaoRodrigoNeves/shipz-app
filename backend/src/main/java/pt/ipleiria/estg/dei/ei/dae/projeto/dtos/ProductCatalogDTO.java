@@ -10,15 +10,14 @@ import java.util.List;
 public class ProductCatalogDTO {
     long code;
     String name;
-    List<ProductDTO> productsDTO;
-    ProductManufacter productManufacter;
+    String productManufacterUsername;
     public ProductCatalogDTO() {
     }
 
-    public ProductCatalogDTO(long code, String name, ProductManufacter productManufacter) {
+    public ProductCatalogDTO(long code, String name, String productManufacterUsername) {
         this.code = code;
         this.name = name;
-        this.productManufacter = productManufacter;
+        this.productManufacterUsername = productManufacterUsername;
     }
 
     public long getCode() {
@@ -37,19 +36,11 @@ public class ProductCatalogDTO {
         this.name = name;
     }
 
-    public List<ProductDTO> getProductsDTO() {
-        return productsDTO;
+    public String getProductManufacterUsername() {
+        return productManufacterUsername;
     }
 
-    public void setProductsDTO(List<ProductDTO> productsDTO) {
-        this.productsDTO = productsDTO;
-    }
-
-    public ProductManufacter getProductManufacter() {
-        return productManufacter;
-    }
-
-    public void setProductManufacter(ProductManufacter productManufacter) {
-        this.productManufacter = productManufacter;
+    public void setProductManufacterUsername(String productManufacterUsername) {
+        this.productManufacterUsername = productManufacterUsername;
     }
 }

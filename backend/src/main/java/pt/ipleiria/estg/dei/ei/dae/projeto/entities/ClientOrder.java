@@ -10,7 +10,7 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllOrders",
-                query = "SELECT o FROM ClientOrder o ORDER BY o.id" // JPQL
+                query = "SELECT o FROM ClientOrder o ORDER BY o.code" // JPQL
         )
 })
 public class ClientOrder {

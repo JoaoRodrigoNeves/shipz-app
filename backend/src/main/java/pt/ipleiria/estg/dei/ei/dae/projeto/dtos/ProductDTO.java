@@ -1,6 +1,8 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductPackage;
 
 import java.util.ArrayList;
@@ -11,17 +13,17 @@ public class ProductDTO {
 
     long code;
 
-    String name;
+    long productCatalogCode;
 
-    List<ProductPackage> productPackages;
+    long clientOrderCode;
+
 
     public ProductDTO() {
     }
 
-    public ProductDTO(long code, String name) {
+    public ProductDTO(long code, long productCatalogCode) {
         this.code = code;
-        this.name = name;
-        this.productPackages = new ArrayList<>();
+        this.productCatalogCode = productCatalogCode;
     }
 
     public long getCode() {
@@ -32,19 +34,19 @@ public class ProductDTO {
         this.code = code;
     }
 
-    public String getName() {
-        return name;
+    public long getProductCatalogCode() {
+        return productCatalogCode;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProductCatalogCode(long productCatalogCode) {
+        this.productCatalogCode = productCatalogCode;
     }
 
-    public List<ProductPackage> getProductPackages() {
-        return productPackages;
+    public long getClientOrderCode() {
+        return clientOrderCode;
     }
 
-    public void setProductPackages(List<ProductPackage> productPackages) {
-        this.productPackages = productPackages;
+    public void setClientOrderCode(long clientOrderCode) {
+        this.clientOrderCode = clientOrderCode;
     }
 }

@@ -20,29 +20,23 @@ public class Product extends Versionable implements Serializable {
     @Id
     long code;
 
-    @NotNull
-    String name;
-
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "products")
     List<ProductPackage> productPackages;
 
     @ManyToOne
     @JoinColumn(name = "product_catalog_code")
-    @NotNull
     ProductCatalog productCatalog;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "client_order_id")
-    private ClientOrder clientOrder;
+    @JoinColumn(name = "client_order_code")
+    ClientOrder clientOrder;
 
     public Product() {
     }
 
-    public Product(long code, String name, ProductCatalog productCatalog) {
+    public Product(long code) {
         this.code = code;
-        this.name = name;
         this.productPackages = new ArrayList<ProductPackage>();
-        this.productCatalog = productCatalog;
     }
 
     public long getCode() {
@@ -51,14 +45,6 @@ public class Product extends Versionable implements Serializable {
 
     public void setCode(long code) {
         this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public List<ProductPackage> getProductPackages() {
