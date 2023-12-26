@@ -89,16 +89,6 @@ public class ProductCatalogService {
         return Response.status(Response.Status.OK).entity(productCatalogToDTO(productCatalog)).build();
     }
 
-    @GET
-    @Path("{code}/products")
-    @RolesAllowed({"ProductsManufacters"})
-    public Response getProductCatalogProducts(@PathParam("code") long code) throws MyEntityNotFoundException {
-        ProductCatalog productCatalog = productCatalogBean.getProductCatalogProducts(code);
-
-        var dtos = productsToDTOs(productCatalog.getProducts());
-        return Response.ok(dtos).build();
-    }
-
     //TODO update a product-catalog
     @PUT
     @Path("{code}")
@@ -127,6 +117,17 @@ public class ProductCatalogService {
     @Path("/")
     public List<ProductCatalogDTO> getAll() {
         return productCatalogToDTOs(productCatalogBean.getAll());
+    }
+
+    //TODO get products from product-catalog
+    @GET
+    @Path("{code}/products")
+    @RolesAllowed({"ProductsManufacters"})
+    public Response getProducts(@PathParam("code") long code) throws MyEntityNotFoundException {
+        ProductCatalog productCatalog = productCatalogBean.getProductCatalogProducts(code);
+
+        var dtos = productsToDTOs(productCatalog.getProducts());
+        return Response.ok(dtos).build();
     }
 
     //TODO add product to product-catalog
