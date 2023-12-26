@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NamedQueries({
@@ -25,7 +27,10 @@ public class ClientOrder {
     @OneToMany(mappedBy = "clientOrder", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Product> products;
 
-    public ClientOrder( long code, LogisticOperator logisticOperator) {
+    @Column(name = "created_at")
+    Date createdAt;
+
+    public ClientOrder(long code, LogisticOperator logisticOperator) {
         this.code = code;
         this.logisticOperator = logisticOperator;
         products = new ArrayList<>();
@@ -51,11 +56,11 @@ public class ClientOrder {
         this.logisticOperator = logisticOperator;
     }
 
-    public void addProduct(Product product){
+    public void addProduct(Product product) {
         products.add(product);
     }
 
-    public void removeProduct(Product product){
+    public void removeProduct(Product product) {
         products.remove(product);
     }
 
@@ -67,4 +72,25 @@ public class ClientOrder {
         this.products = products;
     }
 
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = new Date();
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ClientOrder that = (ClientOrder) o;
+        return code == that.code && Objects.equals(logisticOperator, that.logisticOperator) && Objects.equals(products, that.products) && Objects.equals(createdAt, that.createdAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, logisticOperator, products, createdAt);
+    }
 }

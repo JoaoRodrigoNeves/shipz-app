@@ -31,6 +31,10 @@ public class Product extends Versionable implements Serializable {
     @JoinColumn(name = "client_order_code")
     ClientOrder clientOrder;
 
+    @Column(name = "created_at")
+    Date createdAt;
+
+
     public Product() {
     }
 
@@ -78,5 +82,14 @@ public class Product extends Versionable implements Serializable {
 
     public void setClientOrder(ClientOrder clientOrder) {
         this.clientOrder = clientOrder;
+    }
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = new Date();
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
     }
 }

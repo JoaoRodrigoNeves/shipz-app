@@ -7,6 +7,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.entities.User;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NamedQueries({
@@ -43,5 +44,18 @@ public class ProductManufacter extends User implements Serializable {
 
     public void removeProductCatalog(ProductCatalog productCatalog){
         this.productsCatalog.remove(productCatalog);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductManufacter that = (ProductManufacter) o;
+        return Objects.equals(productsCatalog, that.productsCatalog);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(productsCatalog);
     }
 }
