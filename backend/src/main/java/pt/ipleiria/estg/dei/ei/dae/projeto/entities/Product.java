@@ -34,8 +34,9 @@ public class Product extends Versionable implements Serializable {
     public Product() {
     }
 
-    public Product(long code) {
+    public Product(long code, ProductCatalog productCatalog) {
         this.code = code;
+        this.productCatalog = productCatalog;
         this.productPackages = new ArrayList<ProductPackage>();
     }
 

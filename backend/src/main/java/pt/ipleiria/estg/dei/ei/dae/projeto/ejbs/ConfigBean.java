@@ -42,9 +42,10 @@ public class ConfigBean {
             finalCostumerBean.create("finalCostumer1", "finalCostumer1", "Final Costumer 1", "final.costumer1@mail.pt", "Some address, N1");
             finalCostumerBean.create("finalCostumer2", "finalCostumer2", "Final Costumer 2", "final.costumer2@mail.pt", "Some address, N2");
 
-            productCatalogBean.create(1, "PC1", "productManufacter1");
-            productCatalogBean.create(2, "PC2", "productManufacter1");
-            productCatalogBean.create(3, "PC3", "productManufacter2");
+            productCatalogBean.create(1, "Sem catálogo", "productManufacter1");
+            productCatalogBean.create(2, "PC1", "productManufacter1");
+            productCatalogBean.create(3, "PC2", "productManufacter1");
+            productCatalogBean.create(4, "PC3", "productManufacter2");
 
             productPackageBean.create(1, "primário", "tinteiro", "em preparação", new Date());
             productPackageBean.create(2, "secundário", "tinteiro", "em preparação", new Date());

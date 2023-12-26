@@ -26,6 +26,12 @@ public class ProductDTO {
         this.productCatalogCode = productCatalogCode;
     }
 
+    public ProductDTO(long code, long productCatalogCode, long clientOrderCode) {
+        this.code = code;
+        this.productCatalogCode = productCatalogCode;
+        this.clientOrderCode = clientOrderCode;
+    }
+
     public long getCode() {
         return code;
     }

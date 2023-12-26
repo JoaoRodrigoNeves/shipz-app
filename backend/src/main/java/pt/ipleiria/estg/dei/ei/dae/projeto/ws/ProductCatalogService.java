@@ -28,7 +28,7 @@ public class ProductCatalogService {
     @EJB
     private ProductCatalogBean productCatalogBean;
 
-    private ProductCatalogDTO productCatalogsToDTO(ProductCatalog productCatalog) {
+    private ProductCatalogDTO productCatalogToDTO(ProductCatalog productCatalog) {
         return new ProductCatalogDTO(
                 productCatalog.getCode(),
                 productCatalog.getName(),
@@ -36,12 +36,11 @@ public class ProductCatalogService {
         );
     }
 
-    private List<ProductCatalogDTO> productCatalogsToDTOs(List<ProductCatalog> productCatalog) {
+    private List<ProductCatalogDTO> productCatalogToDTOs(List<ProductCatalog> productCatalog) {
         return productCatalog.stream()
-                .map(this::productCatalogsToDTO)
+                .map(this::productCatalogToDTO)
                 .collect(Collectors.toList());
     }
-
 
     private ProductDTO productToDTONoClientOrder(Product product) {
         return new ProductDTO(
@@ -55,12 +54,11 @@ public class ProductCatalogService {
     }
 
     private ProductDTO productToDTO(Product product) {
-        ProductDTO productDTO = new ProductDTO(
+        return new ProductDTO(
                 product.getCode(),
-                product.getProductCatalog().getCode()
+                product.getProductCatalog().getCode(),
+                product.getClientOrder().getCode()
         );
-        productDTO.setClientOrderCode(product.getClientOrder().getCode());
-        return productDTO;
     }
 
     private List<ProductDTO> productsToDTOs(List<Product> products) {
@@ -79,16 +77,16 @@ public class ProductCatalogService {
                 productCatalogDTO.getProductManufacterUsername()
         );
         ProductCatalog productCatalog = productCatalogBean.find(productCatalogDTO.getCode());
-        return Response.status(Response.Status.CREATED).entity(productCatalogsToDTO(productCatalog)).build();
+        return Response.status(Response.Status.CREATED).entity(productCatalogToDTO(productCatalog)).build();
     }
 
     //TODO get product catalog by code
     @GET
     @Path("{code}")
     @RolesAllowed({"ProductManufacter"})
-    public Response getProductCatalogDetails(@PathParam("code") long code) throws MyEntityNotFoundException {
+    public Response getDetails(@PathParam("code") long code) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = productCatalogBean.find(code);
-        return Response.ok(productCatalogsToDTO(productCatalog)).build();
+        return Response.status(Response.Status.OK).entity(productCatalogToDTO(productCatalog)).build();
     }
 
     @GET
@@ -104,22 +102,21 @@ public class ProductCatalogService {
     //TODO update a product-catalog
     @PUT
     @Path("{code}")
-    @RolesAllowed({"ProductsManufacter"})
-    public Response updateProductCatalog(@PathParam("code") long code, ProductCatalogDTO productCatalogDTO) throws MyEntityNotFoundException {
+    @RolesAllowed({"ProductManufacter"})
+    public Response update(@PathParam("code") long code, ProductCatalogDTO productCatalogDTO) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = productCatalogBean.find(code);
         productCatalogBean.update(
                 code,
                 productCatalogDTO.getName(),
                 productCatalogDTO.getProductManufacterUsername()
         );
-
-        return Response.status(Response.Status.OK).entity(productCatalogsToDTO(productCatalog)).build();
+        return Response.status(Response.Status.OK).entity(productCatalogToDTO(productCatalog)).build();
     }
 
     //TODO delete a product-catalog
     @DELETE
     @Path("{code}")
-    public Response deleteProductCatalog(@PathParam("code") long code) throws MyEntityNotFoundException {
+    public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = productCatalogBean.find(code);
         productCatalogBean.remove(code);
         return Response.status(Response.Status.OK).entity("Success").build();
@@ -129,7 +126,7 @@ public class ProductCatalogService {
     @GET
     @Path("/")
     public List<ProductCatalogDTO> getAll() {
-        return productCatalogsToDTOs(productCatalogBean.getAll());
+        return productCatalogToDTOs(productCatalogBean.getAll());
     }
 
     //TODO add product to product-catalog
