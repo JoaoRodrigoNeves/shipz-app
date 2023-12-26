@@ -55,18 +55,20 @@ public class ProductCatalogBean {
         return productCatalog;
     }
 
-    public void update(long code, String name, List<Product> products) throws MyEntityNotFoundException {
+    public void update(long code, String name, String productManufacterUsername) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = this.find(code);
         entityManager.lock(productCatalog, LockModeType.OPTIMISTIC);
         productCatalog.setName(name);
-        productCatalog.setProducts(products);
+        ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, productManufacterUsername);
+        if (productManufacter == null)
+            throw new MyEntityNotFoundException("Product Manufacter with username: '" + productManufacterUsername + "' not found");
+        productCatalog.setProductManufacter(productManufacter);
         entityManager.merge(productCatalog);
     }
 
     public void remove(long code) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = this.find(code);
-
-        ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, productCatalog.getProductManufacter());
+        ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, productCatalog.getProductManufacter().getUsername());
         entityManager.remove(productCatalog);
         productManufacter.removeProductCatalog(productCatalog);
     }
