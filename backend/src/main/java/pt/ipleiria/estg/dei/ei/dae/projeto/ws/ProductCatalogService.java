@@ -125,9 +125,7 @@ public class ProductCatalogService {
     @RolesAllowed({"ProductsManufacters"})
     public Response getProducts(@PathParam("code") long code) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = productCatalogBean.getProductCatalogProducts(code);
-
-        var dtos = productsToDTOs(productCatalog.getProducts());
-        return Response.ok(dtos).build();
+        return Response.status(Response.Status.OK).entity(productsToDTOs(productCatalog.getProducts())).build();
     }
 
     //TODO add product to product-catalog
