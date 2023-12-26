@@ -52,12 +52,11 @@ public class ClientOrderService {
     }
 
     private ProductDTO productToDTO(Product product) {
-        ProductDTO productDTO = new ProductDTO(
+        return new ProductDTO(
                 product.getCode(),
-                product.getProductCatalog().getCode()
+                product.getProductCatalog().getCode(),
+                product.getClientOrder().getCode()
         );
-        productDTO.setClientOrderCode(product.getClientOrder().getCode());
-        return productDTO;
     }
 
     private List<ProductDTO> productsToDTOs(List<Product> products) {

@@ -11,6 +11,8 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationExcep
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
+import java.util.List;
+
 @Stateless
 public class ProductBean {
 
@@ -23,16 +25,19 @@ public class ProductBean {
     }
 
     /**
-     * <h2>TODO CRUD operations for Product entity</h1>
-     * <p>ADD/REMOVE PRODUCT TO/FROM ProductCatalog</p>
-     * <p>ADD/REMOVE PRODUCT TO/FROM ClientOrder</p>
+     * TODO CRUD operations for Product entity
      */
-    public void create(long code) throws MyEntityExistsException, MyConstraintViolationException {
+    public void create(long code, long productCatalogCode) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
         if (exists(code))
             throw new MyEntityExistsException("Product with code: " + code + " already exists");
 
+        ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, productCatalogCode);
+
+        if (productCatalog == null)
+            throw new MyEntityNotFoundException("Product Catalog with code: " + productCatalogCode + " not found");
+
         try {
-            Product product = new Product(code);
+            Product product = new Product(code, productCatalog);
             entityManager.persist(product);
             entityManager.flush();
         } catch (ConstraintViolationException e) {
@@ -48,7 +53,7 @@ public class ProductBean {
         return product;
     }
 
-    public void update(long code, long productCatalogCode, long clientOrderCode) throws MyEntityNotFoundException {
+    public void update(long code, long productCatalogCode) throws MyEntityNotFoundException {
         Product product = this.find(code);
 
         if (product.getProductCatalog().getCode() != productCatalogCode) {
@@ -56,13 +61,6 @@ public class ProductBean {
             if (productCatalog == null)
                 throw new MyEntityNotFoundException("ProductCatalog with code: " + productCatalogCode + " not found");
             product.setProductCatalog(productCatalog);
-        }
-
-        if (product.getClientOrder().getCode() != productCatalogCode) {
-            ClientOrder clientOrder = entityManager.find(ClientOrder.class, clientOrderCode);
-            if (clientOrder == null)
-                throw new MyEntityNotFoundException("Client Order with code: " + clientOrderCode + " not found");
-            product.setClientOrder(clientOrder);
         }
 
         entityManager.merge(product);
@@ -75,8 +73,11 @@ public class ProductBean {
 
         entityManager.remove(product);
         product.getProductCatalog().removeProduct(product);
-        product.getClientOrder().removeProduct(product);
-        product.getProductPackages().forEach(productPackage -> productPackage.removeProduct(product));
+        // caso seja um produto recente sem qualquer associação
+        if (product.getClientOrder() != null)
+            product.getClientOrder().removeProduct(product);
+        if (product.getProductPackages() != null)
+            product.getProductPackages().forEach(productPackage -> productPackage.removeProduct(product));
     }
 
     //TODO associate / disassociate product with product package
@@ -137,5 +138,10 @@ public class ProductBean {
 
         product.setClientOrder(null);
         clientOrder.removeProduct(product);
+    }
+
+    //TODO get all products
+    public List<Product> getAllProducts() {
+        return entityManager.createNamedQuery("getAllProducts", Product.class).getResultList();
     }
 }
