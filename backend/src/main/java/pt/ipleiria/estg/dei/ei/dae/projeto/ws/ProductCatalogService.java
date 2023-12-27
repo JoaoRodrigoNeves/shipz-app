@@ -74,15 +74,13 @@ public class ProductCatalogService {
     @Path("/")
     public Response create(ProductCatalogDTO productCatalogDTO)
             throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
-        productCatalogBean.create(
-                productCatalogDTO.getCode(),
+        ProductCatalog productCatalog = productCatalogBean.create(
                 productCatalogDTO.getName(),
                 productCatalogDTO.getCatalogArea(),
                 productCatalogDTO.getCategory(),
                 productCatalogDTO.getDescription(),
                 productCatalogDTO.getProductManufacterUsername()
         );
-        ProductCatalog productCatalog = productCatalogBean.find(productCatalogDTO.getCode());
         return Response.status(Response.Status.CREATED).entity(productCatalogToDTO(productCatalog)).build();
     }
 
@@ -100,8 +98,7 @@ public class ProductCatalogService {
     @Path("{code}")
     @RolesAllowed({"ProductManufacter"})
     public Response update(@PathParam("code") long code, ProductCatalogDTO productCatalogDTO) throws MyEntityNotFoundException {
-        ProductCatalog productCatalog = productCatalogBean.find(code);
-        productCatalogBean.update(
+        ProductCatalog productCatalog = productCatalogBean.update(
                 code,
                 productCatalogDTO.getName(),
                 productCatalogDTO.getCatalogArea(),
