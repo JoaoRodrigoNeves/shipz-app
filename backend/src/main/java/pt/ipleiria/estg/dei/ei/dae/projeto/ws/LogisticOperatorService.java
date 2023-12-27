@@ -54,7 +54,8 @@ public class LogisticOperatorService {
     private ProductDTO productToDTONoClientOrder(Product product) {
         return new ProductDTO(
                 product.getCode(),
-                product.getProductCatalog().getCode()
+                product.getProductCatalog().getCode(),
+                product.getProductManufacter().getUsername()
         );
     }
 
@@ -66,6 +67,8 @@ public class LogisticOperatorService {
         return new ProductDTO(
                 product.getCode(),
                 product.getProductCatalog().getCode(),
+                product.getProductCatalog().getName(),
+                product.getProductManufacter().getUsername(),
                 product.getClientOrder().getCode()
         );
     }

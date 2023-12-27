@@ -20,7 +20,7 @@ watch(
   () => props,
   (newProps) => {
     products.value = Object.assign({}, newProps.products)
-
+    console.log(products.value)
   },
   { immediate: true }
 )
@@ -34,6 +34,9 @@ watch(
           Código
         </th>
         <th>
+          Código de Catálogo
+        </th>
+        <th>
           Ações
         </th>
       </tr>
@@ -41,10 +44,13 @@ watch(
 
     <tbody>
       <tr v-for="item in products" :key="item.code">
-        <td style="width: 100%;">
+        <td style="width: 30%;">
           {{ item.code }}
         </td>
-        <td class="d-flex align-center justify-center gap-x-2" style="width: fit-content;">
+        <td style="width: 100%; text-align: center;">
+          {{ item.productCatalogCode }}
+        </td>
+        <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
           <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('product-/' + item.code)">
             <VIcon
             size="20"
@@ -77,3 +83,6 @@ watch(
   </VTable>
 
 </template>
+<style scoped>
+
+</style>

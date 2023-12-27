@@ -48,7 +48,8 @@ public class ProductCatalogService {
     private ProductDTO productToDTONoClientOrder(Product product) {
         return new ProductDTO(
                 product.getCode(),
-                product.getProductCatalog().getCode()
+                product.getProductCatalog().getCode(),
+                product.getProductManufacter().getUsername()
         );
     }
 
@@ -57,19 +58,13 @@ public class ProductCatalogService {
     }
 
     private ProductDTO productToDTO(Product product) {
-
-        ProductDTO productDTO = new ProductDTO(
-                product.getCode()
+        return new ProductDTO(
+                product.getCode(),
+                product.getProductCatalog().getCode(),
+                product.getProductCatalog().getName(),
+                product.getProductManufacter().getUsername(),
+                product.getClientOrder().getCode()
         );
-        if(product.getProductCatalog() != null){
-            productDTO.setProductCatalogCode(product.getProductCatalog().getCode());
-        }
-
-        if(product.getClientOrder() != null){
-            productDTO.setClientOrderCode(product.getClientOrder().getCode());
-        }
-
-        return productDTO;
     }
 
     private List<ProductDTO> productsToDTOs(List<Product> products) {

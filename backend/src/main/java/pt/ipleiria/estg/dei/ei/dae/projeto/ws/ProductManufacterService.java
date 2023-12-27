@@ -67,7 +67,10 @@ public class ProductManufacterService {
     private ProductDTO productToDTO(Product product) {
         return new ProductDTO(
                 product.getCode(),
-                product.getProductCatalog().getCode()
+                product.getProductCatalog().getCode(),
+                product.getProductCatalog().getName(),
+                product.getProductManufacter().getUsername(),
+                product.getClientOrder().getCode()
         );
     }
 

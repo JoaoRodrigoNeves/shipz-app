@@ -1,3 +1,5 @@
+
+import productCatalogsVue from '../product-catalog/product-catalogs.vue';
 <script setup>
 import { ref, onMounted, inject } from 'vue'
 import ProductTable from '@/views/pages/tables/ProductTable.vue'
@@ -50,7 +52,7 @@ onMounted(async () => {
                         <VIcon size="20" icon="bx-plus" />
                     </VBtn>
                 </div>
-                <ProductTable :products="products" />
+                <ProductTable v-if="products && products.length > 0" :products="products" />
             </VCard>
             <!--<VCard v-if="isCreatingOrUpdating">
 

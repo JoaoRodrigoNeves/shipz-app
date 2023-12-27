@@ -22,7 +22,7 @@ public class ClientOrderBean {
     public void create(long code, String LO) throws MyEntityNotFoundException{
         LogisticOperator logisticOperator = em.find(LogisticOperator.class, LO);
         if (logisticOperator == null) {
-            throw new MyEntityNotFoundException("LogisticOperator with username: " + LO + " doesn't exist");
+            throw new MyEntityNotFoundException("LogisticOperator with username: " + LO + " not found");
         }
         var clientOrderCode = em.createQuery(
                 "SELECT COUNT(s.code) FROM ClientOrder s WHERE s.code = :code",
@@ -48,7 +48,7 @@ public class ClientOrderBean {
     
     public ClientOrder find (long code) throws MyEntityNotFoundException {
         if (!exists(code)) {
-            throw new MyEntityNotFoundException("ClientOrder with code: " + code + " doesn't exist");
+            throw new MyEntityNotFoundException("ClientOrder with code: " + code + " not found");
         }
         return em.find(ClientOrder.class, code);
     }
@@ -64,7 +64,7 @@ public class ClientOrderBean {
 
     public ClientOrder findClientOrderWithProducts(long code) throws MyEntityNotFoundException {
         if (!exists(code)) {
-            throw new MyEntityNotFoundException("ClientOrder with code: " + code + " doesn't exist");
+            throw new MyEntityNotFoundException("ClientOrder with code: " + code + " not found");
         }
         ClientOrder clientOrder = em.find(ClientOrder.class, code);
         Hibernate.initialize(clientOrder.getProducts());
@@ -75,7 +75,7 @@ public class ClientOrderBean {
         ClientOrder clientOrder = find(code);
         Product product = em.find(Product.class, productCode);
         if (product == null) {
-            throw new MyEntityNotFoundException("Product with code: " + productCode + " doesn't exist");
+            throw new MyEntityNotFoundException("Product with code: " + productCode + " not found");
         }
         clientOrder.addProduct(product);
         product.setClientOrder(clientOrder);
@@ -85,7 +85,7 @@ public class ClientOrderBean {
         ClientOrder clientOrder = find(code);
         Product product = em.find(Product.class, productCode);
         if (product == null) {
-            throw new MyEntityNotFoundException("Product with code: " + productCode + " doesn't exist");
+            throw new MyEntityNotFoundException("Product with code: " + productCode + " not found");
         }
         clientOrder.removeProduct(product);
         product.setClientOrder(null);
