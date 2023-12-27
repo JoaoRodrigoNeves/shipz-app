@@ -36,7 +36,6 @@ public class ProductManufacterService {
     private ProductManufacterDTO productManufacterToDTONoPackages(ProductManufacter productManufacter) {
         return new ProductManufacterDTO(
                 productManufacter.getUsername(),
-                productManufacter.getPassword(),
                 productManufacter.getName(),
                 productManufacter.getEmail()
         );

@@ -7,9 +7,11 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductCatalogDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductManufacterDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
@@ -63,6 +65,14 @@ public class ProductService {
         );
     }
 
+    private ProductManufacterDTO productManufacterToDTO(ProductManufacter productManufacter) {
+        return new ProductManufacterDTO(
+                productManufacter.getUsername(),
+                productManufacter.getName(),
+                productManufacter.getEmail()
+        );
+    }
+
     //TODO create a new product
     @POST
     @Path("/")
@@ -113,7 +123,15 @@ public class ProductService {
     @GET
     @Path("{code}/product-catalog")
     public Response getProductCatalog(@PathParam("code") long code) throws MyEntityNotFoundException {
-        Product product = productBean.find(code);
-        return Response.status(Response.Status.OK).entity(productCatalogToDTO(product.getProductCatalog())).build();
+        ProductCatalog productCatalog = productBean.getProductCatalog(code);
+        return Response.status(Response.Status.OK).entity(productCatalogToDTO(productCatalog)).build();
+    }
+
+    //TODO get product-manufacter from product
+    @GET
+    @Path("{code}/product-manufacter")
+    public Response getProductManufacter(@PathParam("code") long code) throws MyEntityNotFoundException {
+        ProductManufacter productManufacter = productBean.getProductManufacter(code);
+        return Response.status(Response.Status.OK).entity(productManufacterToDTO(productManufacter)).build();
     }
 }

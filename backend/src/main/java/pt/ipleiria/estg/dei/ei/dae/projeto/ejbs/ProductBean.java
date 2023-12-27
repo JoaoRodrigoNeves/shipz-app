@@ -4,6 +4,7 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.validation.ConstraintViolationException;
+import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
@@ -149,5 +150,17 @@ public class ProductBean {
     //TODO get all products
     public List<Product> getAllProducts() {
         return entityManager.createNamedQuery("getAllProducts", Product.class).getResultList();
+    }
+
+    //TODO get product catalog
+    public ProductCatalog getProductCatalog(long code) throws MyEntityNotFoundException {
+        Product product = this.find(code);
+        return product.getProductCatalog();
+    }
+
+    //TODO get product manufacter
+    public ProductManufacter getProductManufacter(long code) throws MyEntityNotFoundException {
+        Product product = this.find(code);
+        return product.getProductManufacter();
     }
 }
