@@ -32,6 +32,9 @@ public class ProductCatalogService {
         return new ProductCatalogDTO(
                 productCatalog.getCode(),
                 productCatalog.getName(),
+                productCatalog.getCatalogArea(),
+                productCatalog.getCategory(),
+                productCatalog.getDescription(),
                 productCatalog.getProductManufacter().getUsername()
         );
     }
@@ -74,6 +77,9 @@ public class ProductCatalogService {
         productCatalogBean.create(
                 productCatalogDTO.getCode(),
                 productCatalogDTO.getName(),
+                productCatalogDTO.getCatalogArea(),
+                productCatalogDTO.getCategory(),
+                productCatalogDTO.getDescription(),
                 productCatalogDTO.getProductManufacterUsername()
         );
         ProductCatalog productCatalog = productCatalogBean.find(productCatalogDTO.getCode());
@@ -98,6 +104,9 @@ public class ProductCatalogService {
         productCatalogBean.update(
                 code,
                 productCatalogDTO.getName(),
+                productCatalogDTO.getCatalogArea(),
+                productCatalogDTO.getCategory(),
+                productCatalogDTO.getDescription(),
                 productCatalogDTO.getProductManufacterUsername()
         );
         return Response.status(Response.Status.OK).entity(productCatalogToDTO(productCatalog)).build();

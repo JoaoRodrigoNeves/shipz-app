@@ -54,6 +54,9 @@ public class ProductService {
         return new ProductCatalogDTO(
                 productCatalog.getCode(),
                 productCatalog.getName(),
+                productCatalog.getCatalogArea(),
+                productCatalog.getCategory(),
+                productCatalog.getDescription(),
                 productCatalog.getProductManufacter().getUsername()
         );
     }

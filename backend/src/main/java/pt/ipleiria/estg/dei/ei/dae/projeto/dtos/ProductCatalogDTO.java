@@ -10,13 +10,19 @@ import java.util.List;
 public class ProductCatalogDTO {
     long code;
     String name;
+    String catalogArea;
+    String category;
+    String description;
     String productManufacterUsername;
     public ProductCatalogDTO() {
     }
 
-    public ProductCatalogDTO(long code, String name, String productManufacterUsername) {
+    public ProductCatalogDTO(long code, String name, String catalogArea, String category, String description, String productManufacterUsername) {
         this.code = code;
         this.name = name;
+        this.catalogArea = catalogArea;
+        this.category = category;
+        this.description = description;
         this.productManufacterUsername = productManufacterUsername;
     }
 
@@ -34,6 +40,30 @@ public class ProductCatalogDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCatalogArea() {
+        return catalogArea;
+    }
+
+    public void setCatalogArea(String catalogArea) {
+        this.catalogArea = catalogArea;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getProductManufacterUsername() {

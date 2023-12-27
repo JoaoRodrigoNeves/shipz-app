@@ -30,7 +30,7 @@ public class ProductCatalogBean {
         return (Long) query.getSingleResult() > 0L;
     }
 
-    public void create(long code, String name, String productManufacterUsername) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
+    public void create(long code, String name, String catalogArea, String category, String description, String productManufacterUsername) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
         if (exists(code))
             throw new MyEntityExistsException("Product Catalog with code: " + code + " already exists");
 
@@ -40,7 +40,7 @@ public class ProductCatalogBean {
             throw new MyEntityNotFoundException("Product Manufacter with username: '" + productManufacterUsername + "' not found");
 
         try {
-            var productCatalog = new ProductCatalog(code, name, productManufacter);
+            var productCatalog = new ProductCatalog(code, name, catalogArea, category, description, productManufacter);
             productManufacter.addProductCatalog(productCatalog);
             entityManager.persist(productCatalog);
             entityManager.flush();
@@ -56,10 +56,13 @@ public class ProductCatalogBean {
         return productCatalog;
     }
 
-    public void update(long code, String name, String productManufacterUsername) throws MyEntityNotFoundException {
+    public void update(long code, String name, String catalogArea, String category, String description, String productManufacterUsername) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = this.find(code);
         entityManager.lock(productCatalog, LockModeType.OPTIMISTIC);
         productCatalog.setName(name);
+        productCatalog.setCatalogArea(catalogArea);
+        productCatalog.setCategory(category);
+        productCatalog.setDescription(description);
         ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, productManufacterUsername);
         if (productManufacter == null)
             throw new MyEntityNotFoundException("Product Manufacter with username: '" + productManufacterUsername + "' not found");

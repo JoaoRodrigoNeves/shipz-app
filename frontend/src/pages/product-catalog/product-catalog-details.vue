@@ -81,6 +81,31 @@ onMounted(async () => {
                             {{ productCatalog.productManufacterUsername }}
                         </span>
                     </div>
+                    <div class="catalog-item">
+                        <label>
+                            Área
+                        </label>
+                        <span>
+                            {{ productCatalog.catalogArea }}
+                        </span>
+                    </div>
+                    <div class="catalog-item">
+                        <label>
+                            Categoria
+                        </label>
+                        <span>
+                            {{ productCatalog.category }}
+                        </span>
+                    </div>
+                    <div class="catalog-item">
+                        <label>
+                            Descrição
+                        </label>
+                        <span>
+                            {{ productCatalog.description }}
+                        </span>
+                    </div>
+                    
                 </div>
                 <div class="products-actions">
                     <h2>Produtos</h2>
@@ -110,6 +135,7 @@ onMounted(async () => {
 .product-catalog-details {
     display: flex;
     padding: 0 24px;
+    gap: 16px 0px;
     flex-wrap: wrap;
 }
 
