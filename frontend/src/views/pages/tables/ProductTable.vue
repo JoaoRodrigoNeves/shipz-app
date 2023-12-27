@@ -28,7 +28,7 @@ watch(
 </script>
 
 <template>
-  <VTable fixed-header v-if="products">
+  <VTable fixed-header v-if="products.length > 0">
     <thead>
       <tr>
         <th class="text-uppercase">

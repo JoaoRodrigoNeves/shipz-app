@@ -1,6 +1,8 @@
 <script setup>
 import { useRouter } from 'vue-router';
 
+const emit = defineEmits(['updateProductCatalog'])
+
 const router = useRouter()
 const props = defineProps({
 
@@ -16,6 +18,12 @@ const productCatalogs = ref(Object.assign({}, props.productCatalogs))
 const navigateTo = (path) => {
   router.push({ path: path})
 }
+
+const updateProductCatalog = (productCatalog) => {
+  emit('updateProductCatalog', productCatalog)
+}
+
+
 
 watch(
   () => props,
@@ -63,7 +71,7 @@ watch(
             icon="bx-plus"
           />
           </VBtn>
-          <VBtn rel="noopener noreferrer" color="primary">
+          <VBtn rel="noopener noreferrer" color="primary" @click="updateProductCatalog(item)">
             <VIcon
             size="20"
             icon="bx-pencil"

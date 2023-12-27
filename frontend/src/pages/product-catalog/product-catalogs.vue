@@ -8,7 +8,7 @@ const isLoading = ref(false)
 const isCreatingOrUpdating = ref(false)
 const isCreating = ref(false)
 const productCatalogs = ref([])
-
+const productCatalogToUpdate = ref(null)
 
 
 const loadProductCatalogs = async () => {
@@ -30,6 +30,13 @@ const closeFormAndUpdate = async () => {
     await loadProductCatalogs()
 }
 
+const updateProductCatalog = async (productCatalog) => {
+    productCatalogToUpdate.value = productCatalog
+    isCreatingOrUpdating.value = true
+    isCreating.value = false;
+}
+
+
 onMounted(async () => {
     await loadProductCatalogs();
 })
@@ -45,17 +52,16 @@ onMounted(async () => {
                         <VIcon size="20" icon="bx-plus" />
                     </VBtn>
                 </div>
-                <ProductCatalogTable v-if="productCatalogs && !isLoading" :productCatalogs="productCatalogs" />
+                <ProductCatalogTable v-if="productCatalogs && !isLoading" @updateProductCatalog="updateProductCatalog" :productCatalogs="productCatalogs" />
             </VCard>
             <VCard v-if="isCreatingOrUpdating">
 
                 <VCard>
                     <div class="product-catalogs-header">
                         <h2>{{ isCreating ? 'Criar Catálogo' : 'Editar Catálogo' }}</h2>
-
                     </div>
                     <VCardText>
-                        <ProductCatalogForm @closeFormAndUpdate="closeFormAndUpdate"></ProductCatalogForm>
+                        <ProductCatalogForm @closeFormAndUpdate="closeFormAndUpdate" :productCatalogToUpdate="productCatalogToUpdate"></ProductCatalogForm>
                     </VCardText>
                 </VCard>
             </VCard>

@@ -6,9 +6,25 @@ const axios = inject('axios')
 
 const emit = defineEmits(['closeFormAndUpdate'])
 
+const props = defineProps({
+
+    productCatalogToUpdate: {
+        type: Object,
+        required: false
+    }
+})
+const productCatalogToUpdate = ref(Object.assign({}, props.productCatalogToUpdate))
+
+
+
+
+
 const productCatalogForm = ref({
-    code: 6,
+    code: -1,
     name: '',
+    catalogArea: '',
+    category: '',
+    description: '',
     productManufacterUsername: JSON.parse(sessionStorage.getItem('user_info')).username
 })
 
@@ -21,8 +37,11 @@ const save = (async () => {
             toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Catálogo criado com sucesso', life: 3000 });
 
             productCatalogForm.value = {
-                code: '',
+                code: -1,
                 name: '',
+                catalogArea: '',
+                category: '',
+                description: '',
                 productManufacterUsername: JSON.parse(sessionStorage.getItem('user_info')).username
             }
 
@@ -34,6 +53,15 @@ const save = (async () => {
 
     }
 })
+
+watch(
+    () => props,
+    (newProps) => {
+        productCatalogToUpdate.value = Object.assign({}, newProps.productCatalogToUpdate)
+        productCatalogForm.value = productCatalogToUpdate.value
+    },
+    { immediate: true }
+)
 </script>
 
 <template>
@@ -41,6 +69,15 @@ const save = (async () => {
         <VRow>
             <VCol cols="12">
                 <VTextField v-model="productCatalogForm.name" label="Nome do Catálogo" placeholder="Iphone 15" />
+            </VCol>
+            <VCol cols="12">
+                <VTextField v-model="productCatalogForm.catalogArea" label="Área do Catálogo" placeholder="Tecnologia" />
+            </VCol>
+            <VCol cols="12">
+                <VTextField v-model="productCatalogForm.category" label="Categoria do Catálogo" placeholder="Telemóveis" />
+            </VCol>
+            <VCol cols="12">
+                <VTextField v-model="productCatalogForm.description" label="Descrição" />
             </VCol>
             <VCol cols="12" class="d-flex gap-4">
                 <VBtn type="submit">
