@@ -47,7 +47,6 @@ public class PackageService {
     @Path("/") // means: the relative url path is “/api/package/”
     public Response createNewPackage(PackageDTO packageDTO) throws MyEntityExistsException, MyEntityNotFoundException {
         packageBean.create(
-                packageDTO.getCode(),
                 packageDTO.getType(),
                 packageDTO.getMaterial(),
                 packageDTO.getStatus(),

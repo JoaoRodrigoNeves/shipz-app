@@ -75,7 +75,6 @@ public class ProductCatalogService {
     public Response create(ProductCatalogDTO productCatalogDTO)
             throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
         ProductCatalog productCatalog = productCatalogBean.create(
-                productCatalogDTO.getCode(),
                 productCatalogDTO.getName(),
                 productCatalogDTO.getCatalogArea(),
                 productCatalogDTO.getCategory(),
