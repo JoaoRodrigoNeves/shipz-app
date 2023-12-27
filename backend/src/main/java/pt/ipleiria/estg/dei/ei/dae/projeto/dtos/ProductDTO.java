@@ -21,6 +21,10 @@ public class ProductDTO {
     public ProductDTO() {
     }
 
+    public ProductDTO(long code) {
+        this.code = code;
+    }
+
     public ProductDTO(long code, long productCatalogCode) {
         this.code = code;
         this.productCatalogCode = productCatalogCode;

@@ -57,11 +57,19 @@ public class ProductCatalogService {
     }
 
     private ProductDTO productToDTO(Product product) {
-        return new ProductDTO(
-                product.getCode(),
-                product.getProductCatalog().getCode(),
-                product.getClientOrder().getCode()
+
+        ProductDTO productDTO = new ProductDTO(
+                product.getCode()
         );
+        if(product.getProductCatalog() != null){
+            productDTO.setProductCatalogCode(product.getProductCatalog().getCode());
+        }
+
+        if(product.getClientOrder() != null){
+            productDTO.setClientOrderCode(product.getClientOrder().getCode());
+        }
+
+        return productDTO;
     }
 
     private List<ProductDTO> productsToDTOs(List<Product> products) {

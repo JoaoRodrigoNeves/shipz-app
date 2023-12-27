@@ -52,12 +52,12 @@ public class ConfigBean {
             productPackageBean.create("terciário", "tinteiro", "em preparação", new Date());
 
             productBean.create(100000);
-            productBean.create(100000);
             productBean.create(100001);
             productBean.create(100002);
 
             productCatalogBean.addProduct(100000, 100000);
-            productCatalogBean.addProduct(100000, 100001);
+            productCatalogBean.addProduct(100001, 100001);
+            productCatalogBean.addProduct(100002, 100002);
 
             productBean.addProductToPackage(100000, 100002);
             productBean.addProductToPackage(100001, 100002);
