@@ -10,9 +10,8 @@ public class ProductManufacterDTO {
     public ProductManufacterDTO() {
     }
 
-    public ProductManufacterDTO(String username, String password, String name, String email) {
+    public ProductManufacterDTO(String username, String name, String email) {
         this.username = username;
-        this.password = password;
         this.name = name;
         this.email = email;
     }

@@ -11,13 +11,13 @@ const props = defineProps({
     productCatalogToUpdate: {
         type: Object,
         required: false
+    },
+    isCreating: {
+        type: Boolean,
+        required: true
     }
 })
 const productCatalogToUpdate = ref(Object.assign({}, props.productCatalogToUpdate))
-
-
-
-
 
 const productCatalogForm = ref({
     code: -1,
@@ -29,29 +29,55 @@ const productCatalogForm = ref({
 })
 
 const save = (async () => {
+    if (props.isCreating) {
+        try {
+            productCatalogForm.value.code = 7
+            productCatalogForm.value.productManufacterUsername= JSON.parse(sessionStorage.getItem('user_info')).username
 
-    try {
-        const response = await axios.post('product-catalogs', productCatalogForm.value)
+            const response = await axios.post('product-catalogs', productCatalogForm.value)
 
-        if (response.status == 201) {
-            toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Catálogo criado com sucesso', life: 3000 });
+            if (response.status == 201) {
+                toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Catálogo criado com sucesso', life: 3000 });
 
-            productCatalogForm.value = {
-                code: -1,
-                name: '',
-                catalogArea: '',
-                category: '',
-                description: '',
-                productManufacterUsername: JSON.parse(sessionStorage.getItem('user_info')).username
+                productCatalogForm.value = {
+                    code: -1,
+                    name: '',
+                    catalogArea: '',
+                    category: '',
+                    description: '',
+                    productManufacterUsername: JSON.parse(sessionStorage.getItem('user_info')).username
+                }
+
+                emit('closeFormAndUpdate')
             }
 
-            emit('closeFormAndUpdate')
+        } catch (error) {
+            toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
+
         }
+    } else {
+        try {
+            const response = await axios.put('product-catalogs/' + productCatalogForm.value.code, productCatalogForm.value)
 
-    } catch (error) {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
+            if (response.status == 200) {
+                toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Catálogo atualizado com sucesso', life: 3000 });
 
+                productCatalogForm.value = {
+                    code: -1,
+                    name: '',
+                    catalogArea: '',
+                    category: '',
+                    description: '',
+                    productManufacterUsername: JSON.parse(sessionStorage.getItem('user_info')).username
+                }
+                emit('closeFormAndUpdate')
+            }
+
+        } catch (error) {
+            toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
+        }
     }
+
 })
 
 watch(
@@ -81,7 +107,7 @@ watch(
             </VCol>
             <VCol cols="12" class="d-flex gap-4">
                 <VBtn type="submit">
-                    Criar
+                    {{props.isCreating ? 'Criar' : 'Editar'}}
                 </VBtn>
 
                 <VBtn type="reset" color="secondary" variant="tonal">

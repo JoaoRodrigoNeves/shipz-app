@@ -41,9 +41,14 @@ const upgradeBanner = computed(() => {
         to: '/dashboard',
       }" />
       <VerticalNavLink :item="{
-        title: 'Catálogo de Produtos',
+        title: 'Catálogo',
         icon: 'bx-home',
         to: '/product-catalogs',
+      }" />
+      <VerticalNavLink :item="{
+        title: 'Produtos',
+        icon: 'bx-home',
+        to: '/products',
       }" />
       <VerticalNavLink :item="{
         title: 'Account Settings',
@@ -96,15 +101,6 @@ const upgradeBanner = computed(() => {
         icon: 'mdi-form-select',
         to: '/form-layouts',
       }" />
-    </template>
-
-    <template #after-vertical-nav-items>
-      <!-- 👉 illustration -->
-      <a href="https://themeselection.com/item/sneat-vuetify-vuejs-admin-template" target="_blank"
-        rel="noopener noreferrer" style="margin-left: 7px;">
-        <img :src="upgradeBanner" alt="upgrade-banner" transition="scale-transition" class="upgrade-banner mx-auto"
-          style="max-width: 230px;">
-      </a>
     </template>
 
     <!-- 👉 Pages -->

@@ -69,7 +69,9 @@ public class ProductManufacterBean {
         entityManager.lock(productManufacter, LockModeType.OPTIMISTIC);
 
         productManufacter.setName(name);
-        productManufacter.setPassword(hasher.hash(password));
+        if(password != null){
+            productManufacter.setPassword(hasher.hash(password));
+        }
         productManufacter.setEmail(email);
 
         entityManager.merge(productManufacter);

@@ -12,7 +12,6 @@ const props = defineProps({
 
 const products = ref(Object.assign({}, props.products))
 
-console.log(products.value)
 const navigateTo = (path) => {
   router.push({ path: path})
 }
@@ -28,7 +27,7 @@ watch(
 </script>
 
 <template>
-  <VTable fixed-header v-if="products.length > 0">
+  <VTable fixed-header>
     <thead>
       <tr>
         <th class="text-uppercase">
@@ -76,13 +75,5 @@ watch(
       </tr>
     </tbody>
   </VTable>
-  <div v-else class="no-products">
-    Não tem produtos associados a este catálogo
-  </div>
-</template>
-<style scoped>
 
-.no-products{
-  padding: 0 24px 24px 24px;
-}
-</style>
+</template>

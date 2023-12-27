@@ -32,12 +32,16 @@ public class AuthService {
             var user = userBean.find(auth.getUsername());
             var role = user.getClass().getName().split("\\.")[user.getClass().getName().split("\\.").length - 1];
 
-            JsonObject userInfo = Json.createObjectBuilder()
-                    .add("token", token)
+            JsonObject userInfoValues = Json.createObjectBuilder()
                     .add("role", role)
                     .add("name", user.getName())
                     .add("email", user.getEmail())
                     .add("username", user.getUsername())
+                    .build();
+
+            JsonObject userInfo = Json.createObjectBuilder()
+                    .add("token", token)
+                    .add("user_info", userInfoValues)
                     .build();
 
             return Response.ok(userInfo).build();
