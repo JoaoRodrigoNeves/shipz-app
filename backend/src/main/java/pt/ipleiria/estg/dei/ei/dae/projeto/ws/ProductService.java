@@ -119,6 +119,38 @@ public class ProductService {
         return Response.status(Response.Status.OK).entity(productToDTOs(productBean.getAllProducts())).build();
     }
 
+    //TODO add product to productPackage
+    @POST
+    @Path("{code}/package/{packageCode}")
+    public Response addToProductPackage(@PathParam("code") long code, @PathParam("packageCode") long packageCode) throws MyEntityNotFoundException, MyEntityExistsException {
+        productBean.addProductToPackage(code, packageCode);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    //TODO remove product from productPackage
+    @DELETE
+    @Path("{code}/package/{packageCode}")
+    public Response removeFromProductPackage(@PathParam("code") long code, @PathParam("packageCode") long packageCode) throws MyEntityNotFoundException, MyEntityExistsException {
+        productBean.removeProductFromPackage(code, packageCode);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    //TODO add product to order
+    @POST
+    @Path("{code}/order/{orderCode}")
+    public Response addToOrder(@PathParam("code") long code, @PathParam("orderCode") long orderCode) throws MyEntityNotFoundException, MyEntityExistsException {
+        productBean.addProductToOrder(code, orderCode);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    //TODO remove product from order
+    @DELETE
+    @Path("{code}/order/{orderCode}")
+    public Response removeFromOrder(@PathParam("code") long code, @PathParam("orderCode") long orderCode) throws MyEntityNotFoundException, MyEntityExistsException {
+        productBean.removeProductFromOrder(code, orderCode);
+        return Response.status(Response.Status.OK).build();
+    }
+
     //TODO get product-catalog from product
     @GET
     @Path("{code}/product-catalog")
