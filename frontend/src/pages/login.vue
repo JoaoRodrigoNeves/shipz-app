@@ -19,7 +19,7 @@ const submit = (async () => {
 
   try {
     const response = await axios.post('auth/login', form.value)
-    axios.defaults.headers.common.Authorization = "Bearer " + response.data.access_token
+    axios.defaults.headers.common.Authorization = "Bearer " + response.data.token
     sessionStorage.setItem("token", JSON.stringify(response.data.token));
     sessionStorage.setItem("user_info", JSON.stringify(response.data.user_info));
     router.push({ path: 'dashboard' })
