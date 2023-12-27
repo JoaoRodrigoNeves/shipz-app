@@ -16,13 +16,6 @@ public class ProductManufacterDTO {
         this.email = email;
     }
 
-    public ProductManufacterDTO(String username, String password, String name, String email) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.email = email;
-    }
-
     public String getUsername() {
         return username;
     }

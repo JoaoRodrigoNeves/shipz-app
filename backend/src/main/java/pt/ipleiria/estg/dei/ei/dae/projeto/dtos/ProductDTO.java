@@ -14,7 +14,7 @@ public class ProductDTO {
     long code;
 
     long productCatalogCode;
-
+    String productCatalogName;
     String productManufacterUsername;
 
     long clientOrderCode;
@@ -23,15 +23,20 @@ public class ProductDTO {
     public ProductDTO() {
     }
 
+    public ProductDTO(long code) {
+        this.code = code;
+    }
+
     public ProductDTO(long code, long productCatalogCode, String productManufacterUsername) {
         this.code = code;
         this.productCatalogCode = productCatalogCode;
         this.productManufacterUsername = productManufacterUsername;
     }
 
-    public ProductDTO(long code, long productCatalogCode, String productManufacterUsername, long clientOrderCode) {
+    public ProductDTO(long code, long productCatalogCode, String productCatalogName, String productManufacterUsername, long clientOrderCode) {
         this.code = code;
         this.productCatalogCode = productCatalogCode;
+        this.productCatalogName = productCatalogName;
         this.productManufacterUsername = productManufacterUsername;
         this.clientOrderCode = clientOrderCode;
     }

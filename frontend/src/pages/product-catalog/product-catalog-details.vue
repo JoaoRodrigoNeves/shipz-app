@@ -2,6 +2,7 @@
 import { ref, onMounted, inject } from 'vue'
 import ProductTable from '@/views/pages/tables/ProductTable.vue'
 import { useRouter } from 'vue-router'
+import ProductCatalogForm from '@/views/pages/form-layouts/ProductCatalogForm.vue'
 
 const axios = inject('axios')
 const isLoading = ref(false)
@@ -9,11 +10,11 @@ const router = useRouter()
 
 const products = ref([])
 const productCatalog = ref(null)
-
+const isCreatingOrUpdating = ref(false)
+const productCatalogToUpdate = ref(null)
 const loadProductCatalogDetails = async () => {
     isLoading.value = true;
     try {
-        console.log()
         await axios.get('product-catalogs/' + router.currentRoute.value.params.code).then(response => {
             isLoading.value = false;
             productCatalog.value = response.data
@@ -28,10 +29,8 @@ const loadProductCatalogDetails = async () => {
 const loadProductCatalogProducts = async () => {
     isLoading.value = true;
     try {
-        console.log()
         await axios.get('product-catalogs/' + router.currentRoute.value.params.code + '/products').then(response => {
             isLoading.value = false;
-            console.log(response.data)
             products.value = response.data
 
         })
@@ -41,6 +40,16 @@ const loadProductCatalogProducts = async () => {
     }
 }
 
+const closeFormAndUpdate = async () => {
+    isCreatingOrUpdating.value = false
+    await loadProductCatalogDetails()
+}
+
+const updateProductCatalog = async (productCatalog) => {
+    productCatalogToUpdate.value = productCatalog
+    isCreatingOrUpdating.value = true
+}
+
 onMounted(async () => {
     await loadProductCatalogDetails();
     await loadProductCatalogProducts();
@@ -48,16 +57,16 @@ onMounted(async () => {
 </script>
 
 <template>
-    <VRow>
+    <VRow v-if="!isCreatingOrUpdating">
         <VCol cols="12">
             <VCard v-if="productCatalog">
                 <div class="product-catalog-details-header">
                     <h2>{{ productCatalog.name }}</h2>
                     <div class="product-catalog-details-actions">
-                        <VBtn rel="noopener noreferrer" color="primary">
+                        <VBtn rel="noopener noreferrer" color="primary" @click="updateProductCatalog(productCatalog)">
                             <VIcon size="20" icon="bx-pencil" />
                         </VBtn>
-                        <VBtn rel="noopener noreferrer" color="primary">
+                        <VBtn rel="noopener noreferrer" color="primary" v-if="products && products.length == 0">
                             <VIcon size="20" icon="bx-trash" />
                         </VBtn>
                     </div>
@@ -105,18 +114,35 @@ onMounted(async () => {
                             {{ productCatalog.description }}
                         </span>
                     </div>
-                    
+
                 </div>
                 <div class="products-actions">
                     <h2>Produtos</h2>
                     <VBtn rel="noopener noreferrer" color="primary">
-                            <VIcon size="20" icon="bx-plus" />
-                        </VBtn>
+                        <VIcon size="20" icon="bx-plus" />
+                    </VBtn>
                 </div>
-                <ProductTable v-if="products && !isLoading" :products="products" />
+                <div v-if="products && products.length > 0 && !isLoading">
+                    <ProductTable :products="products" />
+                </div>
+                <div v-else class="no-products">
+                    Não tem produtos associados a este catálogo
+                </div>
             </VCard>
         </VCol>
     </VRow>
+    <VCard v-if="isCreatingOrUpdating">
+
+        <VCard>
+            <div class="product-catalogs-header">
+                <h2>Editar Catálogo</h2>
+            </div>
+            <VCardText>
+                <ProductCatalogForm @closeFormAndUpdate="closeFormAndUpdate"
+                    :productCatalogToUpdate="productCatalogToUpdate" :isCreating="false"></ProductCatalogForm>
+            </VCardText>
+        </VCard>
+    </VCard>
 </template>
 <style scoped>
 .product-catalog-details-header {
@@ -126,7 +152,7 @@ onMounted(async () => {
     padding: 24px;
 }
 
-.product-catalog-details-actions{
+.product-catalog-details-actions {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -150,9 +176,20 @@ onMounted(async () => {
     font-size: 14px;
 }
 
-.products-actions{
+.products-actions {
     display: flex;
     justify-content: space-between;
+    padding: 24px;
+}
+
+.no-products {
+    padding: 0 24px 24px 24px;
+}
+
+.product-catalogs-header {
+    display: flex;
+    justify-content: space-between;
+    align-self: center;
     padding: 24px;
 }
 </style>

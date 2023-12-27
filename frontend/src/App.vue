@@ -9,11 +9,11 @@ const axios = inject('axios')
 
 onMounted(async () => {
     try {
-      const user_info = JSON.parse(sessionStorage.getItem("user_info"))
-      if (!user_info) {
+      const token = JSON.parse(sessionStorage.getItem("token"))
+      if (!token) {
         return
       }
-      axios.defaults.headers.common.Authorization = 'Bearer ' + user_info.token
+      axios.defaults.headers.common.Authorization = 'Bearer ' + token
     } catch (error) {
       console.log(error)
     }
@@ -22,6 +22,7 @@ onMounted(async () => {
 
 <template>
   <Toast/>
+  <ConfirmDialog></ConfirmDialog>
   <VApp :style="`--v-global-theme-primary: ${hexToRgb(global.current.value.colors.primary)}`">
     <RouterView />
   </VApp>

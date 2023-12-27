@@ -1,22 +1,23 @@
+
+import productCatalogsVue from '../product-catalog/product-catalogs.vue';
 <script setup>
 import { ref, onMounted, inject } from 'vue'
-import ProductCatalogTable from '@/views/pages/tables/ProductCatalogTable.vue'
-import ProductCatalogForm from '@/views/pages/form-layouts/ProductCatalogForm.vue'
+import ProductTable from '@/views/pages/tables/ProductTable.vue'
 
 const axios = inject('axios')
 const isLoading = ref(false)
 const isCreatingOrUpdating = ref(false)
 const isCreating = ref(false)
-const productCatalogs = ref([])
-const productCatalogToUpdate = ref(null)
+const products = ref([])
+const productToUpdate = ref(null)
 
 
-const loadProductCatalogs = async () => {
+const loadProducts = async () => {
     isLoading.value = true;
     try {
-        await axios.get('product-manufacters/' + JSON.parse(sessionStorage.getItem('user_info')).username + '/product-catalogs').then(response => {
+        await axios.get('product-manufacters/' + JSON.parse(sessionStorage.getItem('user_info')).username + '/products').then(response => {
             isLoading.value = false;
-            productCatalogs.value = response.data
+            products.value = response.data
 
         })
     } catch (error) {
@@ -27,17 +28,17 @@ const loadProductCatalogs = async () => {
 
 const closeFormAndUpdate = async () => {
     isCreatingOrUpdating.value = false
-    await loadProductCatalogs()
+    await loadProducts()
 }
 
-const updateProductCatalog = async (productCatalog) => {
-    productCatalogToUpdate.value = productCatalog
+const updateProduct = async (product) => {
+    productToUpdate.value = product
     isCreatingOrUpdating.value = true
     isCreating.value = false;
 }
 
 onMounted(async () => {
-    await loadProductCatalogs();
+    await loadProducts();
 })
 </script>
 
@@ -46,14 +47,14 @@ onMounted(async () => {
         <VCol cols="12">
             <VCard v-if="!isCreatingOrUpdating">
                 <div class="product-catalogs-header">
-                    <h2>Catálogo de Produtos</h2>
+                    <h2>Produtos</h2>
                     <VBtn rel="noopener noreferrer" color="primary" @click="isCreatingOrUpdating = true; isCreating = true">
                         <VIcon size="20" icon="bx-plus" />
                     </VBtn>
                 </div>
-                <ProductCatalogTable v-if="productCatalogs && !isLoading" @updateProductCatalog="updateProductCatalog" @loadProductCatalogs="loadProductCatalogs" :productCatalogs="productCatalogs" />
+                <ProductTable v-if="products && products.length > 0" :products="products" />
             </VCard>
-            <VCard v-if="isCreatingOrUpdating">
+            <!--<VCard v-if="isCreatingOrUpdating">
 
                 <VCard>
                     <div class="product-catalogs-header">
@@ -63,7 +64,7 @@ onMounted(async () => {
                         <ProductCatalogForm @closeFormAndUpdate="closeFormAndUpdate" :productCatalogToUpdate="productCatalogToUpdate" :isCreating="isCreating"></ProductCatalogForm>
                     </VCardText>
                 </VCard>
-            </VCard>
+            </VCard>-->
         </VCol>
     </VRow>
 </template>

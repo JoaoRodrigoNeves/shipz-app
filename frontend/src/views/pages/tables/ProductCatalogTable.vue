@@ -1,9 +1,13 @@
 <script setup>
+import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router';
+import { useConfirm } from "primevue/useconfirm";
 
-const emit = defineEmits(['updateProductCatalog'])
+const emit = defineEmits(['updateProductCatalog', 'loadProductCatalogs'])
+const axios = inject('axios')
 
 const router = useRouter()
+const confirm = useConfirm();
 const props = defineProps({
 
   productCatalogs: {
@@ -16,14 +20,30 @@ const productCatalogs = ref(Object.assign({}, props.productCatalogs))
 
 
 const navigateTo = (path) => {
-  router.push({ path: path})
+  router.push({ path: path })
 }
 
 const updateProductCatalog = (productCatalog) => {
   emit('updateProductCatalog', productCatalog)
 }
 
-
+const deleteProductCatalogConfirm = (productCatalog) => {
+  confirm.require({
+    message: 'Tem a certeza que pretende apagar o catálogo ' + productCatalog.name + ' ?',
+    header: 'Apagar Catálogo',
+    rejectLabel: 'Não',
+    acceptLabel: 'Sim',
+    accept: async () => {
+      try {
+        await axios.delete('product-catalogs/' + productCatalog.code).then(response => {
+          emit('loadProductCatalogs')
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  });
+}
 
 watch(
   () => props,
@@ -60,28 +80,16 @@ watch(
         </td>
         <td class="d-flex align-center justify-center gap-x-2" style="width: fit-content;">
           <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('product-catalog/' + item.code)">
-            <VIcon
-            size="20"
-            icon="bx-show"
-          />
+            <VIcon size="20" icon="bx-show" />
           </VBtn>
           <VBtn rel="noopener noreferrer" color="primary">
-            <VIcon
-            size="20"
-            icon="bx-plus"
-          />
+            <VIcon size="20" icon="bx-plus" />
           </VBtn>
           <VBtn rel="noopener noreferrer" color="primary" @click="updateProductCatalog(item)">
-            <VIcon
-            size="20"
-            icon="bx-pencil"
-          />
+            <VIcon size="20" icon="bx-pencil" />
           </VBtn>
-          <VBtn rel="noopener noreferrer" color="primary">
-            <VIcon
-            size="20"
-            icon="bx-trash"
-          />
+          <VBtn rel="noopener noreferrer" color="primary" @click="deleteProductCatalogConfirm(item)">
+            <VIcon size="20" icon="bx-trash" />
           </VBtn>
 
         </td>

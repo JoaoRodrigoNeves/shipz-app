@@ -68,7 +68,9 @@ public class ProductManufacterService {
         return new ProductDTO(
                 product.getCode(),
                 product.getProductCatalog().getCode(),
-                product.getProductManufacter().getUsername()
+                product.getProductCatalog().getName(),
+                product.getProductManufacter().getUsername(),
+                product.getClientOrder().getCode()
         );
     }
 
@@ -87,6 +89,20 @@ public class ProductManufacterService {
     public Response create(ProductManufacterDTO productManufacterDTO)
             throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
         productManufacterBean.create(
+                productManufacterDTO.getUsername(),
+                productManufacterDTO.getPassword(),
+                productManufacterDTO.getName(),
+                productManufacterDTO.getEmail()
+        );
+        ProductManufacter productManufacter = productManufacterBean.find(productManufacterDTO.getUsername());
+        return Response.status(Response.Status.CREATED).entity(productManufacterToDTONoPackages(productManufacter)).build();
+    }
+
+    @PUT
+    @Path("/")
+    public Response update(ProductManufacterDTO productManufacterDTO)
+            throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+        productManufacterBean.update(
                 productManufacterDTO.getUsername(),
                 productManufacterDTO.getPassword(),
                 productManufacterDTO.getName(),

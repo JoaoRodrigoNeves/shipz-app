@@ -12,7 +12,6 @@ const props = defineProps({
 
 const products = ref(Object.assign({}, props.products))
 
-console.log(products.value)
 const navigateTo = (path) => {
   router.push({ path: path})
 }
@@ -21,18 +20,21 @@ watch(
   () => props,
   (newProps) => {
     products.value = Object.assign({}, newProps.products)
-
+    console.log(products.value)
   },
   { immediate: true }
 )
 </script>
 
 <template>
-  <VTable fixed-header v-if="products.length > 0">
+  <VTable fixed-header>
     <thead>
       <tr>
         <th class="text-uppercase">
           Código
+        </th>
+        <th>
+          Código de Catálogo
         </th>
         <th>
           Ações
@@ -42,10 +44,13 @@ watch(
 
     <tbody>
       <tr v-for="item in products" :key="item.code">
-        <td style="width: 100%;">
+        <td style="width: 30%;">
           {{ item.code }}
         </td>
-        <td class="d-flex align-center justify-center gap-x-2" style="width: fit-content;">
+        <td style="width: 100%; text-align: center;">
+          {{ item.productCatalogCode }}
+        </td>
+        <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
           <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('product-/' + item.code)">
             <VIcon
             size="20"
@@ -76,13 +81,8 @@ watch(
       </tr>
     </tbody>
   </VTable>
-  <div v-else class="no-products">
-    Não tem produtos associados a este catálogo
-  </div>
+
 </template>
 <style scoped>
 
-.no-products{
-  padding: 0 24px 24px 24px;
-}
 </style>
