@@ -48,7 +48,8 @@ public class ProductCatalogService {
     private ProductDTO productToDTONoClientOrder(Product product) {
         return new ProductDTO(
                 product.getCode(),
-                product.getProductCatalog().getCode()
+                product.getProductCatalog().getCode(),
+                product.getProductManufacter().getUsername()
         );
     }
 
@@ -60,6 +61,7 @@ public class ProductCatalogService {
         return new ProductDTO(
                 product.getCode(),
                 product.getProductCatalog().getCode(),
+                product.getProductManufacter().getUsername(),
                 product.getClientOrder().getCode()
         );
     }
