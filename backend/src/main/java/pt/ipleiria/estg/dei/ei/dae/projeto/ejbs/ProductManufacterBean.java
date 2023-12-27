@@ -8,13 +8,13 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
 import org.hibernate.Hibernate;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.security.Hasher;
 
-import java.util.Date;
 import java.util.List;
 
 @Stateless
@@ -36,9 +36,8 @@ public class ProductManufacterBean {
     }
 
     public void create(String username, String password, String name, String email) throws MyEntityExistsException, MyConstraintViolationException {
-        ProductManufacter studentCheck = entityManager.find(ProductManufacter.class, username);
-        if(studentCheck != null)
-            throw new MyEntityExistsException("O username " + username + " já existe.");
+        if(exists(username))
+            throw new MyEntityExistsException("Product Manufacter with username: '" + username + "' already exists");
 
         try {
             var productManufacter = new ProductManufacter(username, hasher.hash(password), name, email);
@@ -57,36 +56,24 @@ public class ProductManufacterBean {
         return productManufacter;
     }
 
-    public void update(String username, String password, String name, String email) {
-
-        ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, username);
-
-        if (productManufacter == null) {
-            System.err.println("ERROR_PRODUCTS_MANUFACTERS_NOT_FOUND: " + username);
-            return;
-        }
-
+    public void update(String username, String password, String name, String email) throws MyEntityNotFoundException {
+        ProductManufacter productManufacter = this.find(username);
         entityManager.lock(productManufacter, LockModeType.OPTIMISTIC);
-
         productManufacter.setName(name);
         productManufacter.setPassword(hasher.hash(password));
         productManufacter.setEmail(email);
-
         entityManager.merge(productManufacter);
     }
 
-    public boolean remove(String username) {
+    public void delete(String username) throws MyEntityNotFoundException {
+        ProductManufacter productManufacter = this.find(username);
 
-        ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, username);
-
-        if (productManufacter == null) {
-            System.err.println("ERROR_PRODUCTS_MANUFACTERS_NOT_FOUND: " + username);
-            return false;
+        if (productManufacter.getProductCatalogs() != null) {
+            productManufacter.getProductCatalogs().forEach(productCatalog -> productCatalog.setProductManufacter(null));
+            productManufacter.getProductCatalogs().forEach(productCatalog -> productCatalog.getProducts().forEach(product -> product.setProductManufacter(null)));
         }
-        entityManager.remove(productManufacter);
 
-        ProductManufacter productManufacterFind = entityManager.find(ProductManufacter.class, username);
-        return productManufacterFind != null;
+        entityManager.remove(productManufacter);
     }
 
     //TODO get all
@@ -94,10 +81,17 @@ public class ProductManufacterBean {
         return entityManager.createNamedQuery("getAllProductManufacters", ProductManufacter.class).getResultList();
     }
 
-    //TODO get product manufacter - product catalogs
-    public ProductManufacter getManufacterCatalogs(String username) throws MyEntityNotFoundException {
+    //TODO get product manufacter -> product catalogs
+    public ProductManufacter getCatalogs(String username) throws MyEntityNotFoundException {
         ProductManufacter productManufacter = this.find(username);
-        Hibernate.initialize(productManufacter.getProductsCatalog());
+        Hibernate.initialize(productManufacter.getProductCatalogs());
+        return productManufacter;
+    }
+
+    //TODO get products manufacter -> products
+    public ProductManufacter getProducts(String username) throws MyEntityNotFoundException {
+        ProductManufacter productManufacter = this.find(username);
+        Hibernate.initialize(productManufacter.getProducts());
         return productManufacter;
     }
 }

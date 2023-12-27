@@ -42,33 +42,32 @@ public class ConfigBean {
             finalCostumerBean.create("finalCostumer1", "finalCostumer1", "Final Costumer 1", "final.costumer1@mail.pt", "Some address, N1");
             finalCostumerBean.create("finalCostumer2", "finalCostumer2", "Final Costumer 2", "final.costumer2@mail.pt", "Some address, N2");
 
-            productCatalogBean.create(1, "Sem catálogo", "Sem catálogo", "Sem catálogo", "Sem catálogo", "productManufacter1");
-            productCatalogBean.create(2, "PC1", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1");
-            productCatalogBean.create(3, "PC2", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1");
-            productCatalogBean.create(4, "PC3", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter2");
+            productCatalogBean.create("Sem catálogo", "Sem catálogo", "Sem catálogo", "Sem catálogo", "productManufacter1");
+            productCatalogBean.create("PC1", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1");
+            productCatalogBean.create("PC2", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1");
+            productCatalogBean.create("PC3", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter2");
 
-            productPackageBean.create(1, "primário", "tinteiro", "em preparação", new Date());
-            productPackageBean.create(2, "secundário", "tinteiro", "em preparação", new Date());
-            productPackageBean.create(3, "terciário", "tinteiro", "em preparação", new Date());
+            productPackageBean.create("primário", "tinteiro", "em preparação", new Date());
+            productPackageBean.create("secundário", "tinteiro", "em preparação", new Date());
+            productPackageBean.create("terciário", "tinteiro", "em preparação", new Date());
 
-            productBean.create(1, 1);
-            productBean.create(2, 1);
-            productBean.create(3, 2);
-            productBean.create(4, 3);
+            productBean.create(1);
+            productBean.create(1);
+            productBean.create(2);
+            productBean.create(3);
 
-            productBean.addProductToPackage(1, 3);
-            productBean.addProductToPackage(2, 3);
-            productBean.addProductToPackage(3, 2);
+            productCatalogBean.addProduct(100000, 100000);
+            productCatalogBean.addProduct(100000, 100001);
 
-            productCatalogBean.addProduct(1, 1);
-            productCatalogBean.addProduct(1, 2);
-            productCatalogBean.removeProduct(1, 1);
+            productBean.addProductToPackage(100000, 100002);
+            productBean.addProductToPackage(100001, 100002);
+            productBean.addProductToPackage(100002, 100001);
 
             clientOrderBean.create(123, "logisticOperator1");
             clientOrderBean.create(124, "logisticOperator1");
-            clientOrderBean.addProduct(123, 1);
-            clientOrderBean.addProduct(123, 2);
-            clientOrderBean.addProduct(123, 3);
+            clientOrderBean.addProduct(123, 100000);
+            clientOrderBean.addProduct(123, 100001);
+            clientOrderBean.addProduct(123, 100002);
 
 
         } catch (Exception e) {

@@ -21,6 +21,8 @@ import java.util.Objects;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Package extends Versionable implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "package_id_seq")
+    @SequenceGenerator(name = "package_id_seq", sequenceName = "package_id_seq", initialValue = 100000)
     long code;
 
     @NotNull
@@ -48,8 +50,7 @@ public class Package extends Versionable implements Serializable {
     public Package() {
     }
 
-    public Package(long code, String type, String material, String status, Date manufacturingDate) {
-        this.code = code;
+    public Package(String type, String material, String status, Date manufacturingDate) {
         this.type = type;
         this.material = material;
         this.status = status;

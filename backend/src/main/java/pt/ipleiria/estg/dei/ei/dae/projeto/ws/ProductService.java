@@ -46,7 +46,7 @@ public class ProductService {
         );
     }
 
-    private List<ProductDTO> productsToDTOs(List<Product> products) {
+    private List<ProductDTO> productToDTOs(List<Product> products) {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
 
@@ -65,11 +65,9 @@ public class ProductService {
     @POST
     @Path("/")
     public Response create(ProductDTO productDTO) throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
-        productBean.create(
-                productDTO.getCode(),
+        Product product = productBean.create(
                 productDTO.getProductCatalogCode()
         );
-        Product product = productBean.find(productDTO.getCode());
         return Response.status(Response.Status.CREATED).entity(productToDTO(product)).build();
     }
 
@@ -86,8 +84,7 @@ public class ProductService {
     @PUT
     @RolesAllowed({"ProductManufacter"})
     public Response update(ProductDTO productDTO) throws MyEntityNotFoundException {
-        Product product = productBean.find(productDTO.getCode());
-        productBean.update(
+        Product product = productBean.update(
                 productDTO.getCode(),
                 productDTO.getProductCatalogCode()
         );
@@ -107,7 +104,7 @@ public class ProductService {
     @GET
     @Path("/")
     public Response getAll() {
-        return Response.status(Response.Status.OK).entity(productsToDTOs(productBean.getAllProducts())).build();
+        return Response.status(Response.Status.OK).entity(productToDTOs(productBean.getAllProducts())).build();
     }
 
     //TODO get product-catalog from product

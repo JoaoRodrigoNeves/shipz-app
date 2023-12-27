@@ -23,10 +23,8 @@ public class PackageBean {
     }
 
     //TODO CRUD operations for Package entity
-    public void create(long code, String type, String material, String status, Date manufacturingDate) throws MyEntityExistsException {
-        if (exists(code))
-            throw new MyEntityExistsException("Package with code: " + code + " already exists");
-        Package pack = new Package(code, type, material, status, manufacturingDate);
+    public void create(String type, String material, String status, Date manufacturingDate) throws MyEntityExistsException {
+        Package pack = new Package(type, material, status, manufacturingDate);
         entityManager.persist(pack);
     }
 

@@ -8,8 +8,10 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductCatalogDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductManufacterDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductManufacterBean;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
@@ -63,6 +65,17 @@ public class ProductManufacterService {
                 .collect(Collectors.toList());
     }
 
+    private ProductDTO productToDTO(Product product) {
+        return new ProductDTO(
+                product.getCode(),
+                product.getProductCatalog().getCode()
+        );
+    }
+
+    private List<ProductDTO> productToDTOs(List<Product> products) {
+        return products.stream().map(this::productToDTO).collect(Collectors.toList());
+    }
+
     @GET
     @Path("/") // means: the relative url path is “/api/product-manufacters/”
     public List<ProductManufacterDTO> getAllProductManufacters() {
@@ -99,7 +112,7 @@ public class ProductManufacterService {
         return Response.ok(productManufacter).build();
     }
 
-    //TODO get product manufacter catalogs
+    //TODO get product manufacter -> product-catalogs
     @GET
     @Path("{username}/product-catalogs")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
@@ -109,9 +122,25 @@ public class ProductManufacterService {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
-        var productManufacter = productManufacterBean.getManufacterCatalogs(username);
+        ProductManufacter productManufacter = productManufacterBean.getCatalogs(username);
 
-        var dtos = productCatalogToDTOs(productManufacter.getProductsCatalog());
+        List<ProductCatalogDTO> dtos = productCatalogToDTOs(productManufacter.getProductCatalogs());
+        return Response.ok(dtos).build();
+    }
+
+    //TODO get product manufacter -> products
+    @GET
+    @Path("{username}/products")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response getProducts(@PathParam("username") String username) throws MyEntityNotFoundException {
+        var principal = securityContext.getUserPrincipal();
+        if(!principal.getName().equals(username)) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        ProductManufacter productManufacter = productManufacterBean.getProducts(username);
+
+        List<ProductDTO> dtos = productToDTOs(productManufacter.getProducts());
         return Response.ok(dtos).build();
     }
 }

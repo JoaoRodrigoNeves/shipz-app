@@ -3,10 +3,8 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.ejbs;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.*;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
@@ -19,27 +17,23 @@ public class ProductBean {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public boolean exists(long code) {
-        Product product = entityManager.find(Product.class, code);
-        return product != null;
-    }
-
     /**
      * TODO CRUD operations for Product entity
      */
-    public void create(long code, long productCatalogCode) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
-        if (exists(code))
-            throw new MyEntityExistsException("Product with code: " + code + " already exists");
-
+    public Product create(long productCatalogCode) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {;
         ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, productCatalogCode);
 
         if (productCatalog == null)
             throw new MyEntityNotFoundException("Product Catalog with code: " + productCatalogCode + " not found");
 
         try {
-            Product product = new Product(code, productCatalog);
+            Product product = new Product(productCatalog, productCatalog.getProductManufacter());
             entityManager.persist(product);
-            entityManager.flush();
+
+            productCatalog.addProduct(product);
+            productCatalog.getProductManufacter().addProduct(product);
+
+            return product;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
         }
@@ -53,88 +47,100 @@ public class ProductBean {
         return product;
     }
 
-    public void update(long code, long productCatalogCode) throws MyEntityNotFoundException {
+    public Product update(long code, long productCatalogCode) throws MyEntityNotFoundException {
         Product product = this.find(code);
-
         if (product.getProductCatalog().getCode() != productCatalogCode) {
-            ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, productCatalogCode);
-            if (productCatalog == null)
-                throw new MyEntityNotFoundException("ProductCatalog with code: " + productCatalogCode + " not found");
-            product.setProductCatalog(productCatalog);
-        }
+            // remove old catalog and old manufacter
+            ProductCatalog productCatalogToRemove = product.getProductCatalog();
+            productCatalogToRemove.removeProduct(product);
+            productCatalogToRemove.getProductManufacter().removeProduct(product);
 
+            // add new catalog and old manufacter
+            ProductCatalog newProductCatalog = entityManager.find(ProductCatalog.class, productCatalogCode);
+            if (newProductCatalog == null)
+                throw new MyEntityNotFoundException("ProductCatalog with code: " + productCatalogCode + " not found");
+            newProductCatalog.addProduct(product);
+            newProductCatalog.getProductManufacter().addProduct(product);
+
+            product.setProductCatalog(newProductCatalog);
+            product.setProductManufacter(newProductCatalog.getProductManufacter());
+        }
         entityManager.merge(product);
+        return product;
     }
 
     public void delete(long code) throws MyEntityNotFoundException {
         Product product = this.find(code);
-        if (product == null)
-            throw new MyEntityNotFoundException("Product with code: " + code + " not found");
+        ProductCatalog productCatalog = product.getProductCatalog();
+        ProductManufacter  productManufacter = product.getProductManufacter();
 
-        entityManager.remove(product);
-        product.getProductCatalog().removeProduct(product);
-        // caso seja um produto recente sem qualquer associação
+        // remove mandatory associations
+        productCatalog.removeProduct(product);
+        productManufacter.removeProduct(product);
+
+        // in case it has no optional associations
         if (product.getClientOrder() != null)
             product.getClientOrder().removeProduct(product);
         if (product.getProductPackages() != null)
             product.getProductPackages().forEach(productPackage -> productPackage.removeProduct(product));
+
+        entityManager.remove(product);
     }
 
     //TODO associate / disassociate product with product package
 
-    public void addProductToPackage(long productCode, long productPackageCode) throws MyEntityNotFoundException, MyEntityExistsException {
+    public void addProductToPackage(long code, long productPackageCode) throws MyEntityNotFoundException, MyEntityExistsException {
         ProductPackage productPackage = entityManager.find(ProductPackage.class, productPackageCode);
         if (productPackage == null)
             throw new MyEntityNotFoundException("Package with code: " + productPackageCode + " not found");
 
-        Product product = this.find(productCode);
-
+        Product product = this.find(code);
         if (product.getProductPackages().contains(productPackage))
-            throw new MyEntityExistsException("Product with code: " + productCode + " already added to Package: " + productPackageCode);
+            throw new MyEntityExistsException("Product with code: " + code + " already added to Package: " + productPackageCode);
 
         product.addProductPackage(productPackage);
         productPackage.addProduct(product);
     }
 
-    public void removeProductFromPackage(long productCode, long productPackageCode) throws MyEntityNotFoundException, MyEntityExistsException {
+    public void removeProductFromPackage(long code, long productPackageCode) throws MyEntityNotFoundException, MyEntityExistsException {
         ProductPackage productPackage = entityManager.find(ProductPackage.class, productPackageCode);
         if (productPackage == null)
             throw new MyEntityNotFoundException("Package with code: " + productPackageCode + " not found");
 
-        Product product = this.find(productCode);
+        Product product = this.find(code);
 
         if (!product.getProductPackages().contains(productPackage))
-            throw new MyEntityExistsException("Product with code: " + productCode + " not added to Package: " + productPackage);
+            throw new MyEntityExistsException("Product with code: " + code + " not added to Package: " + productPackage);
 
         product.removeProductPackage(productPackage);
         productPackage.removeProduct(product);
     }
 
     //TODO associate / disassociate product with client order
-    public void addProductToOrder(long productCode, long clientOrderCode) throws MyEntityExistsException, MyEntityNotFoundException {
+    public void addProductToOrder(long code, long clientOrderCode) throws MyEntityExistsException, MyEntityNotFoundException {
         ClientOrder clientOrder = entityManager.find(ClientOrder.class, clientOrderCode);
 
         if (clientOrder == null)
             throw new MyEntityNotFoundException("Client Order with code: " + clientOrderCode + " not found");
 
-        Product product = this.find(productCode);
+        Product product = this.find(code);
 
         if (clientOrder.getProducts().contains(product))
-            throw new MyEntityExistsException("Product with code: " + productCode + " already added to Order: " + clientOrderCode);
+            throw new MyEntityExistsException("Product with code: " + code + " already added to Order: " + clientOrderCode);
 
         product.setClientOrder(clientOrder);
         clientOrder.addProduct(product);
     }
 
-    public void removeProductFromOrder(long productCode, long clientOrderCode) throws MyEntityNotFoundException, MyEntityExistsException {
+    public void removeProductFromOrder(long code, long clientOrderCode) throws MyEntityNotFoundException, MyEntityExistsException {
         ClientOrder clientOrder = entityManager.find(ClientOrder.class, clientOrderCode);
         if (clientOrder == null)
             throw new MyEntityNotFoundException("Client Order with code: " + clientOrderCode + " not found");
 
-        Product product = this.find(productCode);
+        Product product = this.find(code);
 
         if (!clientOrder.getProducts().contains(product))
-            throw new MyEntityExistsException("Product with code: " + productCode + " not added to Client Order: " + clientOrderCode);
+            throw new MyEntityExistsException("Product with code: " + code + " not added to Client Order: " + clientOrderCode);
 
         product.setClientOrder(null);
         clientOrder.removeProduct(product);

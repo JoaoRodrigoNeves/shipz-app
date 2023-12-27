@@ -25,10 +25,8 @@ public class ProductPackageBean {
 
     //TODO CRUD operations for ProductPackage entity
 
-    public void create(long code, String type, String material, String status, Date manufacturingDate) throws MyEntityExistsException {
-        if (exists(code))
-            throw new MyEntityExistsException("Package with code: " + code + " already exists");
-        ProductPackage productPackage = new ProductPackage(code, type, material, status, manufacturingDate);
+    public void create(String type, String material, String status, Date manufacturingDate) throws MyEntityExistsException {
+        ProductPackage productPackage = new ProductPackage(type, material, status, manufacturingDate);
         entityManager.persist(productPackage);
     }
 

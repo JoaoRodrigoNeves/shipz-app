@@ -19,8 +19,9 @@ import java.util.Objects;
 @Table(name = "products_catalogs", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class ProductCatalog extends Versionable implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "product_catalog_id_seq")
+    @SequenceGenerator(name = "product_catalog_id_seq", sequenceName = "product_catalog_id_seq", initialValue = 100000)
     long code;
-
     @NotNull
     String name;
     String catalogArea;
@@ -38,8 +39,7 @@ public class ProductCatalog extends Versionable implements Serializable {
 
     }
 
-    public ProductCatalog(long code, String name, String catalogArea, String category, String description, ProductManufacter productManufacter) {
-        this.code = code;
+    public ProductCatalog(String name, String catalogArea, String category, String description, ProductManufacter productManufacter) {
         this.name = name;
         this.catalogArea = catalogArea;
         this.category = category;
@@ -117,11 +117,11 @@ public class ProductCatalog extends Versionable implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProductCatalog that = (ProductCatalog) o;
-        return code == that.code && Objects.equals(name, that.name) && Objects.equals(products, that.products) && Objects.equals(productManufacter, that.productManufacter);
+        return code == that.code && Objects.equals(name, that.name) && Objects.equals(catalogArea, that.catalogArea) && Objects.equals(category, that.category) && Objects.equals(description, that.description) && Objects.equals(products, that.products) && Objects.equals(productManufacter, that.productManufacter);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, name, products, productManufacter);
+        return Objects.hash(code, name, catalogArea, category, description, products, productManufacter);
     }
 }

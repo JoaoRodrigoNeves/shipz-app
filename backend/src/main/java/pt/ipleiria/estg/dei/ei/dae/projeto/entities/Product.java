@@ -18,6 +18,8 @@ import java.util.List;
 @Table(name = "products")
 public class Product extends Versionable implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "product_id_seq")
+    @SequenceGenerator(name = "product_id_seq", sequenceName = "product_id_seq", initialValue = 100000)
     long code;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "products")
@@ -26,6 +28,10 @@ public class Product extends Versionable implements Serializable {
     @ManyToOne
     @JoinColumn(name = "product_catalog_code")
     ProductCatalog productCatalog;
+
+    @ManyToOne
+    @JoinColumn(name = "product_manufacter_code")
+    ProductManufacter productManufacter;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_order_code")
@@ -38,9 +44,9 @@ public class Product extends Versionable implements Serializable {
     public Product() {
     }
 
-    public Product(long code, ProductCatalog productCatalog) {
-        this.code = code;
+    public Product(ProductCatalog productCatalog, ProductManufacter productManufacter) {
         this.productCatalog = productCatalog;
+        this.productManufacter = productManufacter;
         this.productPackages = new ArrayList<ProductPackage>();
     }
 
@@ -76,6 +82,14 @@ public class Product extends Versionable implements Serializable {
         this.productCatalog = productCatalog;
     }
 
+    public ProductManufacter getProductManufacter() {
+        return productManufacter;
+    }
+
+    public void setProductManufacter(ProductManufacter productManufacter) {
+        this.productManufacter = productManufacter;
+    }
+
     public ClientOrder getClientOrder() {
         return clientOrder;
     }
@@ -91,5 +105,9 @@ public class Product extends Versionable implements Serializable {
 
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

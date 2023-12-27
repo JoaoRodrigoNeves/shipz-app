@@ -15,6 +15,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
 import java.util.List;
+import java.util.Objects;
 
 @Stateless
 public class ProductCatalogBean {
@@ -30,20 +31,18 @@ public class ProductCatalogBean {
         return (Long) query.getSingleResult() > 0L;
     }
 
-    public void create(long code, String name, String catalogArea, String category, String description, String productManufacterUsername) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
-        if (exists(code))
-            throw new MyEntityExistsException("Product Catalog with code: " + code + " already exists");
-
+    public ProductCatalog create(String name, String catalogArea, String category, String description, String productManufacterUsername) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
         ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, productManufacterUsername);
 
         if (productManufacter == null)
             throw new MyEntityNotFoundException("Product Manufacter with username: '" + productManufacterUsername + "' not found");
 
         try {
-            var productCatalog = new ProductCatalog(code, name, catalogArea, category, description, productManufacter);
+            var productCatalog = new ProductCatalog(name, catalogArea, category, description, productManufacter);
             productManufacter.addProductCatalog(productCatalog);
             entityManager.persist(productCatalog);
             entityManager.flush();
+            return productCatalog;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
         }
@@ -56,25 +55,47 @@ public class ProductCatalogBean {
         return productCatalog;
     }
 
-    public void update(long code, String name, String catalogArea, String category, String description, String productManufacterUsername) throws MyEntityNotFoundException {
+    public ProductCatalog update(long code, String name, String catalogArea, String category, String description, String productManufacterUsername) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = this.find(code);
         entityManager.lock(productCatalog, LockModeType.OPTIMISTIC);
         productCatalog.setName(name);
         productCatalog.setCatalogArea(catalogArea);
         productCatalog.setCategory(category);
         productCatalog.setDescription(description);
-        ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, productManufacterUsername);
-        if (productManufacter == null)
-            throw new MyEntityNotFoundException("Product Manufacter with username: '" + productManufacterUsername + "' not found");
-        productCatalog.setProductManufacter(productManufacter);
+
+        if (!Objects.equals(productCatalog.getProductManufacter().getUsername(), productManufacterUsername)) {
+            // remove old product manufacter
+            ProductManufacter oldProductManufacter = productCatalog.getProductManufacter();
+            productCatalog.getProducts().forEach(oldProductManufacter::removeProduct);
+            oldProductManufacter.removeProductCatalog(productCatalog);
+
+            // add new product manufacter
+            ProductManufacter newProductManufacter = entityManager.find(ProductManufacter.class, productManufacterUsername);
+            if (newProductManufacter == null)
+                throw new MyEntityNotFoundException("Product Manufacter with username: '" + productManufacterUsername + "' not found");
+
+            productCatalog.setProductManufacter(newProductManufacter);
+            newProductManufacter.addProductCatalog(productCatalog);
+            productCatalog.getProducts().forEach(newProductManufacter::addProduct);
+        }
+
         entityManager.merge(productCatalog);
+        return productCatalog;
     }
 
     public void remove(long code) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = this.find(code);
         ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, productCatalog.getProductManufacter().getUsername());
-        entityManager.remove(productCatalog);
+
+        // reset products to default catalog
+        if (productCatalog.getProducts() != null) {
+            ProductCatalog defaultCatalog = this.find(1);
+            productCatalog.getProducts().forEach(product -> product.setProductCatalog(defaultCatalog));
+            productCatalog.getProducts().addAll(productCatalog.getProducts());
+        }
+
         productManufacter.removeProductCatalog(productCatalog);
+        entityManager.remove(productCatalog);
     }
 
     public List<ProductCatalog> getAll() {
