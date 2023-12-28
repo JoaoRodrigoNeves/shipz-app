@@ -31,11 +31,16 @@ public class ProductService {
     private ProductBean productBean;
 
     private ProductDTO productToDTONoClientOrder(Product product) {
-        return new ProductDTO(
+        ProductDTO productDTO = new ProductDTO(
                 product.getCode(),
                 product.getProductCatalog().getCode(),
                 product.getProductManufacter().getUsername()
         );
+
+        if(product.getClientOrder() != null){
+            productDTO.setProductCatalogCode(product.getClientOrder().getCode());
+        }
+        return productDTO;
     }
 
     private List<ProductDTO> productDTOsNoClientOrder(List<Product> products) {
@@ -43,11 +48,16 @@ public class ProductService {
     }
 
     private ProductDTO productToDTO(Product product) {
-        return new ProductDTO(
+        ProductDTO productDTO = new ProductDTO(
                 product.getCode(),
                 product.getProductCatalog().getCode(),
                 product.getProductManufacter().getUsername()
         );
+
+        if(product.getClientOrder() != null){
+            productDTO.setClientOrderCode(product.getClientOrder().getCode());
+        }
+        return productDTO;
     }
 
     private List<ProductDTO> productToDTOs(List<Product> products) {

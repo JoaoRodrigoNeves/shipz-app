@@ -3,6 +3,7 @@ import productCatalogsVue from '../product-catalog/product-catalogs.vue';
 <script setup>
 import { ref, onMounted, inject } from 'vue'
 import ProductTable from '@/views/pages/tables/ProductTable.vue'
+import ProductForm from '@/views/pages/form-layouts/ProductForm.vue'
 
 const axios = inject('axios')
 const isLoading = ref(false)
@@ -52,19 +53,20 @@ onMounted(async () => {
                         <VIcon size="20" icon="bx-plus" />
                     </VBtn>
                 </div>
-                <ProductTable v-if="products && products.length > 0" :products="products" />
+                <ProductTable v-if="products && products.length > 0 && !isLoading" @updateProduct="updateProduct" @loadProducts="loadProducts" :products="products" />
             </VCard>
-            <!--<VCard v-if="isCreatingOrUpdating">
+            <VCard v-if="isCreatingOrUpdating">
 
                 <VCard>
                     <div class="product-catalogs-header">
-                        <h2>{{ isCreating ? 'Criar Catálogo' : 'Editar Catálogo' }}</h2>
+                        <h2>{{ isCreating ? 'Criar Produto' : 'Editar Produto' }}</h2>
                     </div>
                     <VCardText>
-                        <ProductCatalogForm @closeFormAndUpdate="closeFormAndUpdate" :productCatalogToUpdate="productCatalogToUpdate" :isCreating="isCreating"></ProductCatalogForm>
+                        <ProductForm @closeFormAndUpdate="closeFormAndUpdate"
+                            :productToUpdate="productToUpdate" :isCreating="isCreating"></ProductForm>
                     </VCardText>
                 </VCard>
-            </VCard>-->
+            </VCard>
         </VCol>
     </VRow>
 </template>

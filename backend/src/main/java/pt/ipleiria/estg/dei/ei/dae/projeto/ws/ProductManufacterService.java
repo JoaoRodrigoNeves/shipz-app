@@ -8,7 +8,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductCatalogDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductFullDetailsDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductManufacterDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductManufacterBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
@@ -64,17 +64,22 @@ public class ProductManufacterService {
                 .collect(Collectors.toList());
     }
 
-    private ProductDTO productToDTO(Product product) {
-        return new ProductDTO(
+    private ProductFullDetailsDTO productToDTO(Product product) {
+
+        ProductFullDetailsDTO productFullDetailsDTO = new ProductFullDetailsDTO(
                 product.getCode(),
                 product.getProductCatalog().getCode(),
                 product.getProductCatalog().getName(),
-                product.getProductManufacter().getUsername(),
-                product.getClientOrder().getCode()
+                product.getProductManufacter().getUsername()
         );
+
+        if(product.getClientOrder() != null){
+            productFullDetailsDTO.setProductCatalogCode(product.getClientOrder().getCode());
+        }
+        return productFullDetailsDTO;
     }
 
-    private List<ProductDTO> productToDTOs(List<Product> products) {
+    private List<ProductFullDetailsDTO> productToDTOs(List<Product> products) {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
 
@@ -140,8 +145,7 @@ public class ProductManufacterService {
 
         ProductManufacter productManufacter = productManufacterBean.getCatalogs(username);
 
-        List<ProductCatalogDTO> dtos = productCatalogToDTOs(productManufacter.getProductCatalogs());
-        return Response.ok(dtos).build();
+        return Response.ok(productCatalogToDTOs(productManufacter.getProductCatalogs())).build();
     }
 
     //TODO get product manufacter -> products
@@ -156,7 +160,7 @@ public class ProductManufacterService {
 
         ProductManufacter productManufacter = productManufacterBean.getProducts(username);
 
-        List<ProductDTO> dtos = productToDTOs(productManufacter.getProducts());
+        List<ProductFullDetailsDTO> dtos = productToDTOs(productManufacter.getProducts());
         return Response.ok(dtos).build();
     }
 }

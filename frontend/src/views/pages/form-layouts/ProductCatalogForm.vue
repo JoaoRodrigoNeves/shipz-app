@@ -31,7 +31,6 @@ const productCatalogForm = ref({
 const save = (async () => {
     if (props.isCreating) {
         try {
-            productCatalogForm.value.code = 7
             productCatalogForm.value.productManufacterUsername= JSON.parse(sessionStorage.getItem('user_info')).username
 
             const response = await axios.post('product-catalogs', productCatalogForm.value)

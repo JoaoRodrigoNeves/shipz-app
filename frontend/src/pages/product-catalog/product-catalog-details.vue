@@ -3,15 +3,21 @@ import { ref, onMounted, inject } from 'vue'
 import ProductTable from '@/views/pages/tables/ProductTable.vue'
 import { useRouter } from 'vue-router'
 import ProductCatalogForm from '@/views/pages/form-layouts/ProductCatalogForm.vue'
+import ProductForm from '@/views/pages/form-layouts/ProductForm.vue'
+import { useToast } from "primevue/usetoast";
 
 const axios = inject('axios')
 const isLoading = ref(false)
 const router = useRouter()
+const toast = useToast();
 
 const products = ref([])
 const productCatalog = ref(null)
-const isCreatingOrUpdating = ref(false)
-const productCatalogToUpdate = ref(null)
+const isCreatingOrUpdatingCatalog = ref(false)
+const isCreatingOrUpdatingProduct = ref(false)
+const catalogToUpdate = ref(null)
+const productToUpdate = ref(null)
+
 const loadProductCatalogDetails = async () => {
     isLoading.value = true;
     try {
@@ -40,14 +46,43 @@ const loadProductCatalogProducts = async () => {
     }
 }
 
-const closeFormAndUpdate = async () => {
-    isCreatingOrUpdating.value = false
+const createProduct = (async () => {
+
+    try {
+        var payload = {
+            productCatalogCode: productCatalog.value.code
+        }
+        const response = await axios.post('products', payload)
+        if (response.status == 201) {
+            toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Produto criado com sucesso', life: 3000 });
+            await loadProductCatalogProducts();
+        }
+
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
+
+    }
+});
+
+const closeFormAndUpdateCatalog = async () => {
+    isCreatingOrUpdatingCatalog.value = false
     await loadProductCatalogDetails()
 }
 
+const closeFormAndUpdateProduct = async () => {
+    isCreatingOrUpdatingProduct.value = false
+    await loadProductCatalogProducts()
+}
+
+
 const updateProductCatalog = async (productCatalog) => {
-    productCatalogToUpdate.value = productCatalog
-    isCreatingOrUpdating.value = true
+    catalogToUpdate.value = productCatalog
+    isCreatingOrUpdatingCatalog.value = true
+}
+
+const updateProduct = async (product) => {
+    productToUpdate.value = product
+    isCreatingOrUpdatingProduct.value = true
 }
 
 onMounted(async () => {
@@ -57,7 +92,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <VRow v-if="!isCreatingOrUpdating">
+    <VRow v-if="!isCreatingOrUpdatingCatalog && !isCreatingOrUpdatingProduct">
         <VCol cols="12">
             <VCard v-if="productCatalog">
                 <div class="product-catalog-details-header">
@@ -118,12 +153,13 @@ onMounted(async () => {
                 </div>
                 <div class="products-actions">
                     <h2>Produtos</h2>
-                    <VBtn rel="noopener noreferrer" color="primary">
+                    <VBtn rel="noopener noreferrer" color="primary" @click="createProduct">
                         <VIcon size="20" icon="bx-plus" />
                     </VBtn>
                 </div>
                 <div v-if="products && products.length > 0 && !isLoading">
-                    <ProductTable :products="products" />
+                    <ProductTable v-if="!isLoading" @updateProduct="updateProduct"
+                        @loadProducts="loadProductCatalogProducts" :products="products" />
                 </div>
                 <div v-else class="no-products">
                     Não tem produtos associados a este catálogo
@@ -131,15 +167,25 @@ onMounted(async () => {
             </VCard>
         </VCol>
     </VRow>
-    <VCard v-if="isCreatingOrUpdating">
-
+    <VCard v-if="isCreatingOrUpdatingCatalog">
         <VCard>
             <div class="product-catalogs-header">
                 <h2>Editar Catálogo</h2>
             </div>
             <VCardText>
-                <ProductCatalogForm @closeFormAndUpdate="closeFormAndUpdate"
-                    :productCatalogToUpdate="productCatalogToUpdate" :isCreating="false"></ProductCatalogForm>
+                <ProductCatalogForm @closeFormAndUpdate="closeFormAndUpdateCatalog"
+                    :productCatalogToUpdate="catalogToUpdate" :isCreating="false"></ProductCatalogForm>
+            </VCardText>
+        </VCard>
+    </VCard>
+    <VCard v-if="isCreatingOrUpdatingProduct">
+        <VCard>
+            <div class="product-catalogs-header">
+                <h2>Editar Produto</h2>
+            </div>
+            <VCardText>
+                <ProductForm @closeFormAndUpdate="closeFormAndUpdateProduct" :productToUpdate="productToUpdate"
+                    :isCreating="false"></ProductForm>
             </VCardText>
         </VCard>
     </VCard>

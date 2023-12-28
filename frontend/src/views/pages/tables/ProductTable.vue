@@ -1,7 +1,11 @@
 <script setup>
-import { useRouter } from 'vue-router';
+import { ref, inject } from 'vue'
+import { useConfirm } from "primevue/useconfirm";
 
-const router = useRouter()
+const emit = defineEmits(['loadProducts', 'updateProduct', ])
+const axios = inject('axios')
+
+const confirm = useConfirm();
 const props = defineProps({
 
   products: {
@@ -10,17 +14,33 @@ const props = defineProps({
   }
 })
 
+const deleteProductConfirm = (product) => {
+  confirm.require({
+    message: 'Tem a certeza que pretende apagar o produto ' + product.code + ' ?',
+    header: 'Apagar Produto',
+    rejectLabel: 'Não',
+    acceptLabel: 'Sim',
+    accept: async () => {
+      try {
+        await axios.delete('products/' + product.code).then(response => {
+          emit('loadProducts')
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  });
+}
 const products = ref(Object.assign({}, props.products))
 
-const navigateTo = (path) => {
-  router.push({ path: path})
+const updateProduct = (product) => {
+  emit('updateProduct', product)
 }
 
 watch(
   () => props,
   (newProps) => {
     products.value = Object.assign({}, newProps.products)
-    console.log(products.value)
   },
   { immediate: true }
 )
@@ -51,29 +71,11 @@ watch(
           {{ item.productCatalogCode }}
         </td>
         <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
-          <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('product-/' + item.code)">
-            <VIcon
-            size="20"
-            icon="bx-show"
-          />
+          <VBtn rel="noopener noreferrer" color="primary" @click="updateProduct(item)">
+            <VIcon size="20" icon="bx-pencil" />
           </VBtn>
-          <VBtn rel="noopener noreferrer" color="primary">
-            <VIcon
-            size="20"
-            icon="bx-plus"
-          />
-          </VBtn>
-          <VBtn rel="noopener noreferrer" color="primary">
-            <VIcon
-            size="20"
-            icon="bx-pencil"
-          />
-          </VBtn>
-          <VBtn rel="noopener noreferrer" color="primary">
-            <VIcon
-            size="20"
-            icon="bx-trash"
-          />
+          <VBtn rel="noopener noreferrer" color="primary" @click="deleteProductConfirm(item)">
+            <VIcon size="20" icon="bx-trash" />
           </VBtn>
 
         </td>
@@ -81,8 +83,5 @@ watch(
       </tr>
     </tbody>
   </VTable>
-
 </template>
-<style scoped>
-
-</style>
+<style scoped></style>

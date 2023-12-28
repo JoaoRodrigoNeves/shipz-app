@@ -1,41 +1,23 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductPackage;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-public class ProductDTO {
+public class ProductFullDetailsDTO {
 
     long code;
 
     long productCatalogCode;
+    String productCatalogName;
     String productManufacterUsername;
 
     long clientOrderCode;
 
 
-    public ProductDTO() {
+    public ProductFullDetailsDTO() {
     }
 
-    public ProductDTO(long code) {
-        this.code = code;
-    }
-
-    public ProductDTO(long code, long productCatalogCode, String productManufacterUsername, long clientOrderCode) {
+    public ProductFullDetailsDTO(long code, long productCatalogCode, String productCatalogName, String productManufacterUsername) {
         this.code = code;
         this.productCatalogCode = productCatalogCode;
-        this.productManufacterUsername = productManufacterUsername;
-        this.clientOrderCode = clientOrderCode;
-    }
-
-    public ProductDTO(long code, long productCatalogCode, String productManufacterUsername) {
-        this.code = code;
-        this.productCatalogCode = productCatalogCode;
+        this.productCatalogName = productCatalogName;
         this.productManufacterUsername = productManufacterUsername;
     }
 

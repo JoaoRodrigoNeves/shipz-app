@@ -56,7 +56,6 @@ public class ClientOrderService {
         return new ProductDTO(
                 product.getCode(),
                 product.getProductCatalog().getCode(),
-                product.getProductCatalog().getName(),
                 product.getProductManufacter().getUsername(),
                 product.getClientOrder().getCode()
         );
