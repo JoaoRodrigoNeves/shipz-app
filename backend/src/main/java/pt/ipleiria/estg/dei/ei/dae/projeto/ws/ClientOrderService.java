@@ -27,7 +27,7 @@ public class ClientOrderService {
                 clientOrder.getCode(),
                 clientOrder.getLogisticOperator().getUsername()
         );
-        clientOrderDTO.setProductsDTO(productsToDTOs(clientOrder.getProducts()));
+        clientOrderDTO.setProductsDTO(productToDTOs(clientOrder.getProducts()));
         return clientOrderDTO;
     }
     private ClientOrderDTO toDTONoProducts(ClientOrder clientOrder) {
@@ -49,12 +49,12 @@ public class ClientOrderService {
         );
 
         if(product.getClientOrder() != null){
-            productDTO.setProductCatalogCode(product.getClientOrder().getCode());
+            productDTO.setClientOrderCode(product.getClientOrder().getCode());
         }
         return productDTO;
     }
 
-    private List<ProductDTO> productsToDTOs(List<Product> products) {
+    private List<ProductDTO> productToDTOs(List<Product> products) {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
 

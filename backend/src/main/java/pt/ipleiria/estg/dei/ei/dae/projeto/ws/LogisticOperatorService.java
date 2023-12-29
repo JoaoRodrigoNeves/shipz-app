@@ -60,12 +60,12 @@ public class LogisticOperatorService {
         );
 
         if(product.getClientOrder() != null){
-            productDTO.setProductCatalogCode(product.getClientOrder().getCode());
+            productDTO.setClientOrderCode(product.getClientOrder().getCode());
         }
         return productDTO;
     }
 
-    private List<ProductDTO> productsToDTOs(List<Product> products) {
+    private List<ProductDTO> productToDTOs(List<Product> products) {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
     private List<ClientOrderDTO> clientOrderToDTOs(List<ClientOrder> clientOrders) {

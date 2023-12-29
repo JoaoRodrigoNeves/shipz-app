@@ -57,7 +57,7 @@ public class ProductService {
         );
 
         if(product.getClientOrder() != null){
-            productDTO.setProductCatalogCode(product.getClientOrder().getCode());
+            productDTO.setClientOrderCode(product.getClientOrder().getCode());
         }
         return productDTO;
     }
