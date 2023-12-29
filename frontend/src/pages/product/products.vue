@@ -1,5 +1,3 @@
-
-import productCatalogsVue from '../product-catalog/product-catalogs.vue';
 <script setup>
 import { ref, onMounted, inject } from 'vue'
 import ProductTable from '@/views/pages/tables/ProductTable.vue'

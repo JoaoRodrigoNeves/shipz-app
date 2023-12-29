@@ -62,7 +62,6 @@ public class ConfigBean {
             clientOrderBean.create(122, "logisticOperator1");
             clientOrderBean.create(124, "logisticOperator1");
             clientOrderBean.addProduct(122, 100000);
-            clientOrderBean.addProduct(122, 100001);
             clientOrderBean.addProduct(124, 100002);
         } catch (Exception e) {
             logger.severe(e.getMessage());

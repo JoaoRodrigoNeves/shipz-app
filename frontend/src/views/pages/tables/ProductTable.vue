@@ -54,7 +54,13 @@ watch(
           Código
         </th>
         <th>
-          Código de Catálogo
+          Código do Catálogo
+        </th>
+        <th>
+          Nome do Catálogo
+        </th>
+        <th>
+          Código da Encomenda
         </th>
         <th>
           Ações
@@ -69,6 +75,12 @@ watch(
         </td>
         <td style="width: 100%; text-align: center;">
           {{ item.productCatalogCode }}
+        </td>
+        <td style="width: 100%; text-align: center;">
+          {{ item.productCatalogName }}
+        </td>
+        <td style="width: 100%; text-align: center;">
+          {{ item.clientOrderCode ? item.clientOrderCode : "Sem encomenda" }}
         </td>
         <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
           <VBtn rel="noopener noreferrer" color="primary" @click="updateProduct(item)">
