@@ -8,7 +8,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductCatalogDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductFullDetailsDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductManufacterDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductManufacterBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
@@ -64,9 +64,8 @@ public class ProductManufacterService {
                 .collect(Collectors.toList());
     }
 
-    private ProductFullDetailsDTO productToDTO(Product product) {
-
-        ProductFullDetailsDTO productFullDetailsDTO = new ProductFullDetailsDTO(
+    private ProductDTO productToDTO(Product product) {
+        ProductDTO productDTO = new ProductDTO(
                 product.getCode(),
                 product.getProductCatalog().getCode(),
                 product.getProductCatalog().getName(),
@@ -74,21 +73,16 @@ public class ProductManufacterService {
         );
 
         if(product.getClientOrder() != null){
-            productFullDetailsDTO.setProductCatalogCode(product.getClientOrder().getCode());
+            productDTO.setClientOrderCode(product.getClientOrder().getCode());
         }
-        return productFullDetailsDTO;
+        return productDTO;
     }
 
-    private List<ProductFullDetailsDTO> productToDTOs(List<Product> products) {
+    private List<ProductDTO> productToDTOs(List<Product> products) {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
 
-    @GET
-    @Path("/") // means: the relative url path is “/api/product-manufacters/”
-    public List<ProductManufacterDTO> getAllProductManufacters() {
-        return productManufacterToDTOsNoPackages(productManufacterBean.getAll());
-    }
-
+    //TODO create a new product-manufacter
     @POST
     @Path("/")
     public Response create(ProductManufacterDTO productManufacterDTO)
@@ -103,6 +97,24 @@ public class ProductManufacterService {
         return Response.status(Response.Status.CREATED).entity(productManufacterToDTONoPackages(productManufacter)).build();
     }
 
+    //TODO get product-manufacter by username
+    @GET
+    @Path("{username}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response getDetails(@PathParam("username") String username) throws MyEntityNotFoundException {
+        var principal = securityContext.getUserPrincipal();
+        if(!principal.getName().equals(username)) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        ProductManufacter productManufacter = productManufacterBean.find(username);
+        if (productManufacter == null)
+            throw new MyEntityNotFoundException("Product Manufacter: '" + username + "' not found");
+
+        return Response.ok(productManufacter).build();
+    }
+
+    //TODO update a product-manufacter
     @PUT
     @Path("/")
     public Response update(ProductManufacterDTO productManufacterDTO)
@@ -117,26 +129,19 @@ public class ProductManufacterService {
         return Response.status(Response.Status.CREATED).entity(productManufacterToDTONoPackages(productManufacter)).build();
     }
 
+    //TODO delete a product-manufacter
+    // ...
+
+    //TODO get all product-manufacter
     @GET
-    @Path("{username}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response getUserDetails(@PathParam("username") String username) throws MyEntityNotFoundException {
-        var principal = securityContext.getUserPrincipal();
-        if(!principal.getName().equals(username)) {
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
-
-        ProductManufacter productManufacter = productManufacterBean.find(username);
-        if (productManufacter == null)
-            throw new MyEntityNotFoundException("Product Manufacter: '" + username + "' not found");
-
-        return Response.ok(productManufacter).build();
+    @Path("/")
+    public List<ProductManufacterDTO> getAllProductManufacters() {
+        return productManufacterToDTOsNoPackages(productManufacterBean.getAll());
     }
 
     //TODO get product manufacter -> product-catalogs
     @GET
     @Path("{username}/product-catalogs")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response getCatalogs(@PathParam("username") String username) throws MyEntityNotFoundException {
         var principal = securityContext.getUserPrincipal();
         if(!principal.getName().equals(username)) {
@@ -151,7 +156,6 @@ public class ProductManufacterService {
     //TODO get product manufacter -> products
     @GET
     @Path("{username}/products")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response getProducts(@PathParam("username") String username) throws MyEntityNotFoundException {
         var principal = securityContext.getUserPrincipal();
         if(!principal.getName().equals(username)) {
@@ -160,7 +164,7 @@ public class ProductManufacterService {
 
         ProductManufacter productManufacter = productManufacterBean.getProducts(username);
 
-        List<ProductFullDetailsDTO> dtos = productToDTOs(productManufacter.getProducts());
+        var dtos = productToDTOs(productManufacter.getProducts());
         return Response.ok(dtos).build();
     }
 }

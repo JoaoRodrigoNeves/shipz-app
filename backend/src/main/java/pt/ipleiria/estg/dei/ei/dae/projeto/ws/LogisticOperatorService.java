@@ -51,26 +51,18 @@ public class LogisticOperatorService {
         );
     }
 
-    private ProductDTO productToDTONoClientOrder(Product product) {
-        return new ProductDTO(
-                product.getCode(),
-                product.getProductCatalog().getCode(),
-                product.getProductManufacter().getUsername(),
-                product.getClientOrder().getCode()
-        );
-    }
-
-    private List<ProductDTO> productDTOsNoClientOrder(List<Product> products) {
-        return products.stream().map(this::productToDTONoClientOrder).collect(Collectors.toList());
-    }
-
     private ProductDTO productToDTO(Product product) {
-        return new ProductDTO(
+        ProductDTO productDTO = new ProductDTO(
                 product.getCode(),
                 product.getProductCatalog().getCode(),
-                product.getProductManufacter().getUsername(),
-                product.getClientOrder().getCode()
+                product.getProductCatalog().getName(),
+                product.getProductManufacter().getUsername()
         );
+
+        if(product.getClientOrder() != null){
+            productDTO.setProductCatalogCode(product.getClientOrder().getCode());
+        }
+        return productDTO;
     }
 
     private List<ProductDTO> productsToDTOs(List<Product> products) {

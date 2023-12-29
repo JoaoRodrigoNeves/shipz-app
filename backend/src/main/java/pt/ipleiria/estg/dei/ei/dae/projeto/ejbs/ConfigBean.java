@@ -55,18 +55,15 @@ public class ConfigBean {
             productBean.create(100002);
             productBean.create(100002);
 
-
             productBean.addProductToPackage(100000, 100002);
             productBean.addProductToPackage(100001, 100002);
             productBean.addProductToPackage(100002, 100001);
 
-            clientOrderBean.create(123, "logisticOperator1");
+            clientOrderBean.create(122, "logisticOperator1");
             clientOrderBean.create(124, "logisticOperator1");
-            clientOrderBean.addProduct(123, 100000);
-            clientOrderBean.addProduct(123, 100001);
-            clientOrderBean.addProduct(123, 100002);
-
-
+            clientOrderBean.addProduct(122, 100000);
+            clientOrderBean.addProduct(122, 100001);
+            clientOrderBean.addProduct(124, 100002);
         } catch (Exception e) {
             logger.severe(e.getMessage());
         }

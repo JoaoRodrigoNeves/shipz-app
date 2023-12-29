@@ -1,7 +1,9 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
 
-public class FinalCostumerDTO {
+import java.io.Serializable;
+
+public class FinalCostumerDTO implements Serializable {
     private String username;
     private String password;
     private String name;

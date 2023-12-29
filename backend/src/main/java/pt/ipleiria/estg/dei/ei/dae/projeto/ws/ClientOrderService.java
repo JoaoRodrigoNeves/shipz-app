@@ -40,25 +40,18 @@ public class ClientOrderService {
         return clientOrders.stream().map(this::toDTONoProducts).collect(Collectors.toList());
     }
 
-    private ProductDTO productToDTONoClientOrder(Product product) {
-        return new ProductDTO(
+    private ProductDTO productToDTO(Product product) {
+        ProductDTO productDTO = new ProductDTO(
                 product.getCode(),
                 product.getProductCatalog().getCode(),
+                product.getProductCatalog().getName(),
                 product.getProductManufacter().getUsername()
         );
-    }
 
-    private List<ProductDTO> productDTOsNoClientOrder(List<Product> products) {
-        return products.stream().map(this::productToDTONoClientOrder).collect(Collectors.toList());
-    }
-
-    private ProductDTO productToDTO(Product product) {
-        return new ProductDTO(
-                product.getCode(),
-                product.getProductCatalog().getCode(),
-                product.getProductManufacter().getUsername(),
-                product.getClientOrder().getCode()
-        );
+        if(product.getClientOrder() != null){
+            productDTO.setProductCatalogCode(product.getClientOrder().getCode());
+        }
+        return productDTO;
     }
 
     private List<ProductDTO> productsToDTOs(List<Product> products) {

@@ -1,8 +1,9 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
 
+import java.io.Serializable;
 
-public class ProductManufacterDTO {
+public class ProductManufacterDTO implements Serializable {
     private String username;
     private String password;
     private String name;

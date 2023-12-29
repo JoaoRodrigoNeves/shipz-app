@@ -34,6 +34,7 @@ public class ProductService {
         ProductDTO productDTO = new ProductDTO(
                 product.getCode(),
                 product.getProductCatalog().getCode(),
+                product.getProductCatalog().getName(),
                 product.getProductManufacter().getUsername()
         );
 
@@ -51,11 +52,12 @@ public class ProductService {
         ProductDTO productDTO = new ProductDTO(
                 product.getCode(),
                 product.getProductCatalog().getCode(),
+                product.getProductCatalog().getName(),
                 product.getProductManufacter().getUsername()
         );
 
         if(product.getClientOrder() != null){
-            productDTO.setClientOrderCode(product.getClientOrder().getCode());
+            productDTO.setProductCatalogCode(product.getClientOrder().getCode());
         }
         return productDTO;
     }

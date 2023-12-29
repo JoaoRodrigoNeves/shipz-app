@@ -3,9 +3,10 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 import jakarta.ws.rs.Path;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class PackageDTO {
+public class PackageDTO implements Serializable {
 
     long code;
 

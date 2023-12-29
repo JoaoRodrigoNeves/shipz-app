@@ -5,9 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ProductCatalogDTO {
+public class ProductCatalogDTO implements Serializable {
     long code;
     String name;
     String catalogArea;
