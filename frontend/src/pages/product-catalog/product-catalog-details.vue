@@ -5,10 +5,12 @@ import { useRouter } from 'vue-router'
 import ProductCatalogForm from '@/views/pages/form-layouts/ProductCatalogForm.vue'
 import ProductForm from '@/views/pages/form-layouts/ProductForm.vue'
 import { useToast } from "primevue/usetoast";
+import { useConfirm } from "primevue/useconfirm";
 
 const axios = inject('axios')
 const isLoading = ref(false)
 const router = useRouter()
+const confirm = useConfirm();
 const toast = useToast();
 
 const products = ref([])
@@ -64,6 +66,25 @@ const createProduct = (async () => {
     }
 });
 
+const deleteProductCatalogConfirm = (productCatalogItem) => {
+    console.log(productCatalogItem)
+    confirm.require({
+        message: 'Tem a certeza que pretende apagar o catálogo ' + productCatalogItem.name + ' ?',
+        header: 'Apagar Catálogo',
+        rejectLabel: 'Não',
+        acceptLabel: 'Sim',
+        accept: async () => {
+            try {
+                await axios.delete('product-catalogs/' + productCatalogItem.code).then(response => {
+                    router.push({ path: '/product-catalogs' })
+                })
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    });
+}
+
 const closeFormAndUpdateCatalog = async () => {
     isCreatingOrUpdatingCatalog.value = false
     await loadProductCatalogDetails()
@@ -98,11 +119,19 @@ onMounted(async () => {
                 <div class="product-catalog-details-header">
                     <h2>{{ productCatalog.name }}</h2>
                     <div class="product-catalog-details-actions">
+
                         <VBtn rel="noopener noreferrer" color="primary" @click="updateProductCatalog(productCatalog)">
                             <VIcon size="20" icon="bx-pencil" />
+                            <VTooltip activator="parent" location="top">
+                                <span>Editar Catálogo</span>
+                            </VTooltip>
                         </VBtn>
-                        <VBtn rel="noopener noreferrer" color="primary" v-if="products && products.length == 0">
+                        <VBtn rel="noopener noreferrer" color="primary" v-if="products && products.length == 0"
+                            @click="deleteProductCatalogConfirm(productCatalog)">
                             <VIcon size="20" icon="bx-trash" />
+                            <VTooltip activator="parent" location="top">
+                                <span>Apagar Catálogo</span>
+                            </VTooltip>
                         </VBtn>
                     </div>
 
@@ -155,6 +184,9 @@ onMounted(async () => {
                     <h2>Produtos</h2>
                     <VBtn rel="noopener noreferrer" color="primary" @click="createProduct">
                         <VIcon size="20" icon="bx-plus" />
+                        <VTooltip activator="parent" location="top">
+                            <span>Adicionar Produto</span>
+                        </VTooltip>
                     </VBtn>
                 </div>
                 <div v-if="products && products.length > 0 && !isLoading">

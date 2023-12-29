@@ -49,9 +49,13 @@ onMounted(async () => {
                     <h2>Catálogo de Produtos</h2>
                     <VBtn rel="noopener noreferrer" color="primary" @click="isCreatingOrUpdating = true; isCreating = true">
                         <VIcon size="20" icon="bx-plus" />
+                        <VTooltip activator="parent" location="top">
+                            <span>Criar Catálogo</span>
+                        </VTooltip>
                     </VBtn>
                 </div>
-                <ProductCatalogTable v-if="productCatalogs && !isLoading" @updateProductCatalog="updateProductCatalog" @loadProductCatalogs="loadProductCatalogs" :productCatalogs="productCatalogs" />
+                <ProductCatalogTable v-if="productCatalogs && !isLoading" @updateProductCatalog="updateProductCatalog"
+                    @loadProductCatalogs="loadProductCatalogs" :productCatalogs="productCatalogs" />
             </VCard>
             <VCard v-if="isCreatingOrUpdating">
 
@@ -60,7 +64,8 @@ onMounted(async () => {
                         <h2>{{ isCreating ? 'Criar Catálogo' : 'Editar Catálogo' }}</h2>
                     </div>
                     <VCardText>
-                        <ProductCatalogForm @closeFormAndUpdate="closeFormAndUpdate" :productCatalogToUpdate="productCatalogToUpdate" :isCreating="isCreating"></ProductCatalogForm>
+                        <ProductCatalogForm @closeFormAndUpdate="closeFormAndUpdate"
+                            :productCatalogToUpdate="productCatalogToUpdate" :isCreating="isCreating"></ProductCatalogForm>
                     </VCardText>
                 </VCard>
             </VCard>

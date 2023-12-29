@@ -81,15 +81,27 @@ watch(
         <td class="d-flex align-center justify-center gap-x-2" style="width: fit-content;">
           <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('product-catalog/' + item.code)">
             <VIcon size="20" icon="bx-show" />
+            <VTooltip activator="parent" location="top">
+              <span>Ver Detalhes</span>
+            </VTooltip>
           </VBtn>
           <VBtn rel="noopener noreferrer" color="primary">
             <VIcon size="20" icon="bx-plus" />
+            <VTooltip activator="parent" location="top">
+              <span>Adicionar Produto</span>
+            </VTooltip>
           </VBtn>
           <VBtn rel="noopener noreferrer" color="primary" @click="updateProductCatalog(item)">
             <VIcon size="20" icon="bx-pencil" />
+            <VTooltip activator="parent" location="top">
+              <span>Editar Catálogo</span>
+            </VTooltip>
           </VBtn>
           <VBtn rel="noopener noreferrer" color="primary" @click="deleteProductCatalogConfirm(item)">
             <VIcon size="20" icon="bx-trash" />
+            <VTooltip activator="parent" location="top">
+              <span>Apagar Catálogo</span>
+            </VTooltip>
           </VBtn>
 
         </td>

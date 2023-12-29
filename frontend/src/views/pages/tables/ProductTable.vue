@@ -73,9 +73,15 @@ watch(
         <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
           <VBtn rel="noopener noreferrer" color="primary" @click="updateProduct(item)">
             <VIcon size="20" icon="bx-pencil" />
+            <VTooltip activator="parent" location="top">
+              <span>Editar Produto</span>
+            </VTooltip>
           </VBtn>
           <VBtn rel="noopener noreferrer" color="primary" @click="deleteProductConfirm(item)">
             <VIcon size="20" icon="bx-trash" />
+            <VTooltip activator="parent" location="top">
+              <span>Apagar Produto</span>
+            </VTooltip>
           </VBtn>
 
         </td>

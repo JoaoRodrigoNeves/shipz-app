@@ -87,8 +87,7 @@ public class ProductCatalogBean {
         ProductCatalog productCatalog = this.find(code);
         ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, productCatalog.getProductManufacter().getUsername());
 
-        // reset products to default catalog
-        if (productCatalog.getProducts() != null) {
+        if (productCatalog.getProducts().toArray().length > 0) {
             ProductCatalog defaultCatalog = this.find(1);
             productCatalog.getProducts().forEach(product -> product.setProductCatalog(defaultCatalog));
             productCatalog.getProducts().addAll(productCatalog.getProducts());

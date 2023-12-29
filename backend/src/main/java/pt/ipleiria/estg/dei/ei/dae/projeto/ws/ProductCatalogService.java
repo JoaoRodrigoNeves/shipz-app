@@ -124,7 +124,6 @@ public class ProductCatalogService {
     @DELETE
     @Path("{code}")
     public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException {
-        ProductCatalog productCatalog = productCatalogBean.find(code);
         productCatalogBean.remove(code);
         return Response.status(Response.Status.OK).entity("Success").build();
     }

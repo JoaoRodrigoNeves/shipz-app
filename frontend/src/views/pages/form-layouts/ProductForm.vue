@@ -21,7 +21,7 @@ const productToUpdate = ref(Object.assign({}, props.productToUpdate))
 
 const productForm = ref({
     code: -1,
-    productCatalogCode: '',
+    productCatalogCode: null,
     productManufacterUsername: JSON.parse(sessionStorage.getItem('user_info')).username
 })
 
@@ -50,7 +50,7 @@ const save = (async () => {
             const response = await axios.post('products', payload)
 
             if (response.status == 201) {
-                toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Produto criado com sucesso', life: 3000 });
+                toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Produto criado com sucesso', life: 3000,  });
 
                 emit('closeFormAndUpdate')
             }

@@ -51,6 +51,9 @@ onMounted(async () => {
                     <h2>Produtos</h2>
                     <VBtn rel="noopener noreferrer" color="primary" @click="isCreatingOrUpdating = true; isCreating = true">
                         <VIcon size="20" icon="bx-plus" />
+                        <VTooltip activator="parent" location="top">
+                            <span>Criar Produto</span>
+                        </VTooltip>
                     </VBtn>
                 </div>
                 <ProductTable v-if="products && products.length > 0 && !isLoading" @updateProduct="updateProduct" @loadProducts="loadProducts" :products="products" />
