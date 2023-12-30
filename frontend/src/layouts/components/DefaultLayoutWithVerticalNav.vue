@@ -51,6 +51,11 @@ const upgradeBanner = computed(() => {
         to: '/products',
       }" />
       <VerticalNavLink :item="{
+        title: 'Encomendas',
+        icon: 'bi-box-seam',
+        to: '/orders',
+      }" />
+      <VerticalNavLink :item="{
         title: 'Account Settings',
         icon: 'mdi-account-cog-outline',
         to: '/account-settings',

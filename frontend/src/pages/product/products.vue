@@ -1,3 +1,4 @@
+<!-- eslint-disable indent -->
 <script setup>
 import { ref, onMounted, inject } from 'vue'
 import ProductTable from '@/views/pages/tables/ProductTable.vue'
@@ -54,7 +55,8 @@ onMounted(async () => {
                         </VTooltip>
                     </VBtn>
                 </div>
-                <ProductTable v-if="products && products.length > 0 && !isLoading" @updateProduct="updateProduct" @loadProducts="loadProducts" :products="products" />
+                <ProductTable v-if="products && products.length > 0 && !isLoading" @updateProduct="updateProduct"
+                    @loadProducts="loadProducts" :products="products" />
             </VCard>
             <VCard v-if="isCreatingOrUpdating">
 
@@ -63,8 +65,8 @@ onMounted(async () => {
                         <h2>{{ isCreating ? 'Criar Produto' : 'Editar Produto' }}</h2>
                     </div>
                     <VCardText>
-                        <ProductForm @closeFormAndUpdate="closeFormAndUpdate"
-                            :productToUpdate="productToUpdate" :isCreating="isCreating"></ProductForm>
+                        <ProductForm @closeFormAndUpdate="closeFormAndUpdate" :productToUpdate="productToUpdate"
+                            :isCreating="isCreating"></ProductForm>
                     </VCardText>
                 </VCard>
             </VCard>
