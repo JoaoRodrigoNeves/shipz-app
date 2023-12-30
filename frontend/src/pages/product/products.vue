@@ -1,4 +1,3 @@
-<!-- eslint-disable indent -->
 <script setup>
 import { ref, onMounted, inject } from 'vue'
 import ProductTable from '@/views/pages/tables/ProductTable.vue'

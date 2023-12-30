@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject, onMounted } from 'vue'
+import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router';
 
 const emit = defineEmits(['loadOrders'])
@@ -27,10 +27,6 @@ watch(
     },
     { immediate: true }
 )
-
-onMounted(async () => {
-    console.log(orders.value)
-})
 </script>
 
 <template>
