@@ -1,0 +1,70 @@
+@use "@configured-variables" as variables;
+
+
+
+.p-dialog {
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(var(--v-theme-on-background));
+}
+
+.p-dialog .p-dialog-header {
+    padding: 1.5rem;
+    background: rgb(var(--v-theme-background));
+    color: rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity));
+}
+
+.p-dialog .p-dialog-content {
+    padding: 0 1.5rem 2rem 1.5rem;
+    background: rgb(var(--v-theme-background));
+    color: rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity));
+}
+
+.p-dialog .p-dialog-footer {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+    background: rgb(var(--v-theme-background));
+    color: rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity));
+}
+
+.p-dialog .p-dialog-footer button {
+    margin: 0 0.5rem 0 0;
+    width: auto;
+}
+
+.p-button {
+    padding: 0.5rem 1.25rem;
+    font-size: 1rem;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    border-radius: 6px;
+}
+
+.p-button:focus {
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgb(var(--v-theme-primary)), 0 1px 2px 0 black;
+}
+
+.p-dialog .p-dialog-footer button.p-confirm-dialog-reject {}
+
+.p-dialog .p-dialog-footer button.p-confirm-dialog-accept {
+
+    @each $color-name in variables.$theme-colors-name {
+        background-color: rgb(var(--v-theme-primary)) !important;
+        color: rgb(var(--v-theme-on-primary)) !important;
+    }
+}
+
+.p-toast .p-toast-message.p-toast-message-success{
+    margin: 0 0 1rem 0;
+}
+
+.p-toast .p-toast-message .p-toast-message-content{
+    padding: 0.6rem;
+}
+
+.p-toast .p-toast-message .p-toast-message-content .p-toast-message-icon.p-icon{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.p-toast .p-toast-message .p-toast-message-content .p-toast-message-text{
+    margin: 0 0 0 1rem;
+}

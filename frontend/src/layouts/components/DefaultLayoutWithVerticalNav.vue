@@ -51,6 +51,11 @@ const upgradeBanner = computed(() => {
         to: '/products',
       }" />
       <VerticalNavLink :item="{
+        title: 'Embalagens de Produto',
+        icon: 'bx-home',
+        to: '/product-packages'
+      }" />
+      <VerticalNavLink :item="{
         title: 'Account Settings',
         icon: 'mdi-account-cog-outline',
         to: '/account-settings',
@@ -72,38 +77,7 @@ const upgradeBanner = computed(() => {
         to: '/no-existence',
       }" />
 
-      <!-- 👉 User Interface -->
-      <VerticalNavSectionTitle :item="{
-        heading: 'User Interface',
-      }" />
-      <VerticalNavLink :item="{
-        title: 'Typography',
-        icon: 'mdi-alpha-t-box-outline',
-        to: '/typography',
-      }" />
-      <VerticalNavLink :item="{
-        title: 'Icons',
-        icon: 'bx-show',
-        to: '/icons',
-      }" />
-      <VerticalNavLink :item="{
-        title: 'Cards',
-        icon: 'bx-credit-card',
-        to: '/cards',
-      }" />
-      <VerticalNavLink :item="{
-        title: 'Tables',
-        icon: 'bx-table',
-        to: '/tables',
-      }" />
-      <VerticalNavLink :item="{
-        title: 'Form Layouts',
-        icon: 'mdi-form-select',
-        to: '/form-layouts',
-      }" />
     </template>
-
-    <!-- 👉 Pages -->
     <slot />
   </VerticalNavLayout>
 </template>

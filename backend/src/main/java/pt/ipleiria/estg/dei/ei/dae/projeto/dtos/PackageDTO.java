@@ -19,14 +19,14 @@ public class PackageDTO implements Serializable {
     String status;
 
     // data de fabrico
-    Date manufacturingDate;
+    String manufacturingDate;
 
     //QualityControl qualityControlData;
 
     public PackageDTO() {
     }
 
-    public PackageDTO(long code, String type, String material, String status, Date manufacturingDate) {
+    public PackageDTO(long code, String type, String material, String status, String manufacturingDate) {
         this.code = code;
         this.type = type;
         this.material = material;
@@ -66,11 +66,11 @@ public class PackageDTO implements Serializable {
         this.status = status;
     }
 
-    public Date getManufacturingDate() {
+    public String getManufacturingDate() {
         return manufacturingDate;
     }
 
-    public void setManufacturingDate(Date manufacturingDate) {
+    public void setManufacturingDate(String manufacturingDate) {
         this.manufacturingDate = manufacturingDate;
     }
 }

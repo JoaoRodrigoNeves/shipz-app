@@ -23,7 +23,7 @@ public class PackageBean {
     }
 
     //TODO CRUD operations for Package entity
-    public void create(String type, String material, String status, Date manufacturingDate) throws MyEntityExistsException {
+    public void create(String type, String material, String status, String manufacturingDate) throws MyEntityExistsException {
         Package pack = new Package(type, material, status, manufacturingDate);
         entityManager.persist(pack);
     }
@@ -35,7 +35,7 @@ public class PackageBean {
         return pack;
     }
 
-    public void update(long code, String type, String material, String status, Date manufacturingDate) throws MyEntityNotFoundException {
+    public void update(long code, String type, String material, String status, String manufacturingDate) throws MyEntityNotFoundException {
         Package pack = this.find(code);
         pack.setType(type);
         pack.setMaterial(material);

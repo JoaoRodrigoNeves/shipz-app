@@ -2,12 +2,9 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -40,7 +37,7 @@ public class Package extends Versionable implements Serializable {
 
     // data de fabrico da embalagem
     @NotNull
-    Date manufacturingDate;
+    String manufacturingDate;
 
     // para localizar a embalagem
     //Location location;
@@ -50,7 +47,7 @@ public class Package extends Versionable implements Serializable {
     public Package() {
     }
 
-    public Package(String type, String material, String status, Date manufacturingDate) {
+    public Package(String type, String material, String status, String manufacturingDate) {
         this.type = type;
         this.material = material;
         this.status = status;
@@ -89,11 +86,11 @@ public class Package extends Versionable implements Serializable {
         this.status = status;
     }
 
-    public Date getManufacturingDate() {
+    public String getManufacturingDate() {
         return manufacturingDate;
     }
 
-    public void setManufacturingDate(Date manufacturingDate) {
+    public void setManufacturingDate(String manufacturingDate) {
         this.manufacturingDate = manufacturingDate;
     }
 
