@@ -1,9 +1,11 @@
 <script setup>
 import { ref, inject, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { useConfirm } from "primevue/useconfirm";
 
 const axios = inject('axios')
 
+const router = useRouter()
 const confirm = useConfirm()
 
 const emit = defineEmits(['loadProductPackages', 'updateProductPackage'])
@@ -15,6 +17,10 @@ const props = defineProps({
 })
 
 const productPackages = ref(Object.assign({}, props.productPackages))
+
+const navigateTo = (path) => {
+    router.push({ path: path })
+}
 
 const updateProductPackage = (productPackage) => {
     emit('updateProductPackage', productPackage)
@@ -74,22 +80,28 @@ watch(
 
         <tbody>
             <tr v-for="item in productPackages" :key="item.code">
-                <td style="width: 30%;">
+                <td style="width: 10%;">
                     {{ item.code }}
                 </td>
-                <td style="width: 100%; text-align: center;">
+                <td style="width: 20%; text-align: center;">
                     {{ item.type }}
                 </td>
-                <td style="width: 100%; text-align: center;">
+                <td style="width: 30%; text-align: center;">
                     {{ item.material }}
                 </td>
-                <td style="width: 100%; text-align: center;">
+                <td style="width: 30%; text-align: center;">
                     {{ item.status }}
                 </td>
-                <td style="width: 100%; text-align: center;">
+                <td style="width: 10%; text-align: center;">
                     {{ item.manufacturingDate }}
                 </td>
                 <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
+                    <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('product-package/' + item.code)">
+                        <VIcon size="20" icon="bx-show" />
+                        <VTooltip activator="parent" location="top">
+                            <span>Ver Detalhes</span>
+                        </VTooltip>
+                    </VBtn>
                     <VBtn rel="noopener noreferrer" color="primary" @click="updateProductPackage(item)">
                         <VIcon size="20" icon="bx-pencil" />
                         <VTooltip activator="parent" location="top">

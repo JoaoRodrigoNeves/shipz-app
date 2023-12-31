@@ -10,18 +10,18 @@ public class ProductDTO implements Serializable {
 
     String productCatalogName;
 
-    String productManufacterUsername;
+    String productManufacterName;
 
     long clientOrderCode;
 
     public ProductDTO() {
     }
 
-    public ProductDTO(long code, long productCatalogCode, String productCatalogName, String productManufacterUsername) {
+    public ProductDTO(long code, long productCatalogCode, String productCatalogName, String productManufacterName) {
         this.code = code;
         this.productCatalogCode = productCatalogCode;
         this.productCatalogName = productCatalogName;
-        this.productManufacterUsername = productManufacterUsername;
+        this.productManufacterName = productManufacterName;
     }
 
     public long getCode() {
@@ -48,12 +48,12 @@ public class ProductDTO implements Serializable {
         this.productCatalogName = productCatalogName;
     }
 
-    public String getProductManufacterUsername() {
-        return productManufacterUsername;
+    public String getProductManufacterName() {
+        return productManufacterName;
     }
 
-    public void setProductManufacterUsername(String productManufacterUsername) {
-        this.productManufacterUsername = productManufacterUsername;
+    public void setProductManufacterName(String productManufacterName) {
+        this.productManufacterName = productManufacterName;
     }
 
     public long getClientOrderCode() {

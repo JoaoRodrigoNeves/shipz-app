@@ -72,7 +72,7 @@ public class ProductPackageService {
                 product.getCode(),
                 product.getProductCatalog().getCode(),
                 product.getProductCatalog().getName(),
-                product.getProductManufacter().getUsername()
+                product.getProductManufacter().getName()
         );
 
         if(product.getClientOrder() != null){
@@ -88,7 +88,12 @@ public class ProductPackageService {
     //TODO create a product-package
 
     //TODO get product-package details
-
+    @GET
+    @Path("{code}")
+    public Response getDetails(@PathParam("code") long code) throws MyEntityNotFoundException {
+        ProductPackage productPackage = productPackageBean.find(code);
+        return Response.status(Response.Status.OK).entity(productPackageToDTONoProducts(productPackage)).build();
+    }
     //TODO update product-package
 
     //TODO delete product-package
@@ -107,4 +112,8 @@ public class ProductPackageService {
         List<ProductDTO> productDTOS = productToDTOs(productPackage.getProducts());
         return Response.ok(productDTOS).build();
     }
+
+    //TODO add product
+
+    //TODO remove product
 }
