@@ -25,7 +25,7 @@ const submit = (async () => {
     router.push({ path: 'dashboard' })
     return true
   } catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
+    toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
 
   }
 })

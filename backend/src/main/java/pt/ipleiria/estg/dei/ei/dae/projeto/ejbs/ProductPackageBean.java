@@ -25,9 +25,10 @@ public class ProductPackageBean {
 
     //TODO CRUD operations for ProductPackage entity
 
-    public void create(String type, String material, String status, String manufacturingDate) throws MyEntityExistsException {
+    public ProductPackage create(String type, String material, String status, String manufacturingDate) throws MyEntityExistsException {
         ProductPackage productPackage = new ProductPackage(type, material, status, manufacturingDate);
         entityManager.persist(productPackage);
+        return productPackage;
     }
 
     public ProductPackage find(long code) throws MyEntityNotFoundException {
@@ -46,10 +47,11 @@ public class ProductPackageBean {
         entityManager.merge(productPackage);
     }
 
-    public void delete(long code) throws MyEntityNotFoundException {
+    public ProductPackage delete(long code) throws MyEntityNotFoundException {
         ProductPackage productPackage = this.find(code);
         entityManager.remove(productPackage);
         productPackage.getProducts().forEach(product -> product.removeProductPackage(productPackage));
+        return productPackage;
     }
 
     //TODO get all productPackages

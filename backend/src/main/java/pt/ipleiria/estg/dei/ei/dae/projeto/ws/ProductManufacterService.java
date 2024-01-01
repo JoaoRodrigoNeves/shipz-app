@@ -69,7 +69,7 @@ public class ProductManufacterService {
                 product.getCode(),
                 product.getProductCatalog().getCode(),
                 product.getProductCatalog().getName(),
-                product.getProductManufacter().getUsername()
+                product.getProductManufacter().getName()
         );
 
         if(product.getClientOrder() != null){

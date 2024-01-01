@@ -2,7 +2,7 @@
 import { ref, inject } from 'vue'
 import { useConfirm } from "primevue/useconfirm";
 
-const emit = defineEmits(['loadProducts', 'updateProduct', ])
+const emit = defineEmits(['loadProducts', 'updateProduct',])
 const axios = inject('axios')
 
 const confirm = useConfirm();
@@ -60,6 +60,9 @@ watch(
           Nome do Catálogo
         </th>
         <th>
+          Fabricante
+        </th>
+        <th>
           Código da Encomenda
         </th>
         <th>
@@ -70,16 +73,19 @@ watch(
 
     <tbody>
       <tr v-for="item in products" :key="item.code">
-        <td style="width: 30%;">
+        <td style="width: 10%;">
           {{ item.code }}
         </td>
-        <td style="width: 100%; text-align: center;">
+        <td style="width: 20%; text-align: center;">
           {{ item.productCatalogCode }}
         </td>
-        <td style="width: 100%; text-align: center;">
+        <td style="width: 30%; text-align: center;">
           {{ item.productCatalogName }}
         </td>
-        <td style="width: 100%; text-align: center;">
+        <td style="width: 20%; text-align: center;">
+          {{ item.productManufacterName }}
+        </td>
+        <td style="width: 20%; text-align: center;">
           {{ item.clientOrderCode ? item.clientOrderCode : "Sem encomenda" }}
         </td>
         <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">

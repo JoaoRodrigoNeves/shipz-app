@@ -88,7 +88,12 @@ public class ProductBean {
         entityManager.remove(product);
     }
 
-    //TODO associate / disassociate product with product package
+    //TODO get / associate / disassociate product with product package
+    public Product getProductPackages(long code) throws MyEntityNotFoundException {
+        Product product = this.find(code);
+        Hibernate.initialize(product.getProductPackages());
+        return product;
+    }
 
     public void addProductToPackage(long code, long productPackageCode) throws MyEntityNotFoundException, MyEntityExistsException {
         ProductPackage productPackage = entityManager.find(ProductPackage.class, productPackageCode);
@@ -117,7 +122,12 @@ public class ProductBean {
         productPackage.removeProduct(product);
     }
 
-    //TODO associate / disassociate product with client order
+    //TODO get / associate / disassociate product with client order
+    public ClientOrder getOrder(long code) throws MyEntityNotFoundException {
+        Product product = this.find(code);
+        return product.getClientOrder();
+    }
+
     public void addProductToOrder(long code, long clientOrderCode) throws MyEntityExistsException, MyEntityNotFoundException {
         ClientOrder clientOrder = entityManager.find(ClientOrder.class, clientOrderCode);
 
