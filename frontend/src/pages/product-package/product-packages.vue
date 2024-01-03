@@ -1,5 +1,4 @@
 <script setup>
-import PackageForm from '@/views/pages/form-layouts/PackageForm.vue';
 import ProductPackageTable from '@/views/pages/tables/ProductPackageTable.vue';
 import { onMounted } from 'vue';
 import { ref, inject } from 'vue'

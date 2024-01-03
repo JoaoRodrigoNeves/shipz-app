@@ -146,7 +146,7 @@ public class ProductPackageService {
 
     //TODO add product to package
     @POST
-    @Path("{code}/product/{productCode}")
+    @Path("{code}/products/{productCode}")
     public Response addProduct(@PathParam("code") long code, @PathParam("productCode") long productCode) throws MyEntityNotFoundException, MyEntityExistsException {
         productBean.addProductToPackage(productCode, code);
         return Response.status(Response.Status.OK).build();

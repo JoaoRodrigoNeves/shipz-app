@@ -5,22 +5,25 @@ import { useToast } from "primevue/usetoast";
 import { useConfirm } from "primevue/useconfirm";
 
 import ProductTable from '@/views/pages/tables/ProductTable.vue'
-import PackageForm from '@/views/pages/form-layouts/PackageForm.vue'
+import ProductPackageForm from '@/views/pages/form-layouts/ProductPackageForm.vue';
 
 const axios = inject('axios')
 const router = useRouter()
-const confirm = useConfirm()
-const toast = useToast()
+//const confirm = useConfirm()
+//const toast = useToast()
 
 const isLoading = ref(false)
 const isCreatingOrUpdatingProductPackage = ref(false)
+const isAddingProduct = ref(false)
 const productPackage = ref([])
-const productPackageToUpdate = ref(null)
+//const productPackageToUpdate = ref(null)
 const products = ref([])
+
+const packageCode = router.currentRoute.value.params.code
 
 const loadProductPackage = async () => {
     isLoading.value = true;
-    await axios.get('product-packages/' + router.currentRoute.value.params.code)
+    await axios.get('product-packages/' + packageCode)
         .then(response => {
             isLoading.value = false
             productPackage.value = response.data
@@ -32,7 +35,7 @@ const loadProductPackage = async () => {
 
 const loadProducts = async () => {
     isLoading.value = true
-    await axios.get('product-packages/' + router.currentRoute.value.params.code + '/products')
+    await axios.get('product-packages/' + packageCode + '/products')
         .then(response => {
             isLoading.value = false
             products.value = response.data
@@ -42,12 +45,19 @@ const loadProducts = async () => {
         })
 }
 
-/*
 const addProduct = async () => {
+    isAddingProduct.value = false
+    await loadProducts()
+    isCreatingOrUpdatingProductPackage.value = false
+}
+
+/*
+const removeProduct = async (productCode) => {
     isLoading.value = true
-    await axios.post('product-packages/' + router.currentRoute.value.params.code + '/products/add')
-        .then(response => {
+    await axios.delete('product-packages/' + router.currentRoute.value.params.code + '/products/' + productCode)
+        .then(async response => {
             isLoading.value = false
+            await loadProducts()
         }).catch(error => {
             isLoading.value = false
             console.error(error)
@@ -136,14 +146,13 @@ onMounted(async () => {
                 </div>
                 <div class="products-actions">
                     <h2>Produtos</h2>
-                    <!--
-                    <VBtn rel="noopener noreferrer" color="primary" @click="addProduct">
+                    <VBtn rel="noopener noreferrer" color="primary"
+                        @click="isAddingProduct = true; isCreatingOrUpdatingProductPackage = true">
                         <VIcon size="20" icon="bx-plus" />
                         <VTooltip activator="parent" location="top">
                             <span>Adicionar Produto</span>
                         </VTooltip>
                     </VBtn>
-                    -->
                 </div>
                 <div v-if="products && products.length > 0 && !isLoading">
                     <ProductTable v-if="!isLoading" @loadProducts="loadProducts" :products="products" />
@@ -154,14 +163,13 @@ onMounted(async () => {
             </VCard>
         </VCol>
     </VRow>
-    <VCard v-if="isCreatingOrUpdatingProductPackage">
+    <VCard v-if="isAddingProduct">
         <VCard>
             <div class="product-packages-header">
-                <h2>Editar Embalagem</h2>
+                <h2>Adicionar Produto</h2>
             </div>
             <VCardText>
-                <PackageForm @closeFormAndUpdate="closeFormAndUpdate" :packageToUpdate="packageToUpdate"
-                    :isCreating="isCreating"></PackageForm>
+                <ProductPackageForm @add-product="addProduct" :package-code="Number(packageCode)" />
             </VCardText>
         </VCard>
     </VCard>
