@@ -146,4 +146,13 @@ public class ProductCatalogService {
         productCatalogBean.removeProduct(productCatalogCode, productDTO.getCode());
         return Response.status(Response.Status.OK).entity("Product removed").build();
     }
+
+    //TODO get products without product-package
+    @GET
+    @Path("{code}/products/no-package")
+    public Response getProductsWithoutProductPackage(@PathParam("code") long code) throws MyEntityNotFoundException {
+        ProductCatalog productCatalog = productCatalogBean.getProductCatalogProducts(code);
+        List<ProductDTO> productsToDTOs = productsToDTOs(productCatalogBean.getProductsWithoutProductPackage(productCatalog));
+        return Response.status(Response.Status.OK).entity(productsToDTOs).build();
+    }
 }

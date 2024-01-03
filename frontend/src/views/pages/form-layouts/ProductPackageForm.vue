@@ -33,7 +33,7 @@ const loadProductCatalogs = async () => {
 }
 
 const loadProducts = async () => {
-    await axios.get('product-catalogs/' + packageForm.value.catalogCode + '/products')
+    await axios.get('product-catalogs/' + packageForm.value.catalogCode + '/products/no-package')
         .then(response => {
             products.value = response.data
         }).catch(error => {

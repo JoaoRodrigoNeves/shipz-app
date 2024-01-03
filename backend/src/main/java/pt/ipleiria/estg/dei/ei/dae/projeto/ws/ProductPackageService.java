@@ -154,7 +154,7 @@ public class ProductPackageService {
 
     //TODO remove product from package
     @DELETE
-    @Path("{code}/product/{productCode}")
+    @Path("{code}/products/{productCode}")
     public Response removeProduct(@PathParam("code") long code, @PathParam("productCode") long productCode) throws MyEntityNotFoundException, MyEntityExistsException {
         productBean.removeProductFromPackage(productCode, code);
         return Response.status(Response.Status.OK).build();
