@@ -31,7 +31,7 @@ const productCatalogForm = ref({
 const save = (async () => {
     if (props.isCreating) {
         try {
-            productCatalogForm.value.productManufacterUsername= JSON.parse(sessionStorage.getItem('user_info')).username
+            productCatalogForm.value.productManufacterUsername = JSON.parse(sessionStorage.getItem('user_info')).username
 
             const response = await axios.post('product-catalogs', productCatalogForm.value)
 
@@ -106,7 +106,7 @@ watch(
             </VCol>
             <VCol cols="12" class="d-flex gap-4">
                 <VBtn type="submit">
-                    {{props.isCreating ? 'Criar' : 'Editar'}}
+                    {{ props.isCreating ? 'Criar' : 'Editar' }}
                 </VBtn>
 
                 <VBtn type="reset" color="secondary" variant="tonal">

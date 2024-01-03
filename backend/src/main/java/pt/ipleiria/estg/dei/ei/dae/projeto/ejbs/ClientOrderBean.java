@@ -24,12 +24,8 @@ public class ClientOrderBean {
         if (logisticOperator == null) {
             throw new MyEntityNotFoundException("LogisticOperator with username: " + LO + " not found");
         }
-        var clientOrderCode = em.createQuery(
-                "SELECT COUNT(s.code) FROM ClientOrder s WHERE s.code = :code",
-                Long.class
-        );
-        clientOrderCode.setParameter("code", code);
-        if (clientOrderCode.getSingleResult() > 0L) {
+        ClientOrder clientOrder = em.exists(ClientOrder.class, code);
+        if (clientOrder != null) {
             throw new MyEntityNotFoundException("ClientOrder with code: " + code + " already exists");
         }
         try{

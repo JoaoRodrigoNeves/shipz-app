@@ -13,7 +13,9 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.projeto.ws.ProductCatalogService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -140,5 +142,15 @@ public class ProductCatalogBean {
         ProductCatalog productCatalog = this.find(code);
         Hibernate.initialize(productCatalog.getProducts());
         return productCatalog;
+    }
+
+    public List<Product> getProductsWithoutProductPackage(ProductCatalog productCatalog) throws MyEntityNotFoundException {
+        ProductCatalog productCatalogProducts = this.getProductCatalogProducts(productCatalog.getCode());
+        List<Product> productsWithoutPackage = new ArrayList<Product>();
+        productCatalogProducts.getProducts().forEach(product -> {
+            if (product.getProductPackages() == null || product.getProductPackages().isEmpty())
+                productsWithoutPackage.add(product);
+        });
+        return productsWithoutPackage;
     }
 }

@@ -29,6 +29,18 @@ const router = createRouter({
           component: () => import('../pages/product-package/product-packages.vue'),
         },
         {
+          path: 'orders',
+          component: () => import('../pages/client-orders/client-orders.vue'),
+        },
+        {
+          path: 'order/:code',
+          component: () => import('../pages/client-orders/client-orders-details.vue'),
+        },
+        {
+          path: 'account-settings',
+          component: () => import('../pages/account-settings.vue'),
+        },
+        {
           path: 'product-package/:code',
           component: () => import('../pages/product-package/product-package-details.vue'),
         },

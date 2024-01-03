@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
 @Authenticated
-@RolesAllowed({"ProductManufacter", "Administrator"})
+@RolesAllowed({"ProductManufacter", "Administrator", "LogisticOperator"})
 public class ProductCatalogService {
 
     @EJB
@@ -115,6 +115,7 @@ public class ProductCatalogService {
     //TODO get all product-catalogs
     @GET
     @Path("/")
+    @RolesAllowed({"LogisticOperator"})
     public List<ProductCatalogDTO> getAll() {
         return productCatalogToDTOs(productCatalogBean.getAll());
     }
@@ -122,7 +123,7 @@ public class ProductCatalogService {
     //TODO get products from product-catalog
     @GET
     @Path("{code}/products")
-    @RolesAllowed({"ProductsManufacters"})
+    @RolesAllowed({"ProductsManufacters", "LogisticOperator"})
     public Response getProducts(@PathParam("code") long code) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = productCatalogBean.getProductCatalogProducts(code);
         return Response.status(Response.Status.OK).entity(productsToDTOs(productCatalog.getProducts())).build();
@@ -144,5 +145,14 @@ public class ProductCatalogService {
     public Response removeProduct(@PathParam("productCatalogCode") long productCatalogCode, ProductDTO productDTO) throws MyEntityNotFoundException, MyEntityExistsException {
         productCatalogBean.removeProduct(productCatalogCode, productDTO.getCode());
         return Response.status(Response.Status.OK).entity("Product removed").build();
+    }
+
+    //TODO get products without product-package
+    @GET
+    @Path("{code}/products/no-package")
+    public Response getProductsWithoutProductPackage(@PathParam("code") long code) throws MyEntityNotFoundException {
+        ProductCatalog productCatalog = productCatalogBean.getProductCatalogProducts(code);
+        List<ProductDTO> productsToDTOs = productsToDTOs(productCatalogBean.getProductsWithoutProductPackage(productCatalog));
+        return Response.status(Response.Status.OK).entity(productsToDTOs).build();
     }
 }

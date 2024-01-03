@@ -90,7 +90,7 @@ public class ClientOrderService {
 
     @GET
     @Path("/test")
-    public Response getCurrentWeather() throws MyEntityExistsException, MyEntityNotFoundException {
+    public Response getCurrentWeather() {
         String apiKey = "04c28712c3a358c49d2733b0c44feae0";
         String units = "metric";
         String location = "Leiria";
@@ -112,31 +112,24 @@ public class ClientOrderService {
 
             if (response.getStatus() == 200) {
                 String jsonResponse = response.readEntity(String.class);
-                System.out.println("Resposta da API:");
-                System.out.println(jsonResponse);
-
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode jsonNode = objectMapper.readTree(jsonResponse);
 
                 JsonNode mainNode = jsonNode.get("main");
-                double temperaturaOriginal = mainNode.get("temp").asDouble();
-                double pressaoOriginal = mainNode.get("pressure").asDouble();
-                double humidadeOriginal = mainNode.get("humidity").asDouble();
-
-                Random random = new Random();
 
                 for (int i = 0; i < 5; i++) {
-                    double temperature = alterarValor(temperaturaOriginal, random);
-                    double pressure = alterarValor(pressaoOriginal, random);
-                    double humidade = alterarValor(humidadeOriginal, random);
+                    Random random = new Random();
+
+                    double temperature = changeValue(mainNode.get("temp").asDouble(), random);
+                    double pressure = changeValue(mainNode.get("pressure").asDouble(), random);
+                    double humidity = changeValue(mainNode.get("humidity").asDouble(), random);
 
                     observationBean.create(1, temperature);
-                    observationBean.create(2, humidade);
+                    observationBean.create(2, humidity);
                     observationBean.create(3, pressure);
                 }
 
-
-                return Response.ok(temperaturaOriginal).build();
+                return Response.ok(true).build();
             } else {
                 System.out.println("Falha na solicitação. Código de resposta: " + response.getStatus());
             }
@@ -149,13 +142,12 @@ public class ClientOrderService {
         return null;
     }
 
-    private static double alterarValor(double valorOriginal, Random random) {
-        double alteracao = (random.nextDouble() * 2) - 1;
-        double valorAlterado = valorOriginal + alteracao;
+    private static double changeValue(double originalValue, Random random) {
+        double randomNumber = (random.nextDouble() * 2) - 1;
+        double changedValue = originalValue + randomNumber;
 
-        // Limitando a precisão para no máximo duas casas decimais
-        valorAlterado = Math.round(valorAlterado * 100.0) / 100.0;
+        changedValue = Math.round(changedValue * 100.0) / 100.0;
 
-        return valorAlterado;
+        return changedValue;
     }
 }

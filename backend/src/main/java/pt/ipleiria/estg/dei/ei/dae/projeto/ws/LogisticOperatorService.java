@@ -45,10 +45,12 @@ public class LogisticOperatorService {
         return logisticOperators.stream().map(this::toDTONoClientOrders).collect(Collectors.toList());
     }
     private ClientOrderDTO clientOrderToDTO(ClientOrder clientOrder) {
-        return new ClientOrderDTO(
+        ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
                 clientOrder.getCode(),
                 clientOrder.getLogisticOperator().getUsername()
         );
+        clientOrderDTO.setProductsDTO(productToDTOs(clientOrder.getProducts()));
+        return clientOrderDTO;
     }
 
     private ProductDTO productToDTO(Product product) {
