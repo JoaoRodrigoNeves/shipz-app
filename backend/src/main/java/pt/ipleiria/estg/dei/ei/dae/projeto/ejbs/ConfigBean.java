@@ -28,6 +28,9 @@ public class ConfigBean {
     private ProductBean productBean;
     @EJB
     private ProductCatalogBean productCatalogBean;
+
+    @EJB
+    private SensorBean sensorBean;
     private static final Logger logger = Logger.getLogger("ejbs.ConfigBean");
 
     @PostConstruct
@@ -62,6 +65,12 @@ public class ConfigBean {
             clientOrderBean.create(122, "logisticOperator1");
             clientOrderBean.create(124, "logisticOperator1");
             clientOrderBean.addProduct(122, 100000);
+            clientOrderBean.addProduct(124, 100002);
+
+            sensorBean.create("temperature");
+            sensorBean.create("humidade");
+            sensorBean.create("pressão");
+
         } catch (Exception e) {
             logger.severe(e.getMessage());
         }
