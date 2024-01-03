@@ -51,7 +51,7 @@ watch(
     <thead>
       <tr>
         <th class="text-uppercase">
-          Código
+          Código do Produto
         </th>
         <th>
           Código do Catálogo
@@ -73,7 +73,7 @@ watch(
 
     <tbody>
       <tr v-for="item in products" :key="item.code">
-        <td style="width: 10%;">
+        <td style="width: 15%;">
           {{ item.code }}
         </td>
         <td style="width: 20%; text-align: center;">
@@ -85,7 +85,7 @@ watch(
         <td style="width: 20%; text-align: center;">
           {{ item.productManufacterName }}
         </td>
-        <td style="width: 20%; text-align: center;">
+        <td style="width: 15%; text-align: center;">
           {{ item.clientOrderCode ? item.clientOrderCode : "Sem encomenda" }}
         </td>
         <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
