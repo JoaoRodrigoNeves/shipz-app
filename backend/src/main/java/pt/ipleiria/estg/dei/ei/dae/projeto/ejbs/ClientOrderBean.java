@@ -24,8 +24,8 @@ public class ClientOrderBean {
         if (logisticOperator == null) {
             throw new MyEntityNotFoundException("LogisticOperator with username: " + LO + " not found");
         }
-        ClientOrder clientOrder = em.exists(ClientOrder.class, code);
-        if (clientOrder != null) {
+        var clientOrderExists = exists(code);
+        if(clientOrderExists){
             throw new MyEntityNotFoundException("ClientOrder with code: " + code + " already exists");
         }
         try{
