@@ -11,6 +11,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.entities.FinalCostumer;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.security.Hasher;
+import org.hibernate.Hibernate;
 
 import java.util.List;
 
@@ -79,7 +80,15 @@ public class FinalCostumerBean {
         return finalCostumerFind != null;
     }
 
+    //TODO: get all
     public List<FinalCostumer> getAll() {
         return entityManager.createNamedQuery("getAllFinalCostumers", FinalCostumer.class).getResultList();
+    }
+
+    //TODO get final costumer -> clients orders
+    public FinalCostumer getClientOrders(String username) throws MyEntityNotFoundException {
+        FinalCostumer finalCostumer = this.find(username);
+        Hibernate.initialize(finalCostumer.getClientOrders());
+        return finalCostumer;
     }
 }

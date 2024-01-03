@@ -6,9 +6,11 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackage;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
+import javax.xml.stream.Location;
 import java.util.Date;
 
 @Stateless
@@ -23,8 +25,8 @@ public class PackageBean {
     }
 
     //TODO CRUD operations for Package entity
-    public void create(String type, String material, String status, String manufacturingDate) throws MyEntityExistsException {
-        Package pack = new Package(type, material, status, manufacturingDate);
+    public void create(String type, String material, String status, String location, Date manufacturingDate) throws MyEntityExistsException {
+        Package pack = new Package(type, material, status, location, manufacturingDate);
         entityManager.persist(pack);
     }
 
@@ -48,4 +50,7 @@ public class PackageBean {
         Package pack = this.find(code);
         entityManager.remove(pack);
     }
+
+    //TODO associate / disassociate order with transport package
+
 }
