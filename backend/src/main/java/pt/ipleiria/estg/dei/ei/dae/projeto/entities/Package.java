@@ -48,16 +48,18 @@ public class Package extends Versionable implements Serializable {
 
     // para localizar a embalagem
     //Location location;
+    String location;
 
     //QualityControl qualityControlData;
 
     public Package() {
     }
 
-    public Package(String type, String material, String status, Date manufacturingDate) {
+    public Package(String type, String material, String status, String location, Date manufacturingDate) {
         this.type = type;
         this.material = material;
         this.status = status;
+        this.location = location;
         this.manufacturingDate = manufacturingDate;
     }
 

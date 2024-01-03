@@ -22,8 +22,8 @@ public class TransportPackageBean {
     }
 
     //TODO CRUD operations for TransportPackage entity
-    public void create(String type, String material, String status, Date manufacturingDate) throws MyEntityExistsException {
-        TransportPackage transportPackage = new TransportPackage(type, material, status, manufacturingDate);
+    public void create(String type, String material, String status, String location, Date manufacturingDate) throws MyEntityExistsException {
+        TransportPackage transportPackage = new TransportPackage(type, material, status, location, manufacturingDate);
         entityManager.persist(transportPackage);
     }
 
@@ -52,13 +52,5 @@ public class TransportPackageBean {
     //TODO get all transportPackages
     public List<TransportPackage> getTransportPackages() {
         return entityManager.createNamedQuery("getAllTransportPackages", TransportPackage.class).getResultList();
-    }
-
-    //TODO get all transports of a transport package
-    public TransportPackage getPackages(long code) throws MyEntityNotFoundException {
-        TransportPackage transportPackage = this.find(code);
-        if (transportPackage != null)
-            Hibernate.initialize(transportPackage.getPackages());
-        return transportPackage;
     }
 }

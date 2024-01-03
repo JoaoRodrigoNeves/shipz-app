@@ -15,7 +15,7 @@ import java.util.List;
 })
 public class FinalCostumer extends User implements Serializable {
 
-    @OneToMany(mappedBy = "logisticOperator", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "finalCostumer", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<ClientOrder> clientOrders;
     String address;
     public FinalCostumer() {
@@ -25,6 +25,7 @@ public class FinalCostumer extends User implements Serializable {
     public FinalCostumer(String username, String password, String name, String email, String address) {
         super(username, password, name, email);
         this.address = address;
+        clientOrders = new ArrayList<>();
     }
 
     public String getAddress() {

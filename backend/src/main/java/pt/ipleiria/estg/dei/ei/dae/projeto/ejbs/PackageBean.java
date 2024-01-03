@@ -25,8 +25,8 @@ public class PackageBean {
     }
 
     //TODO CRUD operations for Package entity
-    public void create(String type, String material, String status, Date manufacturingDate) throws MyEntityExistsException {
-        Package pack = new Package(type, material, status, manufacturingDate);
+    public void create(String type, String material, String status, String location, Date manufacturingDate) throws MyEntityExistsException {
+        Package pack = new Package(type, material, status, location, manufacturingDate);
         entityManager.persist(pack);
     }
 
