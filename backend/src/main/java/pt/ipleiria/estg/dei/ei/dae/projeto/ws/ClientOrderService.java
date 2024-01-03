@@ -1,18 +1,27 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.ws;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ClientOrderDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ClientOrderBean;
+import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ObservationBean;
+import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.SensorBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Path("/clientOrders")
@@ -21,6 +30,9 @@ import java.util.stream.Collectors;
 public class ClientOrderService {
     @EJB
     private ClientOrderBean clientOrderBean;
+
+    @EJB
+    private ObservationBean observationBean;
 
     private ClientOrderDTO toDTO(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
@@ -62,6 +74,7 @@ public class ClientOrderService {
     @Path("/") // means: the relative url path is “/api/clientOrder”
     public List<ClientOrderDTO> getAllClientOrders() {
         var clientOrders = clientOrderBean.getAll();
+
         return toDTOsNoProducts(clientOrders);
     }
 
@@ -75,5 +88,74 @@ public class ClientOrderService {
         return Response.ok(toDTO(clientOrder)).build();
     }
 
+    @GET
+    @Path("/test")
+    public Response getCurrentWeather() throws MyEntityExistsException, MyEntityNotFoundException {
+        String apiKey = "04c28712c3a358c49d2733b0c44feae0";
+        String units = "metric";
+        String location = "Leiria";
+        String lang = "pt";
 
+        try {
+            String apiUrl = "https://api.openweathermap.org/data/2.5/weather";
+
+            Client client = ClientBuilder.newClient();
+            WebTarget target = client.target(apiUrl)
+                    .queryParam("q", location)
+                    .queryParam("appid", apiKey)
+                    .queryParam("lang", lang)
+                    .queryParam("units", units);
+
+            Invocation.Builder builder = target.request(MediaType.APPLICATION_JSON);
+
+            Response response = builder.get();
+
+            if (response.getStatus() == 200) {
+                String jsonResponse = response.readEntity(String.class);
+                System.out.println("Resposta da API:");
+                System.out.println(jsonResponse);
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode jsonNode = objectMapper.readTree(jsonResponse);
+
+                JsonNode mainNode = jsonNode.get("main");
+                double temperaturaOriginal = mainNode.get("temp").asDouble();
+                double pressaoOriginal = mainNode.get("pressure").asDouble();
+                double humidadeOriginal = mainNode.get("humidity").asDouble();
+
+                Random random = new Random();
+
+                for (int i = 0; i < 5; i++) {
+                    double temperature = alterarValor(temperaturaOriginal, random);
+                    double pressure = alterarValor(pressaoOriginal, random);
+                    double humidade = alterarValor(humidadeOriginal, random);
+
+                    observationBean.create(1, temperature);
+                    observationBean.create(2, humidade);
+                    observationBean.create(3, pressure);
+                }
+
+
+                return Response.ok(temperaturaOriginal).build();
+            } else {
+                System.out.println("Falha na solicitação. Código de resposta: " + response.getStatus());
+            }
+
+            client.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static double alterarValor(double valorOriginal, Random random) {
+        double alteracao = (random.nextDouble() * 2) - 1;
+        double valorAlterado = valorOriginal + alteracao;
+
+        // Limitando a precisão para no máximo duas casas decimais
+        valorAlterado = Math.round(valorAlterado * 100.0) / 100.0;
+
+        return valorAlterado;
+    }
 }
