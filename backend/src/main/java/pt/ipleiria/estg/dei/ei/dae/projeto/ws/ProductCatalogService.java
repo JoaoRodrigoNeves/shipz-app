@@ -115,7 +115,7 @@ public class ProductCatalogService {
     //TODO get all product-catalogs
     @GET
     @Path("/")
-    @RolesAllowed({"LogisticOperator"})
+    @RolesAllowed({"LogisticOperator", "FinalCostumer"})
     public List<ProductCatalogDTO> getAll() {
         return productCatalogToDTOs(productCatalogBean.getAll());
     }
