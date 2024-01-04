@@ -24,12 +24,13 @@ public class TransportPackage extends Package implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "transport_code", referencedColumnName = "code")
     )
     List<Package> packages;
-
+    String location;
     public TransportPackage() {
     }
 
-    public TransportPackage(String type, String material, String status, String location, Date manufacturingDate) {
-        super(type, material, status, location, manufacturingDate);
+    public TransportPackage(String type, String material, String status, String location, String manufacturingDate) {
+        super(type, material, status, manufacturingDate);
+        this.location = location;
         this.packages = new ArrayList<Package>();
     }
 

@@ -23,9 +23,6 @@ public class Package extends Versionable implements Serializable {
     @SequenceGenerator(name = "package_id_seq", sequenceName = "package_id_seq", initialValue = 100000)
     long code;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "packages")
-    List<TransportPackage> transportPackages;
-
     @NotNull
     String type;
 
@@ -43,20 +40,15 @@ public class Package extends Versionable implements Serializable {
     @NotNull
     String manufacturingDate;
 
-    // para localizar a embalagem
-    //Location location;
-    String location;
-
     //QualityControl qualityControlData;
 
     public Package() {
     }
 
-    public Package(String type, String material, String status, String location, Date manufacturingDate) {
+    public Package(String type, String material, String status, String manufacturingDate) {
         this.type = type;
         this.material = material;
         this.status = status;
-        this.location = location;
         this.manufacturingDate = manufacturingDate;
     }
 
@@ -66,22 +58,6 @@ public class Package extends Versionable implements Serializable {
 
     public void setCode(long code) {
         this.code = code;
-    }
-
-    public List<TransportPackage> getTransportPackages() {
-        return transportPackages;
-    }
-
-    public void setTransportPackages(List<TransportPackage> transportPackages) {
-        this.transportPackages = transportPackages;
-    }
-
-    public void addTransportPackage(TransportPackage transportPackage) {
-        this.transportPackages.add(transportPackage);
-    }
-
-    public void removeTransportPackage(TransportPackage transportPackage) {
-        this.transportPackages.remove(transportPackage);
     }
 
     public String getType() {

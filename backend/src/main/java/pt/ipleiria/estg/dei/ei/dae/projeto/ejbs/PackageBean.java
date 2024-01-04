@@ -25,10 +25,10 @@ public class PackageBean {
     }
 
     //TODO CRUD operations for Package entity
-    public void create(String type, String material, String status, String location, Date manufacturingDate) throws MyEntityExistsException {
+    /*public void create(String type, String material, String status, String location, Date manufacturingDate) throws MyEntityExistsException {
         Package pack = new Package(type, material, status, location, manufacturingDate);
         entityManager.persist(pack);
-    }
+    }*/
 
     public Package find(long code) throws MyEntityNotFoundException {
         Package pack = entityManager.find(Package.class, code);

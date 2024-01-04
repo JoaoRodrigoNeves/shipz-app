@@ -19,6 +19,9 @@ public class ClientOrder {
     @Id
     @NotNull
     private long code;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "finalcostumer_username")
+    private FinalCostumer finalCostumer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "logisticoperator_username")

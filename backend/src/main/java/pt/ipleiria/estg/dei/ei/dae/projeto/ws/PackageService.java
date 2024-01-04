@@ -43,7 +43,7 @@ public class PackageService {
 
 
     //TODO create a new package
-    @POST
+    /*@POST
     @Path("/") // means: the relative url path is “/api/package/”
     public Response createNewPackage(PackageDTO packageDTO) throws MyEntityExistsException, MyEntityNotFoundException {
         packageBean.create(
@@ -54,5 +54,5 @@ public class PackageService {
         );
         Package newPackage = packageBean.find(packageDTO.getCode());
         return Response.status(Response.Status.CREATED).entity(packageToDTO(newPackage)).build();
-    }
+    }*/
 }
