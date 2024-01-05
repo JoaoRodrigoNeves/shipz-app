@@ -8,10 +8,12 @@ public class ClientOrderDTO implements Serializable {
     private long code;
     private String logisticOperator;
     private String finalCostumer;
+    private String location;
     private List<ProductDTO> productsDTO;
 
-    public ClientOrderDTO(long code) {
+    public ClientOrderDTO(long code, String location) {
         this.code = code;
+        this.location = location;
         this.productsDTO = new ArrayList<>();
     }
 
@@ -40,5 +42,13 @@ public class ClientOrderDTO implements Serializable {
 
     public void setProductsDTO(List<ProductDTO> productsDTO) {
         this.productsDTO = productsDTO;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

@@ -33,6 +33,7 @@ public class ClientOrder {
     private List<Product> products;
 
     private OrderStatus status;
+    private String location;
     @Column(name = "created_at")
     Date createdAt;
 
@@ -84,6 +85,14 @@ public class ClientOrder {
 
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     @Override

@@ -40,7 +40,8 @@ public class ClientOrderService {
 
     private ClientOrderDTO toDTO(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
-                clientOrder.getCode()
+                clientOrder.getCode(),
+                clientOrder.getLocation()
         );
         clientOrderDTO.setProductsDTO(productToDTOs(clientOrder.getProducts()));
         if(clientOrder.getLogisticOperator() != null){
@@ -50,7 +51,8 @@ public class ClientOrderService {
     }
     private ClientOrderDTO toDTONoProducts(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
-                clientOrder.getCode()
+                clientOrder.getCode(),
+                clientOrder.getLocation()
         );
         if(clientOrder.getLogisticOperator() != null){
             clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
@@ -90,7 +92,7 @@ public class ClientOrderService {
 
     @GET // means: to call this endpoint, we need to use the HTTP GET method
     @Path("/{code}") // means: the relative url path is “/api/clientOrder/{code}”
-    public Response getDetails(@PathParam("code") long code) throws MyEntityExistsException, MyEntityNotFoundException {
+    public Response getDetails(@PathParam("code") long code) throws MyEntityNotFoundException {
         var clientOrder = clientOrderBean.findClientOrderWithProducts(code);
         if (clientOrder == null) {
             throw new MyEntityNotFoundException("ClientOrder with code: " + code + " doesn't exist");
@@ -109,8 +111,15 @@ public class ClientOrderService {
 
     @PATCH
     @Path("/{clientOrderCode}/changeLogistic/{logisticOperatorUsername}")
-    public Response create(@PathParam("clientOrderCode") long clientOrderCode, @PathParam("logisticOperatorUsername") String logisticOperatorUsername) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public Response changeLogistic(@PathParam("clientOrderCode") long clientOrderCode, @PathParam("logisticOperatorUsername") String logisticOperatorUsername) throws MyEntityNotFoundException, MyConstraintViolationException {
         clientOrderBean.changeLogistic(clientOrderCode, logisticOperatorUsername);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @PATCH
+    @Path("/{clientOrderCode}/changeLocation/{location}")
+    public Response changeLocation(@PathParam("clientOrderCode") long clientOrderCode, @PathParam("location") String location) throws MyEntityNotFoundException {
+        clientOrderBean.changeLocation(clientOrderCode, location);
         return Response.status(Response.Status.OK).build();
     }
 

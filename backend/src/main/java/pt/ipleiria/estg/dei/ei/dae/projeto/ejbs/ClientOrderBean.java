@@ -112,4 +112,9 @@ public class ClientOrderBean {
         clientOrder.setLogisticOperator(logisticOperator);
         logisticOperator.addOrder(clientOrder);
     }
+
+    public void changeLocation(long clientOrderCode, String location) throws MyEntityNotFoundException {
+        ClientOrder clientOrder = find(clientOrderCode);
+        clientOrder.setLocation(location);
+    }
 }
