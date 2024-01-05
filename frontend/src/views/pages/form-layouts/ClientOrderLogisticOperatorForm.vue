@@ -38,7 +38,7 @@ const save = (async () => {
       isLoading.value = false;
       console.log(response)
       if (response.status == 200) {
-        toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Operador logistico adicionado com sucesso à encomenda #' + props.clientOrder.code, life: 3000 });
+        toast.add({ severity: 'success', summary: 'Sucesso', detail: (props.clientOrder.logisticOperator ? 'Operador logistico alterado com sucesso na encomenda #' :'Operador logistico adicionado com sucesso à encomenda #') + props.clientOrder.code, life: 3000 });
         emit('addLogisticOperator')
       }
     })
