@@ -9,6 +9,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
 // Components
 import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
 import UserProfile from '@/layouts/components/UserProfile.vue'
+const user = JSON.parse(sessionStorage.getItem('user_info'))
 
 const vuetifyTheme = useTheme()
 
@@ -18,7 +19,7 @@ const upgradeBanner = computed(() => {
 </script>
 
 <template>
-  <VerticalNavLayout>
+  <VerticalNavLayout >
     <!-- 👉 navbar -->
     <template #navbar="{ toggleVerticalOverlayNavActive }">
       <div class="d-flex h-100 align-center">
@@ -37,39 +38,42 @@ const upgradeBanner = computed(() => {
     <template #vertical-nav-content>
       <VerticalNavLink :item="{
         title: 'Dashboard',
-        icon: 'bx-home',
+        icon: 'mdi-monitor-dashboard',
         to: '/dashboard',
-      }" />
+      }" v-if="user"/>
+            <VerticalNavSectionTitle :item="{
+        heading: 'Gestão',
+      }" v-if="user"/>
       <VerticalNavLink :item="{
         title: 'Produtos',
-        icon: 'bx-home',
+        icon: 'mdi-baguette',
         to: '/products-list',
-      }" />
+      }" v-if="user && user.role === 'FinalCostumer'" />
       <VerticalNavLink :item="{
         title: 'Catálogo',
-        icon: 'bx-home',
+        icon: 'mdi-list-box',
         to: '/product-catalogs',
-      }" />
+      }" v-if="user && user.role === 'ProductManufacter'"/>
       <VerticalNavLink :item="{
         title: 'Produtos',
-        icon: 'bx-home',
+        icon: 'mdi-baguette',
         to: '/products',
-      }" />
+      }" v-if="user && user.role === 'ProductManufacter'"/>
       <VerticalNavLink :item="{
         title: 'Embalagens de Produto',
-        icon: 'bx-home',
+        icon: 'mdi-package-variant-closed',
         to: '/product-packages'
-      }" />
+      }" v-if="user"/>
       <VerticalNavLink :item="{
         title: 'Encomendas',
         icon: 'bi-box-seam',
         to: '/orders',
-      }" />
+      }" v-if="user"/>
       <VerticalNavLink :item="{
         title: 'Account Settings',
         icon: 'mdi-account-cog-outline',
         to: '/account-settings',
-      }" />
+      }" v-if="user"/>
 
       <!-- 👉 Pages -->
       <VerticalNavSectionTitle :item="{
@@ -81,10 +85,10 @@ const upgradeBanner = computed(() => {
         to: '/login',
       }" />
 
-      <VerticalNavLink :item="{
-        title: 'Error',
-        icon: 'bx-info-circle',
-        to: '/no-existence',
+<VerticalNavLink :item="{
+        title: 'Sensores',
+        icon: 'mdi-thermometer-low',
+        to: '/sensor-observation',
       }" />
 
     </template>

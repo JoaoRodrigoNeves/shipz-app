@@ -29,6 +29,11 @@ const submit = (async () => {
 
   }
 })
+
+const navigateToSensorObservation = () => {
+    router.push({ path: '/sensor-observation' })
+}
+
 </script>
 
 <template>
@@ -75,6 +80,13 @@ const submit = (async () => {
         </VForm>
       </VCardText>
     </VCard>
+  </div>
+  <div style="position: absolute; bottom: 0; display: flex; justify-content: center; align-items: center; width: 100%;">
+    <div style="width: fit-content;">
+      <VBtn block type="submit" class="mt-4 mb-4" @click="navigateToSensorObservation">
+        Registar evento nos sensores
+      </VBtn>
+    </div>
   </div>
 </template>
 

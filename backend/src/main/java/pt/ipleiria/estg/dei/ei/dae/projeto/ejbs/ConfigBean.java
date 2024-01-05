@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
@@ -61,9 +62,12 @@ public class ConfigBean {
             productBean.addProductToPackage(100001, 100002);
             productBean.addProductToPackage(100002, 100001);
 
-            sensorBean.create("temperature");
-            sensorBean.create("humidade");
-            sensorBean.create("pressão");
+            sensorBean.create(SensorType.TEMPERATURE);
+            sensorBean.create(SensorType.TEMPERATURE);
+            sensorBean.create(SensorType.HUMIDITY);
+            sensorBean.create(SensorType.HUMIDITY);
+            sensorBean.create(SensorType.PRESSURE);
+            sensorBean.create(SensorType.PRESSURE);
 
             List<Long> productList = new ArrayList<>();
             productList.add(100002L);

@@ -1,36 +1,22 @@
-package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
+package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Observation;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@NamedQueries({
-        @NamedQuery(
-                name = "getAllSensors",
-                query = "SELECT s FROM Sensor s ORDER BY s.code DESC" //JPQL
-        )
-})
-public class Sensor implements Serializable {
+public class SensorDTO implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "sensor_id_seq")
     long code;
     SensorType type;
-    @OneToMany(mappedBy = "sensor", cascade = CascadeType.REMOVE)
-    @NotNull
+    String sensorTypeName;
     List<Observation> observations;
 
-    public Sensor(){
-
-    }
-    public Sensor(SensorType type) {
+    public SensorDTO(long code, SensorType type, String sensorTypeName) {
+        this.code = code;
         this.type = type;
-        this.observations = new ArrayList<>();
+        this.sensorTypeName = sensorTypeName;
     }
 
     public long getCode() {
@@ -47,6 +33,14 @@ public class Sensor implements Serializable {
 
     public void setType(SensorType type) {
         this.type = type;
+    }
+
+    public String getSensorTypeName() {
+        return sensorTypeName;
+    }
+
+    public void setSensorTypeName(String sensorTypeName) {
+        this.sensorTypeName = sensorTypeName;
     }
 
     public List<Observation> getObservations() {

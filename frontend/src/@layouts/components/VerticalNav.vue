@@ -51,7 +51,6 @@ const handleNavScroll = evt => {
       <slot name="nav-header">
         <RouterLink to="/" class="app-logo d-flex align-center gap-x-3 app-title-wrapper">
           <div class="d-flex" v-html="logo" />
-
           <h1 class="leading-normal">
             sneat
           </h1>
