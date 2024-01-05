@@ -37,11 +37,10 @@ public class PackageBean {
         return pack;
     }
 
-    public void update(long code, String type, String material, String status, String manufacturingDate) throws MyEntityNotFoundException {
+    public void update(long code, String type, String material, String manufacturingDate) throws MyEntityNotFoundException {
         Package pack = this.find(code);
         pack.setType(type);
         pack.setMaterial(material);
-        pack.setStatus(status);
         pack.setManufacturingDate(manufacturingDate);
         entityManager.merge(pack);
     }

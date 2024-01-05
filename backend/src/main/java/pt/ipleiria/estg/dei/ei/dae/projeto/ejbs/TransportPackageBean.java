@@ -22,8 +22,8 @@ public class TransportPackageBean {
     }
 
     //TODO CRUD operations for TransportPackage entity
-    public void create(String type, String material, String status, String location, String manufacturingDate) throws MyEntityExistsException {
-        TransportPackage transportPackage = new TransportPackage(type, material, status, location, manufacturingDate);
+    public void create(String type, String material, String location, String manufacturingDate) throws MyEntityExistsException {
+        TransportPackage transportPackage = new TransportPackage(type, material, location, manufacturingDate);
         entityManager.persist(transportPackage);
     }
 
@@ -34,11 +34,10 @@ public class TransportPackageBean {
         return transportPackage;
     }
 
-    public void update(long code, String type, String material, String status, String manufacturingDate) throws MyEntityNotFoundException {
+    public void update(long code, String type, String material, String manufacturingDate) throws MyEntityNotFoundException {
         TransportPackage transportPackage = this.find(code);
         transportPackage.setType(type);
         transportPackage.setMaterial(material);
-        transportPackage.setStatus(status);
         transportPackage.setManufacturingDate(manufacturingDate);
         entityManager.merge(transportPackage);
     }
