@@ -46,10 +46,12 @@ public class LogisticOperatorService {
     }
     private ClientOrderDTO clientOrderToDTO(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
-                clientOrder.getCode(),
-                clientOrder.getLogisticOperator().getUsername()
+                clientOrder.getCode()
         );
         clientOrderDTO.setProductsDTO(productToDTOs(clientOrder.getProducts()));
+        if(clientOrder.getLogisticOperator() != null){
+            clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
+        }
         return clientOrderDTO;
     }
 

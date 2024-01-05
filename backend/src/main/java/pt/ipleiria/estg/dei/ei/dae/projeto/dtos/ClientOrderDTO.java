@@ -7,11 +7,11 @@ import java.util.List;
 public class ClientOrderDTO implements Serializable {
     private long code;
     private String logisticOperator;
+    private String finalCostumer;
     private List<ProductDTO> productsDTO;
 
-    public ClientOrderDTO(long code, String logisticOperator) {
+    public ClientOrderDTO(long code) {
         this.code = code;
-        this.logisticOperator = logisticOperator;
         this.productsDTO = new ArrayList<>();
     }
 

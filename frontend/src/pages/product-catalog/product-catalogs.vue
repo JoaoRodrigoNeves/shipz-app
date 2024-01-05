@@ -57,8 +57,7 @@ onMounted(async () => {
                 <ProductCatalogTable v-if="productCatalogs && !isLoading" @updateProductCatalog="updateProductCatalog"
                     @loadProductCatalogs="loadProductCatalogs" :productCatalogs="productCatalogs" />
             </VCard>
-            <VCard v-if="isCreatingOrUpdating">
-
+            <VCard v-else>
                 <VCard>
                     <div class="product-catalogs-header">
                         <h2>{{ isCreating ? 'Criar Catálogo' : 'Editar Catálogo' }}</h2>
