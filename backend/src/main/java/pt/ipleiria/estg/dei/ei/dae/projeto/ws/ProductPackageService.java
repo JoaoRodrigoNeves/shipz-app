@@ -91,7 +91,7 @@ public class ProductPackageService {
     //TODO create a product-package
     @POST
     @Path("/")
-    public Response create(ProductPackageDTO productPackageDTO) throws MyEntityExistsException {
+    public Response create(ProductPackageDTO productPackageDTO) {
         ProductPackage productPackage = productPackageBean.create(
                 productPackageDTO.getType(),
                 productPackageDTO.getMaterial(),
