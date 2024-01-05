@@ -49,7 +49,6 @@ public class ProductService {
                 productPackage.getCode(),
                 productPackage.getType(),
                 productPackage.getMaterial(),
-                productPackage.getStatus(),
                 productPackage.getManufacturingDate()
         );
     }

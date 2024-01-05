@@ -28,8 +28,8 @@ public class TransportPackage extends Package implements Serializable {
     public TransportPackage() {
     }
 
-    public TransportPackage(String type, String material, String status, String location, String manufacturingDate) {
-        super(type, material, status, manufacturingDate);
+    public TransportPackage(String type, String material, String location, String manufacturingDate) {
+        super(type, material, manufacturingDate);
         this.location = location;
         this.packages = new ArrayList<Package>();
     }

@@ -49,9 +49,9 @@ public class ConfigBean {
             productCatalogBean.create("PC1", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1");
             productCatalogBean.create("PC2", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1");
 
-            productPackageBean.create("primário", "tinteiro", "em preparação", "01/01/2024");
-            productPackageBean.create("secundário", "tinteiro", "em preparação", "02/01/2024");
-            productPackageBean.create("terciário", "tinteiro", "em preparação", "02/01/2024");
+            productPackageBean.create("primário", "tinteiro", "01/01/2024");
+            productPackageBean.create("secundário", "tinteiro", "02/01/2024");
+            productPackageBean.create("terciário", "tinteiro", "02/01/2024");
 
             productBean.create(100001);
             productBean.create(100002);

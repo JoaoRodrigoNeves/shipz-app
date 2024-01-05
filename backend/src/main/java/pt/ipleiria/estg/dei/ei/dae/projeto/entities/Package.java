@@ -32,10 +32,6 @@ public class Package extends Versionable implements Serializable {
     // conjunto de valores observados -> temperatura, humidade...
     //Set<Sensor> observations;
 
-    // {"em trânsito", "pendente", "entregue" , "em prepação"}...
-    @NotNull
-    String status;
-
     // data de fabrico da embalagem
     @NotNull
     String manufacturingDate;
@@ -45,10 +41,9 @@ public class Package extends Versionable implements Serializable {
     public Package() {
     }
 
-    public Package(String type, String material, String status, String manufacturingDate) {
+    public Package(String type, String material, String manufacturingDate) {
         this.type = type;
         this.material = material;
-        this.status = status;
         this.manufacturingDate = manufacturingDate;
     }
 
@@ -76,14 +71,6 @@ public class Package extends Versionable implements Serializable {
         this.material = material;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public String getManufacturingDate() {
         return manufacturingDate;
     }
@@ -97,11 +84,11 @@ public class Package extends Versionable implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Package aPackage = (Package) o;
-        return code == aPackage.code && Objects.equals(type, aPackage.type) && Objects.equals(material, aPackage.material) && Objects.equals(status, aPackage.status) && Objects.equals(manufacturingDate, aPackage.manufacturingDate);
+        return code == aPackage.code && Objects.equals(type, aPackage.type) && Objects.equals(material, aPackage.material) && Objects.equals(manufacturingDate, aPackage.manufacturingDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, type, material, status, manufacturingDate);
+        return Objects.hash(code, type, material, manufacturingDate);
     }
 }

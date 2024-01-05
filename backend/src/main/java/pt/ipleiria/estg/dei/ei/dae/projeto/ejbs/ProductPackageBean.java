@@ -24,8 +24,8 @@ public class ProductPackageBean {
 
     //TODO CRUD operations for ProductPackage entity
 
-    public ProductPackage create(String type, String material, String status, String manufacturingDate) throws MyEntityExistsException {
-        ProductPackage productPackage = new ProductPackage(type, material, status, manufacturingDate);
+    public ProductPackage create(String type, String material, String manufacturingDate) throws MyEntityExistsException {
+        ProductPackage productPackage = new ProductPackage(type, material, manufacturingDate);
         entityManager.persist(productPackage);
         return productPackage;
     }
@@ -37,11 +37,10 @@ public class ProductPackageBean {
         return productPackage;
     }
 
-    public void update(long code, String type, String material, String status, String manufacturingDate) throws MyEntityNotFoundException {
+    public void update(long code, String type, String material, String manufacturingDate) throws MyEntityNotFoundException {
         ProductPackage productPackage = this.find(code);
         productPackage.setType(type);
         productPackage.setMaterial(material);
-        productPackage.setStatus(status);
         productPackage.setManufacturingDate(manufacturingDate);
         entityManager.merge(productPackage);
     }
