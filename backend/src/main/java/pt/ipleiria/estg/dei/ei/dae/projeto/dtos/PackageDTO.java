@@ -16,8 +16,6 @@ public class PackageDTO implements Serializable {
 
     //Set<Sensor> observations;
 
-    String status;
-
     // data de fabrico
     String manufacturingDate;
 
@@ -26,11 +24,10 @@ public class PackageDTO implements Serializable {
     public PackageDTO() {
     }
 
-    public PackageDTO(long code, String type, String material, String status, String manufacturingDate) {
+    public PackageDTO(long code, String type, String material, String manufacturingDate) {
         this.code = code;
         this.type = type;
         this.material = material;
-        this.status = status;
         this.manufacturingDate = manufacturingDate;
     }
 
@@ -56,14 +53,6 @@ public class PackageDTO implements Serializable {
 
     public void setMaterial(String material) {
         this.material = material;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getManufacturingDate() {

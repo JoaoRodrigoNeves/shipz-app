@@ -28,6 +28,14 @@ public class FinalCostumer extends User implements Serializable {
         clientOrders = new ArrayList<>();
     }
 
+    public void addOrder(ClientOrder clientOrder){
+        clientOrders.add(clientOrder);
+    }
+
+    public void removeOrder(ClientOrder clientOrder){
+        clientOrders.remove(clientOrder);
+    }
+
     public String getAddress() {
         return address;
     }

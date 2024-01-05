@@ -2,6 +2,7 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.OrderStatus;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,7 +18,8 @@ import java.util.Objects;
 })
 public class ClientOrder {
     @Id
-    @NotNull
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "client_order_id_seq")
+    @SequenceGenerator(name = "client_order_id_seq", sequenceName = "client_order_id_seq", initialValue = 100000)
     private long code;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "finalcostumer_username")
@@ -30,17 +32,17 @@ public class ClientOrder {
     @OneToMany(mappedBy = "clientOrder", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Product> products;
 
+    private OrderStatus status;
     @Column(name = "created_at")
     Date createdAt;
 
-    public ClientOrder(long code, LogisticOperator logisticOperator) {
-        this.code = code;
-        this.logisticOperator = logisticOperator;
-        products = new ArrayList<>();
+    public ClientOrder(FinalCostumer finalCostumer) {
+        this.finalCostumer = finalCostumer;
+        this.products = new ArrayList<>();
+        this.status = OrderStatus.STATUS_0;
     }
 
     public ClientOrder() {
-        products = new ArrayList<>();
     }
 
     public long getCode() {

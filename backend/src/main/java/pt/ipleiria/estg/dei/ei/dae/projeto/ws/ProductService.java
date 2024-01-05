@@ -49,7 +49,6 @@ public class ProductService {
                 productPackage.getCode(),
                 productPackage.getType(),
                 productPackage.getMaterial(),
-                productPackage.getStatus(),
                 productPackage.getManufacturingDate()
         );
     }
@@ -61,10 +60,14 @@ public class ProductService {
     }
 
     private ClientOrderDTO clientOrderToDTONoProducts(ClientOrder clientOrder) {
-        return new ClientOrderDTO(
-                clientOrder.getCode(),
-                clientOrder.getLogisticOperator().getUsername()
+        ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
+                clientOrder.getCode()
         );
+        if(clientOrder.getLogisticOperator() != null){
+            clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
+        }
+
+        return clientOrderDTO;
     }
     private List<ClientOrderDTO> clientOrderToDTOsNoProducts(List<ClientOrder> clientOrders) {
         return clientOrders.stream().map(this::clientOrderToDTONoProducts).collect(Collectors.toList());

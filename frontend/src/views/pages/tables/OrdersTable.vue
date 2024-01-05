@@ -2,7 +2,7 @@
 import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router';
 
-const emit = defineEmits(['loadOrders'])
+const emit = defineEmits(['loadOrders', 'updateLogisticOperator'])
 const axios = inject('axios')
 const router = useRouter()
 
@@ -19,6 +19,11 @@ const orders = ref(Object.assign({}, props.orders))
 const navigateTo = (path) => {
     router.push({ path: path })
 }
+
+const updateLogisticOperator = (product) => {
+  emit('updateLogisticOperator', product)
+}
+
 
 watch(
     () => props,
@@ -60,6 +65,12 @@ watch(
                     {{ item.productsDTO.length > 0 ? item.productsDTO.length : "Sem produtos" }}
                 </td>
                 <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
+                    <VBtn rel="noopener noreferrer" color="primary" @click="updateLogisticOperator(item)">
+                        <VIcon size="20" icon="mdi-account-edit" />
+                        <VTooltip activator="parent" location="top">
+                            <span>Atualizar Operador Logitico</span>
+                        </VTooltip>
+                    </VBtn>
                     <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('order/' + item.code)">
                         <VIcon size="20" icon="bx-show" />
                         <VTooltip activator="parent" location="top">

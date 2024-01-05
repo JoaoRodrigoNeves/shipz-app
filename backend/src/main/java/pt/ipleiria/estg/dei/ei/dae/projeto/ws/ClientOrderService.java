@@ -10,13 +10,17 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ClientOrderCreateDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ClientOrderDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.FinalCostumerDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ClientOrderBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ObservationBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.SensorBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.FinalCostumer;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
+import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
@@ -36,20 +40,26 @@ public class ClientOrderService {
 
     private ClientOrderDTO toDTO(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
-                clientOrder.getCode(),
-                clientOrder.getLogisticOperator().getUsername()
+                clientOrder.getCode()
         );
         clientOrderDTO.setProductsDTO(productToDTOs(clientOrder.getProducts()));
+        if(clientOrder.getLogisticOperator() != null){
+            clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
+        }
         return clientOrderDTO;
     }
     private ClientOrderDTO toDTONoProducts(ClientOrder clientOrder) {
-        return new ClientOrderDTO(
-                clientOrder.getCode(),
-                clientOrder.getLogisticOperator().getUsername()
+        ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
+                clientOrder.getCode()
         );
+        if(clientOrder.getLogisticOperator() != null){
+            clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
+        }
+
+        return clientOrderDTO;
     }
     private List<ClientOrderDTO> toDTOsNoProducts(List<ClientOrder> clientOrders) {
-        return clientOrders.stream().map(this::toDTONoProducts).collect(Collectors.toList());
+        return clientOrders.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     private ProductDTO productToDTO(Product product) {
@@ -88,7 +98,23 @@ public class ClientOrderService {
         return Response.ok(toDTO(clientOrder)).build();
     }
 
-    @GET
+    @POST
+    @Path("/")
+    public Response create(ClientOrderCreateDTO clientOrderDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
+        clientOrderBean.create(
+                clientOrderDTO.getFinalCostumer(),
+                clientOrderDTO.getProducts());
+        return Response.status(Response.Status.CREATED).build();
+    }
+
+    @PATCH
+    @Path("/{clientOrderCode}/changeLogistic/{logisticOperatorUsername}")
+    public Response create(@PathParam("clientOrderCode") long clientOrderCode, @PathParam("logisticOperatorUsername") String logisticOperatorUsername) throws MyEntityNotFoundException, MyConstraintViolationException {
+        clientOrderBean.changeLogistic(clientOrderCode, logisticOperatorUsername);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    /*@GET
     @Path("/test")
     public Response getCurrentWeather() {
         String apiKey = "04c28712c3a358c49d2733b0c44feae0";
@@ -149,5 +175,5 @@ public class ClientOrderService {
         changedValue = Math.round(changedValue * 100.0) / 100.0;
 
         return changedValue;
-    }
+    }*/
 }
