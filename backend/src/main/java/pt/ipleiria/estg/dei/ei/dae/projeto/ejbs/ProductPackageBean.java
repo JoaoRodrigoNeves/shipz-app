@@ -24,7 +24,7 @@ public class ProductPackageBean {
 
     //TODO CRUD operations for ProductPackage entity
 
-    public ProductPackage create(String type, String material, String manufacturingDate) throws MyEntityExistsException {
+    public ProductPackage create(String type, String material, String manufacturingDate) {
         ProductPackage productPackage = new ProductPackage(type, material, manufacturingDate);
         entityManager.persist(productPackage);
         return productPackage;
