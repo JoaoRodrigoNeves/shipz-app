@@ -9,6 +9,7 @@ import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.LogisticOperator;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
+import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
 import java.util.List;
@@ -19,14 +20,13 @@ public class ClientOrderBean {
     @PersistenceContext
     private EntityManager em;
 
-    public void create(long code, String LO) throws MyEntityNotFoundException{
+    public void create(long code, String LO) throws MyEntityNotFoundException, MyEntityExistsException {
         LogisticOperator logisticOperator = em.find(LogisticOperator.class, LO);
         if (logisticOperator == null) {
             throw new MyEntityNotFoundException("LogisticOperator with username: " + LO + " not found");
         }
-        var clientOrderExists = exists(code);
-        if(clientOrderExists){
-            throw new MyEntityNotFoundException("ClientOrder with code: " + code + " already exists");
+        if (exists(code)) {
+            throw new MyEntityExistsException("ClientOrder with code: " + code + " already exists");
         }
         try{
             ClientOrder clientOrder = new ClientOrder(code, logisticOperator);
