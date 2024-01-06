@@ -11,16 +11,17 @@ const products = ref([])
 
 const loadOrderDetails = async () => {
   isLoading.value = true
-  try {
-    await axios.get('clientOrders/' + router.currentRoute.value.params.code).then(response => {
-      order.value = response.data
-      products.value = response.data.productsDTO
-      isLoading.value = false
-    })
-  } catch (error) {
+
+  await axios.get('clientOrders/' + router.currentRoute.value.params.code).then(response => {
+    order.value = response.data
+    products.value = response.data.productsDTO
     isLoading.value = false
-    console.log(error)
-  }
+  }).catch(
+    error => {
+      isLoading.value = false;
+      console.error(error)
+    }
+  )
 }
 
 onMounted(async () => {

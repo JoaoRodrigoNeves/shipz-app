@@ -16,6 +16,7 @@ const props = defineProps({
     required: true
   }
 })
+const isLoading = ref(false)
 
 const deleteProductConfirm = (product) => {
   confirm.require({
@@ -24,13 +25,17 @@ const deleteProductConfirm = (product) => {
     rejectLabel: 'Não',
     acceptLabel: 'Sim',
     accept: async () => {
-      try {
-        await axios.delete('products/' + product.code).then(response => {
-          emit('loadProducts')
-        })
-      } catch (error) {
-        console.log(error)
-      }
+      isLoading.value = true;
+
+      await axios.delete('products/' + product.code).then(response => {
+        isLoading.value = false
+        emit('loadProducts')
+      }).catch(
+        error => {
+          isLoading.value = false;
+          console.error(error)
+        }
+      )
     }
   });
 }

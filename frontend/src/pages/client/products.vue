@@ -13,37 +13,38 @@ const productCatalogsSelected = ref([]);
 
 const loadProductCatalogs = async () => {
     isLoading.value = true;
-    try {
-        await axios.get('product-catalogs').then(response => {
-            isLoading.value = false;
-            productCatalogs.value = response.data
 
-        })
-    } catch (error) {
+    await axios.get('product-catalogs').then(response => {
         isLoading.value = false;
-        console.log(error)
-    }
+        productCatalogs.value = response.data
+    }).catch(
+        error => {
+            isLoading.value = false;
+            console.error(error)
+        }
+    )
 }
 
 
 const createOrder = async () => {
-    try {
-        var payload = {
-            products: productCatalogsSelected.value,
-            finalCostumer: JSON.parse(sessionStorage.getItem('user_info')).username
-        }
-        const response = await axios.post('clientOrders', payload)
+    isLoading.value = true
 
+    var payload = {
+        products: productCatalogsSelected.value,
+        finalCostumer: JSON.parse(sessionStorage.getItem('user_info')).username
+    }
+    await axios.post('clientOrders', payload).then(response => {
         if (response.status == 201) {
             toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Encomenda criado com sucesso', life: 3000, });
             resetProducts()
         }
-
-    } catch (error) {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
-
-    }
-
+        isLoading.value = false
+    }).catch(
+        error => {
+            toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
+            isLoading.value = false
+        }
+    )
 }
 
 const checkIfProductAreSelected = (catalogCode) => {
@@ -72,9 +73,9 @@ onMounted(async () => {
     <div class="products-container">
         <div class="product-container-header">
             <div class="title">
-            Produtos
-        </div>
-        <div class="product-submit">
+                Produtos
+            </div>
+            <div class="product-submit">
                 <VBtn color="secondary" variant="tonal" type="reset" @click.prevent="resetProducts">
                     Repor
                 </VBtn>
@@ -84,7 +85,7 @@ onMounted(async () => {
             </div>
         </div>
         <div class="products-list">
-            
+
             <div class="product-item" v-for="productCatalog in productCatalogs" @click="addProduct(productCatalog.code)"
                 :class="{ 'checked': checkIfProductAreSelected(productCatalog.code) }">
                 <VIcon icon="mdi-check-circle" color="rgba(0, 128, 11, 1)" class="icon-check"
@@ -112,12 +113,14 @@ onMounted(async () => {
 .products-container {
     padding: 12px;
 }
-.products-container .product-container-header{
+
+.products-container .product-container-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
 }
+
 .products-container .product-container-header .title {
     font-size: 18px;
 }
@@ -180,7 +183,5 @@ onMounted(async () => {
 .products-container .products-list .product-item .product-footer {
     text-align: center;
 }
-
-
 </style>
   

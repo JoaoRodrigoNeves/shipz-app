@@ -5,7 +5,7 @@ const toast = useToast();
 const axios = inject('axios')
 
 const emit = defineEmits(['closeFormAndUpdate'])
-
+const isLoading = ref(false)
 const props = defineProps({
 
     productCatalogToUpdate: {
@@ -29,15 +29,14 @@ const productCatalogForm = ref({
 })
 
 const save = (async () => {
+    isLoading.value = true
+
     if (props.isCreating) {
-        try {
-            productCatalogForm.value.productManufacterUsername = JSON.parse(sessionStorage.getItem('user_info')).username
+        productCatalogForm.value.productManufacterUsername = JSON.parse(sessionStorage.getItem('user_info')).username
 
-            const response = await axios.post('product-catalogs', productCatalogForm.value)
-
+        await axios.post('product-catalogs', productCatalogForm.value).then(response => {
             if (response.status == 201) {
                 toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Catálogo criado com sucesso', life: 3000 });
-
                 productCatalogForm.value = {
                     code: -1,
                     name: '',
@@ -46,21 +45,19 @@ const save = (async () => {
                     description: '',
                     productManufacterUsername: JSON.parse(sessionStorage.getItem('user_info')).username
                 }
-
+                isLoading.value = false
                 emit('closeFormAndUpdate')
             }
-
-        } catch (error) {
-            toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
-
-        }
+        }).catch(
+            error => {
+                isLoading.value = false;
+                console.error(error)
+            }
+        )
     } else {
-        try {
-            const response = await axios.put('product-catalogs/' + productCatalogForm.value.code, productCatalogForm.value)
-
+        await axios.put('product-catalogs/' + productCatalogForm.value.code, productCatalogForm.value).then(response => {
             if (response.status == 200) {
                 toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Catálogo atualizado com sucesso', life: 3000 });
-
                 productCatalogForm.value = {
                     code: -1,
                     name: '',
@@ -69,14 +66,16 @@ const save = (async () => {
                     description: '',
                     productManufacterUsername: JSON.parse(sessionStorage.getItem('user_info')).username
                 }
+                isLoading.value = false
                 emit('closeFormAndUpdate')
             }
-
-        } catch (error) {
-            toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
-        }
+        }).catch(
+            error => {
+                isLoading.value = false;
+                console.error(error)
+            }
+        )
     }
-
 })
 
 watch(

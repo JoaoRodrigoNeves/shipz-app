@@ -3,7 +3,7 @@ import { ref, onMounted, inject } from 'vue'
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const axios = inject('axios')
-
+const isLoading = ref(false)
 const emit = defineEmits(['closeFormAndUpdate'])
 const productCatalogs = ref([])
 const props = defineProps({
@@ -27,54 +27,61 @@ const productForm = ref({
 
 
 const loadProductCatalogs = async () => {
-    try {
-        await axios.get('product-manufacters/' + JSON.parse(sessionStorage.getItem('user_info')).username + '/product-catalogs').then(response => {
-            productCatalogs.value = response.data
-            if (productToUpdate.value.productCatalogCode >= 0) {
-                productForm.value.productCatalogCode = response.data.find((e) => e.code == productToUpdate.value.productCatalogCode)
-            }
-        })
-    } catch (error) {
-        console.log(error)
-    }
+    isLoading.value = true;
+    await axios.get('product-manufacters/' + JSON.parse(sessionStorage.getItem('user_info')).username + '/product-catalogs').then(response => {
+        productCatalogs.value = response.data
+        if (productToUpdate.value.productCatalogCode >= 0) {
+            productForm.value.productCatalogCode = response.data.find((e) => e.code == productToUpdate.value.productCatalogCode)
+        }
+        isLoading.value = false;
+
+    }).catch(
+        error => {
+            isLoading.value = false;
+            console.error(error)
+        }
+    )
 }
 
 const save = (async () => {
+    isLoading.value = true;
 
     if (props.isCreating) {
-        try {
-            console.log(productForm.value)
-            var payload = {
-                productCatalogCode: productForm.value.productCatalogCode
-            }
-            const response = await axios.post('products', payload)
+        var payload = {
+            productCatalogCode: productForm.value.productCatalogCode
+        }
 
+        await axios.post('products', payload).then(response => {
             if (response.status == 201) {
-                toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Produto criado com sucesso', life: 3000,  });
+                toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Produto criado com sucesso', life: 3000, });
 
                 emit('closeFormAndUpdate')
             }
+            isLoading.value = false;
 
-        } catch (error) {
-            toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
-
-        }
-    } else {
-        try {
-            var payload = {
-                productCatalogCode: productForm.value.productCatalogCode,
-                code: productForm.value.code
+        }).catch(
+            error => {
+                isLoading.value = false;
+                console.error(error)
             }
-            const response = await axios.put('products', payload)
-
+        )
+    } else {
+        var payload = {
+            productCatalogCode: productForm.value.productCatalogCode,
+            code: productForm.value.code
+        }
+        await axios.put('products', payload).then(response => {
             if (response.status == 200) {
                 toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Catálogo atualizado com sucesso', life: 3000 });
                 emit('closeFormAndUpdate')
             }
-
-        } catch (error) {
-            toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
-        }
+            isLoading.value = false;
+        }).catch(
+            error => {
+                isLoading.value = false;
+                console.error(error)
+            }
+        )
     }
 
 })

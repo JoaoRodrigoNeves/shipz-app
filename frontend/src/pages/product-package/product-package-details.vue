@@ -70,11 +70,17 @@ const deleteProductPackageConfirm = async () => {
         rejectLabel: 'Não',
         acceptLabel: 'Sim',
         accept: async () => {
+            isLoading.value = true
+
             await axios.delete('product-packages/' + productPackage.value.code).then(() => {
                 toast.add({ severity: 'info', summary: 'Embalagem Apagada', life: 3000 });
+                isLoading.value = false
+
                 router.back()
             }).catch(error => {
                 console.error(error)
+                isLoading.value = false
+
                 toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema!', life: 3000 });
             })
         }

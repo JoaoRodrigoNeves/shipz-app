@@ -26,7 +26,7 @@ const props = defineProps({
         required: true
     },
 })
-
+const isLoading = ref(false)
 const productCatalogs = ref([])
 const products = ref([])
 const productPackage = ref(Object.assign({}, props.productPackage))
@@ -40,26 +40,35 @@ const productPackageForm = ref({
 //const maxDate = new Date()
 
 const loadProductCatalogs = async () => {
+    isLoading.value = true
+
     await axios.get('product-catalogs')
         .then(response => {
             productCatalogs.value = response.data
+            isLoading.value = false
         }).catch(error => {
             console.error(error)
+            isLoading.value = false
             toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema!', life: 3000 });
         })
 }
 
 const loadProducts = async () => {
+    isLoading.value = true
+
     await axios.get('product-catalogs/' + productPackageForm.value.catalogCode + '/products/no-package')
         .then(response => {
             products.value = response.data
+            isLoading.value = false
         }).catch(error => {
             console.error(error)
+            isLoading.value = false
             toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema!', life: 3000 });
         })
 }
 
 const save = (async () => {
+    isLoading.value = true
 
     if (props.isCreating)
         await axios.post('product-packages', {
@@ -68,9 +77,11 @@ const save = (async () => {
             manufacturingDate: productPackageForm.value.manufacturingDate
         }).then(() => {
             toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Embalagem de produto criada com sucesso!', life: 3000 });
+            isLoading.value = false
             emit('closeFormAndUpdate')
         }).catch(error => {
             console.error(error)
+            isLoading.value = false
             toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema!', life: 3000 });
         })
     else if (props.isUpdating)
@@ -81,17 +92,21 @@ const save = (async () => {
             manufacturingDate: productPackageForm.value.manufacturingDate
         }).then(() => {
             toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Embalagem de produto atualizada com sucesso!', life: 3000 });
+            isLoading.value = false
             emit('closeFormAndUpdate')
         }).catch(error => {
             console.error(error)
+            isLoading.value = false
             toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema!', life: 3000 });
         })
     else if (props.isAddingProduct)
         await axios.post('product-packages/' + productPackage.value.code + '/products/' + productPackageForm.value.productCode
         ).then(() => {
             toast.add({ severity: 'info', summary: 'Produto Adicionado', life: 3000 });
+            isLoading.value = false
             emit('addProduct')
         }).catch(error => {
+            isLoading.value = false
             if (error.response.status === 409)
                 toast.add({ severity: 'error', summary: 'Erro', detail: 'Produto já está associado a uma embalagem!', life: 3000 });
             else {

@@ -11,25 +11,25 @@ const clientOrderToUpdate = ref(null)
 const loadOrders = async () => {
   isLoading.value = true
   if (JSON.parse(sessionStorage.getItem('user_info')).role == "ProductManufacter") {
-    try {
-      await axios.get('clientOrders').then(response => {
-        orders.value = response.data
-        isLoading.value = false
-      })
-    } catch (error) {
+    await axios.get('clientOrders').then(response => {
+      orders.value = response.data
       isLoading.value = false
-      console.log(error)
-    }
+    }).catch(
+      error => {
+        isLoading.value = false;
+        console.error(error)
+      }
+    )
   } else {
-    try {
-      await axios.get('logisticOperators/' + JSON.parse(sessionStorage.getItem('user_info')).username).then(response => {
-        orders.value = response.data.clientOrdersDTO
-        isLoading.value = false
-      })
-    } catch (error) {
+    await axios.get('logisticOperators/' + JSON.parse(sessionStorage.getItem('user_info')).username).then(response => {
+      orders.value = response.data.clientOrdersDTO
       isLoading.value = false
-      console.log(error)
-    }
+    }).catch(
+      error => {
+        isLoading.value = false;
+        console.error(error)
+      }
+    )
   }
 }
 
@@ -61,7 +61,8 @@ onMounted(async () => {
             :orders="orders" />
         </div>
         <div v-else class="client-orders-form">
-          <ClientOrderLogisticOperatorForm :clientOrder="clientOrderToUpdate" @addLogisticOperator="addLogisticOperator"></ClientOrderLogisticOperatorForm>
+          <ClientOrderLogisticOperatorForm :clientOrder="clientOrderToUpdate" @addLogisticOperator="addLogisticOperator">
+          </ClientOrderLogisticOperatorForm>
         </div>
       </VCard>
     </VCol>
@@ -76,7 +77,7 @@ onMounted(async () => {
   padding: 24px;
 }
 
-.client-orders-form{
+.client-orders-form {
   padding: 20px;
 }
 </style>

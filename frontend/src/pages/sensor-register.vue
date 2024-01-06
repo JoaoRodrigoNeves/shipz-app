@@ -14,15 +14,15 @@ const sensorForm = ref({
 
 const loadSensors = async () => {
     isLoading.value = true
-    try {
-        await axios.get('sensors').then(response => {
-            sensors.value = response.data
-            isLoading.value = false
-        })
-    } catch (error) {
+    await axios.get('sensors').then(response => {
+        sensors.value = response.data
         isLoading.value = false
-        console.log(error)
-    }
+    }).catch(
+        error => {
+            isLoading.value = false;
+            console.error(error)
+        }
+    )
 }
 
 const save = async () => {
@@ -33,7 +33,7 @@ const save = async () => {
     }
     await axios.post('observations', payload)
         .then(response => {
-            toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Observação criada com sucesso no sensor #'+ sensorForm.value.sensorCode + ' (' + getSensorInfo().sensorTypeName + ')', life: 3000 });
+            toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Observação criada com sucesso no sensor #' + sensorForm.value.sensorCode + ' (' + getSensorInfo().sensorTypeName + ')', life: 3000 });
             isLoading.value = false
             reset()
         }).catch(error => {

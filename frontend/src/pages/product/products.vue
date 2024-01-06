@@ -13,16 +13,16 @@ const productToUpdate = ref(null)
 
 const loadProducts = async () => {
     isLoading.value = true;
-    try {
-        await axios.get('product-manufacters/' + JSON.parse(sessionStorage.getItem('user_info')).username + '/products').then(response => {
-            isLoading.value = false;
-            products.value = response.data
-
-        })
-    } catch (error) {
+    await axios.get('product-manufacters/' + JSON.parse(sessionStorage.getItem('user_info')).username + '/products').then(response => {
         isLoading.value = false;
-        console.log(error)
-    }
+        products.value = response.data
+
+    }).catch(
+        error => {
+            isLoading.value = false;
+            console.error(error)
+        }
+    )
 }
 
 const closeFormAndUpdate = async () => {
