@@ -20,6 +20,7 @@ public class ObservationBean {
             throw new MyEntityNotFoundException("Sensor with code: " + sensorCode + " not found");
 
         Observation observation = new Observation(value, sensor);
+        sensor.addObservation(observation);
         entityManager.persist(observation);
         return observation;
     }
