@@ -9,14 +9,17 @@ import java.util.List;
 public class SensorDTO implements Serializable {
 
     long code;
-    SensorType type;
+    String type;
     String sensorTypeName;
     List<Observation> observations;
 
-    public SensorDTO(long code, SensorType type, String sensorTypeName) {
+    public SensorDTO() {
+
+    }
+
+    public SensorDTO(long code, String type) {
         this.code = code;
         this.type = type;
-        this.sensorTypeName = sensorTypeName;
     }
 
     public long getCode() {
@@ -27,20 +30,12 @@ public class SensorDTO implements Serializable {
         this.code = code;
     }
 
-    public SensorType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(SensorType type) {
+    public void setType(String type) {
         this.type = type;
-    }
-
-    public String getSensorTypeName() {
-        return sensorTypeName;
-    }
-
-    public void setSensorTypeName(String sensorTypeName) {
-        this.sensorTypeName = sensorTypeName;
     }
 
     public List<Observation> getObservations() {
