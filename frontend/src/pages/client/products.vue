@@ -14,7 +14,7 @@ const productCatalogsSelected = ref([]);
 const loadProductCatalogs = async () => {
     isLoading.value = true;
 
-    await axios.get('product-catalogs').then(response => {
+    await axios.get('product-catalogs/available').then(response => {
         isLoading.value = false;
         productCatalogs.value = response.data
     }).catch(
@@ -37,27 +37,29 @@ const createOrder = async () => {
         if (response.status == 201) {
             toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Encomenda criado com sucesso', life: 3000, });
             resetProducts()
+            loadProductCatalogs()
         }
         isLoading.value = false
     }).catch(
         error => {
-            toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
+            console.log(error)
+            toast.add({ severity: 'error', summary: 'Erro', detail: error.response.data, life: 3000 });
             isLoading.value = false
         }
     )
 }
 
 const checkIfProductAreSelected = (catalogCode) => {
-    console.log(productCatalogsSelected.value.find(e => e == catalogCode) != null)
-    return productCatalogsSelected.value.find(e => e == catalogCode) != null
+    return productCatalogsSelected.value.find(e => e.code == catalogCode) != null
 }
 
 
-const addProduct = (catalogCode) => {
-    if (productCatalogsSelected.value.find(e => e == catalogCode) == null) {
-        productCatalogsSelected.value.push(catalogCode)
+const addProduct = (catalog) => {
+    if (productCatalogsSelected.value.find(e => e.code == catalog.code) == null) {
+        catalog.quantity = 1;
+        productCatalogsSelected.value.push(catalog)
     } else {
-        productCatalogsSelected.value.splice(productCatalogsSelected.value.findIndex(e => e == catalogCode), 1)
+        productCatalogsSelected.value.splice(productCatalogsSelected.value.findIndex(e => e.code == catalog.code), 1)
     }
 }
 
@@ -70,38 +72,76 @@ onMounted(async () => {
 })
 </script>
 <template>
-    <div class="products-container">
-        <div class="product-container-header">
-            <div class="title">
-                Produtos
+    <div class="product-page-container">
+        <div class="products-container">
+            <div class="product-container-header">
+                <div class="title">
+                    Produtos
+                </div>
+
             </div>
-            <div class="product-submit">
-                <VBtn color="secondary" variant="tonal" type="reset" @click.prevent="resetProducts">
-                    Repor
-                </VBtn>
-                <VBtn rel="noopener noreferrer" color="primary" @click="createOrder">
-                    Submeter
-                </VBtn>
+            <div class="products-list" v-if="productCatalogs.length > 0">
+                <div class="product-item" v-for="productCatalog in productCatalogs" @click="addProduct(productCatalog)"
+                    :class="{ 'checked': checkIfProductAreSelected(productCatalog.code) }">
+                    <VIcon icon="mdi-check-circle" color="rgba(0, 128, 11, 1)" class="icon-check"
+                        v-if="checkIfProductAreSelected(productCatalog.code)"></VIcon>
+                    <div class="product-header">
+                        <span>{{ productCatalog.category }}</span>
+                        <span>{{ productCatalog.code }}</span>
+                    </div>
+                    <div class="product-content">
+                        <span>
+                            {{ productCatalog.name }}
+                        </span>
+                    </div>
+                    <div class="product-footer">
+                        <span>
+                            {{ productCatalog.description }}
+                        </span>
+                    </div>
+                </div>
+                <div class="product-item-hidden"></div>
+                <div class="product-item-hidden"></div>
+                <div class="product-item-hidden"></div>
+                <div class="product-item-hidden"></div>
+                <div class="product-item-hidden"></div>
+                <div class="product-item-hidden"></div>
+            </div>
+            <div v-else>
+                <div class="no-products-container">
+                    Não há produtos disponiveis
+                </div>
             </div>
         </div>
-        <div class="products-list">
-            <div class="product-item" v-for="productCatalog in productCatalogs" @click="addProduct(productCatalog.code)"
-                :class="{ 'checked': checkIfProductAreSelected(productCatalog.code) }">
-                <VIcon icon="mdi-check-circle" color="rgba(0, 128, 11, 1)" class="icon-check"
-                    v-if="checkIfProductAreSelected(productCatalog.code)"></VIcon>
-                <div class="product-header">
-                    <span>{{ productCatalog.category }}</span>
-                    <span>{{ productCatalog.code }}</span>
+        <div class="selected-prodcuts-container" v-if="productCatalogsSelected.length > 0">
+            <div class="selected-product-list">
+                <div class="selected-product-item selected-product-item-header">
+                    <span>Produto</span>
+                    <span>Quantidade</span>
                 </div>
-                <div class="product-content">
-                    <span>
-                        {{ productCatalog.name }}
-                    </span>
+                <div class="selected-product-item" v-for="productCatalog in productCatalogsSelected">
+                    <span>{{ productCatalog.name }}</span>
+
+                    <div class="selected-product-quantity-action">
+                        <div style="width: 100px;">
+                            <VTextField type="number" v-model="productCatalog.quantity" class="product-quantity" />
+                        </div>
+                        <span class="product-action">
+                            <VIcon @click="addProduct(productCatalog)">
+                                mdi-close
+                            </VIcon>
+                        </span>
+                    </div>
+
+
                 </div>
-                <div class="product-footer">
-                    <span>
-                        {{ productCatalog.description }}
-                    </span>
+                <div class="product-submit">
+                    <VBtn color="secondary" variant="tonal" type="reset" @click.prevent="resetProducts">
+                        Repor
+                    </VBtn>
+                    <VBtn rel="noopener noreferrer" color="primary" @click="createOrder">
+                        Submeter
+                    </VBtn>
                 </div>
             </div>
         </div>
@@ -109,8 +149,59 @@ onMounted(async () => {
 </template>
   
 <style>
+.product-page-container .selected-prodcuts-container {
+    width: fit-content;
+    min-width: 350px;
+    padding-left: 16px;
+    border-left: 1px solid #0000002a;
+}
+
+.product-page-container .selected-prodcuts-container .selected-product-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.product-page-container .selected-prodcuts-container .selected-product-list .product-submit {
+    display: flex;
+    justify-content: end;
+    width: 100%;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.product-page-container .selected-prodcuts-container .selected-product-list .selected-product-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    white-space: nowrap;
+    border-bottom: 1px solid #0000002a;
+    padding: 12px 0px 12px 0px;
+}
+
+.product-page-container .selected-prodcuts-container .selected-product-list .selected-product-item-header {
+    justify-content: space-between;
+    padding-right: 40px;
+}
+
+.product-page-container .selected-prodcuts-container .selected-product-list .selected-product-item .product-action {
+    cursor: pointer;
+}
+
+.product-page-container .selected-prodcuts-container .selected-product-list .selected-product-item .selected-product-quantity-action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.product-page-container {
+    display: flex;
+    gap: 32px;
+}
+
 .products-container {
     padding: 12px;
+    width: 100%;
 }
 
 .products-container .product-container-header {
@@ -124,20 +215,10 @@ onMounted(async () => {
     font-size: 18px;
 }
 
-.products-container .product-container-header .product-submit {
-    display: flex;
-    justify-content: end;
-    width: 100%;
-    gap: 16px;
-}
-
 .products-container .products-list {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 16px;
-    height: 100%;
 }
 
 
@@ -146,9 +227,13 @@ onMounted(async () => {
     box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgb(172, 169, 169), 0 1px 2px 0 black;
     padding: 10px;
     border-radius: 8px;
-    width: 22%;
+    width: 100%;
     position: relative;
     cursor: pointer;
+}
+
+.products-container .products-list .product-item-hidden {
+    visibility: hidden;
 }
 
 .products-container .products-list .product-item .icon-check {
@@ -181,6 +266,26 @@ onMounted(async () => {
 
 .products-container .products-list .product-item .product-footer {
     text-align: center;
+}
+
+
+.products-container .no-products-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 150px;
+}
+
+@media (max-width: 767px) {
+    .product-page-container {
+        flex-direction: column-reverse;
+    }
+
+    .product-page-container .selected-prodcuts-container{
+        width: 100%;
+        border-left: 0;
+    }
 }
 </style>
   

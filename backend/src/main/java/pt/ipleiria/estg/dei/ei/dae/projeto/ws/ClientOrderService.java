@@ -23,6 +23,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.NoStockException;
 
 import java.util.List;
 import java.util.Random;
@@ -100,7 +101,7 @@ public class ClientOrderService {
 
     @POST
     @Path("/")
-    public Response create(ClientOrderCreateDTO clientOrderDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
+    public Response create(ClientOrderCreateDTO clientOrderDTO) throws MyEntityNotFoundException, MyConstraintViolationException, NoStockException {
         clientOrderBean.create(
                 clientOrderDTO.getFinalCostumer(),
                 clientOrderDTO.getProducts());

@@ -119,6 +119,12 @@ public class ProductCatalogService {
     public List<ProductCatalogDTO> getAll() {
         return productCatalogToDTOs(productCatalogBean.getAll());
     }
+    @GET
+    @Path("/available")
+    @RolesAllowed({"LogisticOperator", "FinalCostumer"})
+    public List<ProductCatalogDTO> getAllAvailable() {
+        return productCatalogToDTOs(productCatalogBean.getAllAvailable());
+    }
 
     //TODO get products from product-catalog
     @GET

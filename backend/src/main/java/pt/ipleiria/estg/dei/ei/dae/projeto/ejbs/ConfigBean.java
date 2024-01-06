@@ -54,9 +54,24 @@ public class ConfigBean {
             productPackageBean.create("secundário", "cartão", "02/01/2024");
             productPackageBean.create("terciário", "plástico", "02/01/2024");
 
+            productBean.create(100002);
+            productBean.create(100002);
+            productBean.create(100002);
+            productBean.create(100002);
+            productBean.create(100002);
+            productBean.create(100002);
+            productBean.create(100002);
+            productBean.create(100002);
+            productBean.create(100002);
             productBean.create(100001);
-            productBean.create(100002);
-            productBean.create(100002);
+            productBean.create(100001);
+            productBean.create(100001);
+            productBean.create(100001);
+            productBean.create(100001);
+            productBean.create(100001);
+            productBean.create(100001);
+            productBean.create(100001);
+
 
             productBean.addProductToPackage(100000, 100002);
             productBean.addProductToPackage(100001, 100002);
@@ -69,9 +84,9 @@ public class ConfigBean {
             sensorBean.create(SensorType.PRESSURE);
             sensorBean.create(SensorType.PRESSURE);
 
-            List<Long> productList = new ArrayList<>();
+            /*List<Long> productList = new ArrayList<>();
             productList.add(100002L);
-            clientOrderBean.create("finalCostumer1", productList);
+            clientOrderBean.create("finalCostumer1", productList);*/
 
         } catch (Exception e) {
             logger.severe(e.getMessage());
