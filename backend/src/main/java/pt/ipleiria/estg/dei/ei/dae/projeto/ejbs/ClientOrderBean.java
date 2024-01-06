@@ -64,13 +64,7 @@ public class ClientOrderBean {
         }
 
     }
-
-    public List<Product> getAllProductsWithoutOrder(ProductCatalog productCatalog) {
-        return productCatalog.getProducts()
-                .stream()
-                .filter(prod -> prod.getClientOrder() != null)
-                .collect(Collectors.toList());
-    }
+    
     public List<ClientOrder> getAll(){
         return entityManager.createNamedQuery("getAllOrders", ClientOrder.class).getResultList();
     }
