@@ -3,6 +3,7 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.ejbs;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductPackage;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
@@ -18,8 +19,9 @@ public class SensorBean {
     private EntityManager entityManager;
 
     //TODO CRUD operations for Sensor entity
-    public Sensor create(SensorType type) throws MyEntityExistsException {
-        Sensor sensor = new Sensor(type);
+    public Sensor create(String type) throws MyEntityExistsException {
+        SensorType sensorType = SensorType.fromString(type);
+        Sensor sensor = new Sensor(sensorType);
         entityManager.persist(sensor);
         return sensor;
     }
@@ -62,5 +64,12 @@ public class SensorBean {
 
         sensor.removePackage(p);
         p.removeSensor(sensor);
+    }
+
+    //TODO get packages
+    public Sensor getPackages(long code) throws MyEntityNotFoundException {
+        Sensor sensor = this.find(code);
+        Hibernate.initialize(sensor.getPackages());
+        return sensor;
     }
 }

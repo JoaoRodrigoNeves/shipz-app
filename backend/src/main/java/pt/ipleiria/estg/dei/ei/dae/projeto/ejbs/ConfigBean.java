@@ -62,12 +62,12 @@ public class ConfigBean {
             productBean.addProductToPackage(100001, 100002);
             productBean.addProductToPackage(100002, 100001);
 
-            sensorBean.create(SensorType.TEMPERATURE);
-            sensorBean.create(SensorType.TEMPERATURE);
-            sensorBean.create(SensorType.HUMIDITY);
-            sensorBean.create(SensorType.HUMIDITY);
-            sensorBean.create(SensorType.PRESSURE);
-            sensorBean.create(SensorType.PRESSURE);
+            sensorBean.create("Temperatura");
+            sensorBean.create("Temperatura");
+            sensorBean.create("Humidade");
+            sensorBean.create("Humidade");
+            sensorBean.create("Pressão");
+            sensorBean.create("Pressão");
 
             List<Long> productList = new ArrayList<>();
             productList.add(100002L);

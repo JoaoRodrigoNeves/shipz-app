@@ -23,7 +23,6 @@ public class Sensor implements Serializable {
     long code;
     SensorType type;
     @OneToMany(mappedBy = "sensor", cascade = CascadeType.REMOVE)
-    @NotNull
     List<Observation> observations;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

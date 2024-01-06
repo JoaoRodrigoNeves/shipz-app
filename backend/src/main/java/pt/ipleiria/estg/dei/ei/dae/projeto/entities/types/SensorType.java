@@ -13,4 +13,13 @@ public enum SensorType {
     public String getSensorType() {
         return sensorType;
     }
+
+    public static SensorType fromString(String text) {
+        for (SensorType sensorType : SensorType.values()) {
+            if (sensorType.sensorType.equalsIgnoreCase(text)) {
+                return sensorType;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found");
+    }
 }
