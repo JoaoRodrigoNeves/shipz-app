@@ -11,6 +11,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.SensorBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductPackage;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
+import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
@@ -44,7 +45,7 @@ public class SensorService {
         );
     }
 
-    public List<PackageDTO> packageDTOs(List<Package> packages){
+    public List<PackageDTO> packageDTOs(List<Package> packages) {
         return packages.stream().map(this::packageDTO).collect(Collectors.toList());
     }
 
@@ -61,6 +62,25 @@ public class SensorService {
     @Path("{code}")
     public Response getDetails(@PathParam("code") long code) throws MyEntityNotFoundException {
         Sensor sensor = sensorBean.find(code);
+        return Response.status(Response.Status.OK).entity(toDTONoObservations(sensor)).build();
+    }
+
+    //TODO update sensor
+    @PUT
+    @Path("/")
+    public Response update(SensorDTO sensorDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
+        Sensor sensor = sensorBean.update(
+                sensorDTO.getCode(),
+                sensorDTO.getType()
+        );
+        return Response.status(Response.Status.OK).entity(toDTONoObservations(sensor)).build();
+    }
+
+    //TODO delete sensor
+    @DELETE
+    @Path("{code}")
+    public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException {
+        Sensor sensor = sensorBean.delete(code);
         return Response.status(Response.Status.OK).entity(toDTONoObservations(sensor)).build();
     }
 

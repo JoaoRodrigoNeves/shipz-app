@@ -3,11 +3,13 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.ejbs;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.validation.ConstraintViolationException;
 import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductPackage;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
+import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
@@ -30,6 +32,28 @@ public class SensorBean {
         Sensor sensor = entityManager.find(Sensor.class, code);
         if (sensor == null)
             throw new MyEntityNotFoundException("Sensor with code: " + code + " not found");
+        return sensor;
+    }
+
+    public Sensor update(long code, String type) throws MyEntityNotFoundException, MyConstraintViolationException {
+        Sensor sensor = this.find(code);
+        try {
+            SensorType sensorType = SensorType.fromString(type);
+            sensor.setType(sensorType);
+            entityManager.persist(sensor);
+            return sensor;
+        } catch (ConstraintViolationException e){
+            throw new MyConstraintViolationException(e);
+        }
+    }
+
+    public Sensor delete(long code) throws MyEntityNotFoundException {
+        Sensor sensor = this.find(code);
+        if (sensor.getPackages() != null)
+            sensor.getPackages().forEach(aPackage -> aPackage.removeSensor(sensor));
+        if (sensor.getObservations() != null)
+            sensor.getObservations().forEach(observation -> observation.setSensor(null));
+        entityManager.remove(sensor);
         return sensor;
     }
 
