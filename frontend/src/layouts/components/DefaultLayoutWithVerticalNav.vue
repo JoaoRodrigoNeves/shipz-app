@@ -63,17 +63,17 @@ const upgradeBanner = computed(() => {
         title: 'Embalagens de Produto',
         icon: 'mdi-package-variant-closed',
         to: '/product-packages'
-      }" v-if="user"/>
+      }" v-if="user && user.role != 'FinalCostumer'"/>
       <VerticalNavLink :item="{
         title: 'Encomendas',
         icon: 'bi-box-seam',
         to: '/orders',
-      }" v-if="user"/>
+      }" v-if="user && user.role != 'FinalCostumer'"/>
       <VerticalNavLink :item="{
         title: 'Account Settings',
         icon: 'mdi-account-cog-outline',
         to: '/account-settings',
-      }" v-if="user"/>
+      }" v-if="user && user.role != 'FinalCostumer'"/>
 
       <!-- 👉 Pages -->
       <VerticalNavSectionTitle :item="{

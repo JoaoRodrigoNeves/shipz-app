@@ -89,32 +89,28 @@ router.beforeEach(async (to, from, next) => {
     const user = JSON.parse(sessionStorage.getItem('user_info'))
     const authUser = sessionStorage.getItem('token')
     if (!authUser) {
-        next({ path: '/login' })
+      next({ path: '/login' })
     }
-    else if (to.meta.manufacterAuth) {
-      if (user.role === 'ProductManufacter') {
+
+    if (user.role === 'ProductManufacter') {
+      if (to.meta.manufacterAuth) {
         next()
-      } else {
-        next({ path: '/dashboard' })
       }
-    } else if (to.meta.logisticAuth) {
-      if (user.role === 'LogisticOperator') {
+    } else if (user.role === 'LogisticOperator') {
+      if (to.meta.logisticAuth) {
         next()
-      } else {
-        next({ path: '/dashboard' })
       }
-    } else if (to.meta.clientAuth) {
-      if (user.role === 'FinalCostumer') {
+    } else if (user.role === 'FinalCostumer') {
+      if (to.meta.clientAuth) {
         next()
-      } else {
-        next({ path: '/dashboard' })
       }
     }
-  } else if (to.name == "noRouteMatch"){
-    next()
-  }else{
-    next()
+
+    if (to.name == "noRouteMatch") {
+      next()
+    }
   }
+
 })
 
 export default router

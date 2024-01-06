@@ -85,7 +85,6 @@ onMounted(async () => {
             </div>
         </div>
         <div class="products-list">
-
             <div class="product-item" v-for="productCatalog in productCatalogs" @click="addProduct(productCatalog.code)"
                 :class="{ 'checked': checkIfProductAreSelected(productCatalog.code) }">
                 <VIcon icon="mdi-check-circle" color="rgba(0, 128, 11, 1)" class="icon-check"

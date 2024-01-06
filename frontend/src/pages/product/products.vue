@@ -58,7 +58,6 @@ onMounted(async () => {
                     @loadProducts="loadProducts" :product-package-view="false" :products="products" />
             </VCard>
             <VCard v-if="isCreatingOrUpdating">
-
                 <VCard>
                     <div class="product-catalogs-header">
                         <h2>{{ isCreating ? 'Criar Produto' : 'Editar Produto' }}</h2>
