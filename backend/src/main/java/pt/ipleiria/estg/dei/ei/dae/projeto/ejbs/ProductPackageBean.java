@@ -60,9 +60,14 @@ public class ProductPackageBean {
     //TODO get all products of a product package
     public ProductPackage getProducts(long code) throws MyEntityNotFoundException {
         ProductPackage productPackage = this.find(code);
-        if (productPackage != null)
-            Hibernate.initialize(productPackage.getProducts());
+        Hibernate.initialize(productPackage.getProducts());
+        return productPackage;
+    }
 
+    //TODO get sensors
+    public ProductPackage getSensors(long code) throws MyEntityNotFoundException {
+        ProductPackage productPackage = this.find(code);
+        Hibernate.initialize(productPackage.getSensors());
         return productPackage;
     }
 }
