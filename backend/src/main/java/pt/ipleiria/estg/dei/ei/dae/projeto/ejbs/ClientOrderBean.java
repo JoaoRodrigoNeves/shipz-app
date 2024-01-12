@@ -36,7 +36,6 @@ public class ClientOrderBean {
         }
 
         try{
-
             ClientOrder clientOrder = new ClientOrder(finalCostumer);
             entityManager.persist(clientOrder);
             entityManager.flush();
@@ -64,7 +63,7 @@ public class ClientOrderBean {
         }
 
     }
-    
+
     public List<ClientOrder> getAll(){
         return entityManager.createNamedQuery("getAllOrders", ClientOrder.class).getResultList();
     }
