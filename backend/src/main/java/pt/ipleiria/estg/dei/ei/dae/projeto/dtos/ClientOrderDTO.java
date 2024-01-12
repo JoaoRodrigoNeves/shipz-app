@@ -34,6 +34,10 @@ public class ClientOrderDTO implements Serializable {
         this.logisticOperator = logisticOperator;
     }
 
+    public void setFinalCostumer(String finalCostumer) {
+        this.finalCostumer = finalCostumer;
+    }
+
     public List<ProductDTO> getProductsDTO() {
         return productsDTO;
     }

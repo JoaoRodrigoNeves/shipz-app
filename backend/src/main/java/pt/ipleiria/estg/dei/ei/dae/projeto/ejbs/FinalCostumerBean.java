@@ -8,6 +8,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.FinalCostumer;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.LogisticOperator;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.security.Hasher;
@@ -24,7 +25,7 @@ public class FinalCostumerBean {
 
     public boolean exists(String username) {
         Query query = entityManager.createQuery(
-                "SELECT COUNT(s.username) FROM FinalCostumer s WHERE s.username = :username",
+                "SELECT COUNT(fc.username) FROM FinalCostumer fc WHERE fc.username = :username",
                 Long.class
         );
         query.setParameter("username", username);
@@ -88,6 +89,15 @@ public class FinalCostumerBean {
     //TODO get final costumer -> clients orders
     public FinalCostumer getClientOrders(String username) throws MyEntityNotFoundException {
         FinalCostumer finalCostumer = this.find(username);
+        Hibernate.initialize(finalCostumer.getClientOrders());
+        return finalCostumer;
+    }
+
+    public FinalCostumer findFinalCostumerWithClientOrder(String username) throws MyEntityNotFoundException {
+        if (!exists(username)) {
+            throw new MyEntityNotFoundException("Final Costumer with username '" + username + "' not found");
+        }
+        FinalCostumer finalCostumer = entityManager.find(FinalCostumer.class, username);
         Hibernate.initialize(finalCostumer.getClientOrders());
         return finalCostumer;
     }

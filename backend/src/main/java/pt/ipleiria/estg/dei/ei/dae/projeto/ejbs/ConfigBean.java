@@ -26,6 +26,8 @@ public class ConfigBean {
     @EJB
     private ProductPackageBean productPackageBean;
     @EJB
+    private TransportPackageBean transportPackageBean;
+    @EJB
     private FinalCostumerBean finalCostumerBean;
     @EJB
     private ProductBean productBean;
@@ -76,6 +78,9 @@ public class ConfigBean {
             productBean.addProductToPackage(100000, 100002);
             productBean.addProductToPackage(100001, 100002);
             productBean.addProductToPackage(100002, 100001);
+
+            transportPackageBean.create("primário", "papel", "leiria", "01/01/2024");
+            clientOrderBean.create("finalCostumer1", List.of(100001L, 100002L));
 
             sensorBean.create("Temperatura");
             sensorBean.create("Temperatura");
