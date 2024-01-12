@@ -2,110 +2,129 @@
 import productCatalogDetailsVue from '../product-catalog/product-catalog-details.vue';
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useToast } from "primevue/usetoast";
+import { ref, onMounted } from 'vue'
+import { useToast } from "primevue/usetoast"
 
 const axios = inject('axios')
-const toast = useToast();
-const isLoading = ref(false);
-const productCatalogs = ref([]);
-const productCatalogsSelected = ref([]);
+const toast = useToast()
+const isLoading = ref(false)
+const productCatalogs = ref([])
+const productCatalogsSelected = ref([])
 
 const loadProductCatalogs = async () => {
-    isLoading.value = true;
+  isLoading.value = true
 
-    await axios.get('product-catalogs').then(response => {
-        isLoading.value = false;
-        productCatalogs.value = response.data
-    }).catch(
-        error => {
-            isLoading.value = false;
-            console.error(error)
-        }
-    )
+  await axios.get('product-catalogs').then(response => {
+    isLoading.value = false
+    productCatalogs.value = response.data
+  }).catch(
+    error => {
+      isLoading.value = false
+      console.error(error)
+    },
+  )
 }
 
 
 const createOrder = async () => {
-    isLoading.value = true
+  isLoading.value = true
 
-    var payload = {
-        products: productCatalogsSelected.value,
-        finalCostumer: JSON.parse(sessionStorage.getItem('user_info')).username
+  var payload = {
+    products: productCatalogsSelected.value,
+    finalCostumer: JSON.parse(sessionStorage.getItem('user_info')).username,
+  }
+  await axios.post('clientOrders', payload).then(response => {
+    if (response.status == 201) {
+      toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Encomenda criado com sucesso', life: 3000 })
+      resetProducts()
     }
-    await axios.post('clientOrders', payload).then(response => {
-        if (response.status == 201) {
-            toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Encomenda criado com sucesso', life: 3000, });
-            resetProducts()
-        }
-        isLoading.value = false
-    }).catch(
-        error => {
-            toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
-            isLoading.value = false
-        }
-    )
+    isLoading.value = false
+  }).catch(
+    error => {
+      toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 })
+      isLoading.value = false
+    },
+  )
 }
 
-const checkIfProductAreSelected = (catalogCode) => {
-    console.log(productCatalogsSelected.value.find(e => e == catalogCode) != null)
-    return productCatalogsSelected.value.find(e => e == catalogCode) != null
+const checkIfProductAreSelected = catalogCode => {
+  console.log(productCatalogsSelected.value.find(e => e == catalogCode) != null)
+  
+  return productCatalogsSelected.value.find(e => e == catalogCode) != null
 }
 
 
-const addProduct = (catalogCode) => {
-    if (productCatalogsSelected.value.find(e => e == catalogCode) == null) {
-        productCatalogsSelected.value.push(catalogCode)
-    } else {
-        productCatalogsSelected.value.splice(productCatalogsSelected.value.findIndex(e => e == catalogCode), 1)
-    }
+const addProduct = catalogCode => {
+  if (productCatalogsSelected.value.find(e => e == catalogCode) == null) {
+    productCatalogsSelected.value.push(catalogCode)
+  } else {
+    productCatalogsSelected.value.splice(productCatalogsSelected.value.findIndex(e => e == catalogCode), 1)
+  }
 }
 
 const resetProducts = () => {
-    productCatalogsSelected.value = []
+  productCatalogsSelected.value = []
 }
 
 onMounted(async () => {
-    await loadProductCatalogs();
+  await loadProductCatalogs()
 })
 </script>
+
 <template>
-    <div class="products-container">
-        <div class="product-container-header">
-            <div class="title">
-                Produtos
-            </div>
-            <div class="product-submit">
-                <VBtn color="secondary" variant="tonal" type="reset" @click.prevent="resetProducts">
-                    Repor
-                </VBtn>
-                <VBtn rel="noopener noreferrer" color="primary" @click="createOrder">
-                    Submeter
-                </VBtn>
-            </div>
-        </div>
-        <div class="products-list">
-            <div class="product-item" v-for="productCatalog in productCatalogs" @click="addProduct(productCatalog.code)"
-                :class="{ 'checked': checkIfProductAreSelected(productCatalog.code) }">
-                <VIcon icon="mdi-check-circle" color="rgba(0, 128, 11, 1)" class="icon-check"
-                    v-if="checkIfProductAreSelected(productCatalog.code)"></VIcon>
-                <div class="product-header">
-                    <span>{{ productCatalog.category }}</span>
-                    <span>{{ productCatalog.code }}</span>
-                </div>
-                <div class="product-content">
-                    <span>
-                        {{ productCatalog.name }}
-                    </span>
-                </div>
-                <div class="product-footer">
-                    <span>
-                        {{ productCatalog.description }}
-                    </span>
-                </div>
-            </div>
-        </div>
+  <div class="products-container">
+    <div class="product-container-header">
+      <div class="title">
+        Produtos
+      </div>
+      <div class="product-submit">
+        <VBtn
+          color="secondary"
+          variant="tonal"
+          type="reset"
+          @click.prevent="resetProducts"
+        >
+          Repor
+        </VBtn>
+        <VBtn
+          rel="noopener noreferrer"
+          color="primary"
+          @click="createOrder"
+        >
+          Submeter
+        </VBtn>
+      </div>
     </div>
+    <div class="products-list">
+      <div
+        v-for="productCatalog in productCatalogs"
+        class="product-item"
+        :class="{ 'checked': checkIfProductAreSelected(productCatalog.code) }"
+        @click="addProduct(productCatalog.code)"
+      >
+        <VIcon
+          v-if="checkIfProductAreSelected(productCatalog.code)"
+          icon="mdi-check-circle"
+          color="rgba(0, 128, 11, 1)"
+          class="icon-check"
+        />
+        <div class="product-header">
+          <span>{{ productCatalog.category }}</span>
+          <span>{{ productCatalog.code }}</span>
+        </div>
+        <div class="product-content">
+          <span>
+            {{ productCatalog.name }}
+          </span>
+        </div>
+        <div class="product-footer">
+          <span>
+            {{ productCatalog.description }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
   
 <style>
@@ -183,4 +202,3 @@ onMounted(async () => {
     text-align: center;
 }
 </style>
-  

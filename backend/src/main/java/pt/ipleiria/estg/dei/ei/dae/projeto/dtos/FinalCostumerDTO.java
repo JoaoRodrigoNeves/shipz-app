@@ -2,6 +2,7 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
 
 import java.io.Serializable;
+import java.util.List;
 
 public class FinalCostumerDTO implements Serializable {
     private String username;
@@ -9,6 +10,7 @@ public class FinalCostumerDTO implements Serializable {
     private String name;
     private String email;
     private String address;
+    private List<ClientOrderDTO> clientOrdersDTO;
     public FinalCostumerDTO() {
     }
 
@@ -20,7 +22,11 @@ public class FinalCostumerDTO implements Serializable {
         this.address = address;
     }
 
-    public FinalCostumerDTO(String username, String name, String email) {
+    public FinalCostumerDTO(String username, String name, String email, String address) {
+        this.username = username;
+        this.name = name;
+        this.email = email;
+        this.address = address;
     }
 
     public String getUsername() {
@@ -61,5 +67,13 @@ public class FinalCostumerDTO implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public void setClientOrdersDTO(List<ClientOrderDTO> clientOrdersDTO) {
+        this.clientOrdersDTO = clientOrdersDTO;
+    }
+
+    public List<ClientOrderDTO> getClientOrdersDTO() {
+        return clientOrdersDTO;
     }
 }

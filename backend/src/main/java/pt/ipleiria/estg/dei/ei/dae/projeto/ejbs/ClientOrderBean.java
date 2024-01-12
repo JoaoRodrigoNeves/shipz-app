@@ -99,6 +99,7 @@ public class ClientOrderBean {
         product.setClientOrder(null);
     }
 
+
     public void changeLogistic(long clientOrderCode, String logisticOperatorCode) throws MyEntityNotFoundException {
         ClientOrder clientOrder = find(clientOrderCode);
         LogisticOperator logisticOperator = entityManager.find(LogisticOperator.class, logisticOperatorCode);
@@ -110,5 +111,18 @@ public class ClientOrderBean {
         }
         clientOrder.setLogisticOperator(logisticOperator);
         logisticOperator.addOrder(clientOrder);
+    }
+
+    public void changeFinalCostumer(long clientOrderCode, String finalCostumerUsername) throws MyEntityNotFoundException {
+        ClientOrder clientOrder = find(clientOrderCode);
+        FinalCostumer finalCostumer = entityManager.find(FinalCostumer.class, finalCostumerUsername);
+        if (finalCostumer == null) {
+            throw new MyEntityNotFoundException("Final Costumer with username: " + finalCostumerUsername + " not found");
+        }
+        if(clientOrder.getFinalCostumer() != null){
+            finalCostumer.removeOrder(clientOrder);
+        }
+        clientOrder.setFinalCostumer(finalCostumer);
+        finalCostumer.addOrder(clientOrder);
     }
 }

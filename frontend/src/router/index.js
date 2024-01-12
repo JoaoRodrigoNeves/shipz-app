@@ -72,6 +72,7 @@ const router = createRouter({
         {
           path: 'login',
           component: () => import('../pages/login.vue'),
+          meta: { manufacterAuth: false, logisticAuth: false, clientAuth: false, requiredAuth: false }
         },
         {
           path: '/:pathMatch(.*)*',
@@ -85,32 +86,26 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
+  const user = JSON.parse(sessionStorage.getItem('user_info'))
+  const authUser = sessionStorage.getItem('token')
+
   if (to.meta.requiredAuth) {
-    const user = JSON.parse(sessionStorage.getItem('user_info'))
-    const authUser = sessionStorage.getItem('token')
     if (!authUser) {
-      next({ path: '/login' })
+      return next({ path: '/login' })
     }
 
-    if (user.role === 'ProductManufacter') {
-      if (to.meta.manufacterAuth) {
-        next()
-      }
-    } else if (user.role === 'LogisticOperator') {
-      if (to.meta.logisticAuth) {
-        next()
-      }
-    } else if (user.role === 'FinalCostumer') {
-      if (to.meta.clientAuth) {
-        next()
-      }
-    }
-
-    if (to.name == "noRouteMatch") {
-      next()
+    if (user.role === 'ProductManufacter' && to.meta.manufacterAuth) {
+      return next()
+    } else if (user.role === 'LogisticOperator' && to.meta.logisticAuth) {
+      return next()
+    } else if (user.role === 'FinalCostumer' && to.meta.clientAuth) {
+      return next()
+    } else {
+      return next({ path: '/login' })
     }
   }
 
+  return next()
 })
 
 export default router
