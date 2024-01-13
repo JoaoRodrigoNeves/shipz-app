@@ -25,7 +25,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.security.Authenticated;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Path("finalCostumers")
+@Path("final-costumers")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @Authenticated
@@ -108,18 +108,18 @@ public class FinalCostumerService {
     }
 
     @GET // means: to call this endpoint, we need to use the HTTP GET method
-    @Path("/") // means: the relative url path is “/api/finalCostumers/”
-    public List<FinalCostumerDTO> getAllFinalCostumers() {
-        var finalCostumers = finalCostumerBean.getAll();
-        return toDTOsNoClientOrders(finalCostumers);
-    }
-
-    @GET // means: to call this endpoint, we need to use the HTTP GET method
-    @Path("/{username}") // means: the relative url path is “/api/finalCostumers/{username}”
+    @Path("/{username}") // means: the relative url path is “/api/final-costumers/{username}”
     public Response getDetails(@PathParam("username") String username) throws MyEntityExistsException, MyEntityNotFoundException {
         FinalCostumer finalCostumer = finalCostumerBean.findFinalCostumerWithClientOrder(username);
         if (finalCostumer == null)
             throw new MyEntityExistsException("Final Costumer with username: " + username + " doesn't exist");
         return Response.ok(toDTO(finalCostumer)).build();
+    }
+
+    @GET // means: to call this endpoint, we need to use the HTTP GET method
+    @Path("/") // means: the relative url path is “/api/final-costumers/”
+    public List<FinalCostumerDTO> getAll() {
+        var finalCostumers = finalCostumerBean.getAll();
+        return toDTOsNoClientOrders(finalCostumers);
     }
 }

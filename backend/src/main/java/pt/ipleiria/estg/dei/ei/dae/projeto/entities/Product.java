@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +39,7 @@ public class Product extends Versionable implements Serializable {
     ClientOrder clientOrder;
 
     @Column(name = "created_at")
-    Date createdAt;
+    LocalDateTime createdAt;
 
 
     public Product() {
@@ -100,14 +101,14 @@ public class Product extends Versionable implements Serializable {
 
     @PrePersist
     public void onCreate() {
-        this.createdAt = new Date();
+        this.createdAt = LocalDateTime.now();
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }

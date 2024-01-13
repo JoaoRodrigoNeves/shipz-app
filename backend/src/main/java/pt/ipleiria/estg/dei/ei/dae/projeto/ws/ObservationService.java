@@ -24,7 +24,7 @@ public class ObservationService {
 
     @POST
     @Path("/")
-    public Response createNewStudent (ObservationDTO observationDTO) throws MyEntityExistsException, MyEntityNotFoundException {
+    public Response create(ObservationDTO observationDTO) throws MyEntityExistsException, MyEntityNotFoundException {
         observationBean.create(
                 observationDTO.getSensorCode(),
                 observationDTO.getValue()
