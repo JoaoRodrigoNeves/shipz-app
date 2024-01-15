@@ -4,8 +4,6 @@ import { useRouter } from 'vue-router';
 
 const emit = defineEmits(['loadOrders', 'updateOrder'])
 const router = useRouter()
-const user_info = JSON.parse(sessionStorage.getItem('user_info'))
-
 const props = defineProps({
     orders: {
         type: Object,
