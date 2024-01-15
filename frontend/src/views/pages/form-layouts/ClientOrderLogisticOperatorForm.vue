@@ -21,7 +21,7 @@ const isLoading = ref(false)
 const loadLogisticOperators = async () => {
   isLoading.value = true
 
-  await axios.get('logisticOperators').then(response => {
+  await axios.get('logistic-operators').then(response => {
     logisticOperators.value = response.data
     isLoading.value = false
   }).catch(
@@ -36,7 +36,7 @@ const loadLogisticOperators = async () => {
 const save = (async () => {
   isLoading.value = true;
 
-  await axios.patch('/clientOrders/' + props.clientOrder.code + '/changeLogistic/' + logisticOperatorSelected.value).then(response => {
+  await axios.patch('/orders/' + props.clientOrder.code + '/changeLogistic/' + logisticOperatorSelected.value).then(response => {
     isLoading.value = false;
     if (response.status == 200) {
       toast.add({ severity: 'success', summary: 'Sucesso', detail: (props.clientOrder.logisticOperator ? 'Operador logistico alterado com sucesso na encomenda #' : 'Operador logistico adicionado com sucesso à encomenda #') + props.clientOrder.code, life: 3000 });

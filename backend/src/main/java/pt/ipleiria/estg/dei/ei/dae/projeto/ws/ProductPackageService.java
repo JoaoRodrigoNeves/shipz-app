@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
 @Authenticated
-@RolesAllowed({"LogisticOperator", "Administrator"})
+@RolesAllowed({"LogisticOperator", "ProductManufacter", "Administrator"})
 public class ProductPackageService {
     @Context
     private SecurityContext securityContext;

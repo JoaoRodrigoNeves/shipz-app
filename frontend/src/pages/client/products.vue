@@ -1,18 +1,15 @@
-
-import productCatalogDetailsVue from '../product-catalog/product-catalog-details.vue';
-
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useToast } from "primevue/usetoast"
+import { ref, onMounted } from 'vue';
+import { useToast } from "primevue/usetoast";
 
 const axios = inject('axios')
-const toast = useToast()
-const isLoading = ref(false)
-const productCatalogs = ref([])
-const productCatalogsSelected = ref([])
+const toast = useToast();
+const isLoading = ref(false);
+const productCatalogs = ref([]);
+const productCatalogsSelected = ref([]);
 
 const loadProductCatalogs = async () => {
-  isLoading.value = true
+  isLoading.value = true;
 
   await axios.get('product-catalogs/available').then(response => {
     isLoading.value = false;
@@ -31,10 +28,9 @@ const createOrder = async () => {
 
   var payload = {
     products: productCatalogsSelected.value,
-    finalCostumer: JSON.parse(sessionStorage.getItem('user_info')).username,
+    finalCostumer: JSON.parse(sessionStorage.getItem('user_info')).username
   }
-
-  await axios.post('clientOrders', payload).then(response => {
+  await axios.post('orders', payload).then(response => {
     if (response.status == 201) {
       toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Encomenda criado com sucesso', life: 3000, });
       resetProducts()
@@ -69,10 +65,9 @@ const resetProducts = () => {
 }
 
 onMounted(async () => {
-  await loadProductCatalogs()
+  await loadProductCatalogs();
 })
 </script>
-
 <template>
   <div class="product-page-container">
     <div class="products-container">
@@ -148,28 +143,7 @@ onMounted(async () => {
       </div>
     </div>
   </div>
-  <div class="products-list">
-    <div v-for="productCatalog in productCatalogs" class="product-item"
-      :class="{ 'checked': checkIfProductAreSelected(productCatalog.code) }" @click="addProduct(productCatalog.code)">
-      <VIcon v-if="checkIfProductAreSelected(productCatalog.code)" icon="mdi-check-circle" color="rgba(0, 128, 11, 1)"
-        class="icon-check" />
-      <div class="product-header">
-        <span>{{ productCatalog.category }}</span>
-        <span>{{ productCatalog.code }}</span>
-      </div>
-      <div class="product-content">
-        <span>
-          {{ productCatalog.name }}
-        </span>
-      </div>
-      <div class="product-footer">
-        <span>
-          {{ productCatalog.description }}
-        </span>
-      </div>
-    </div>
-  </div>
-</div></template>
+</template>
   
 <style>
 .product-page-container .selected-prodcuts-container {

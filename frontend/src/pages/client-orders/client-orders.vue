@@ -12,7 +12,7 @@ const clientOrderToUpdate = ref(null)
 const loadOrders = async () => {
   isLoading.value = true
   if (JSON.parse(sessionStorage.getItem('user_info')).role == "ProductManufacter") {
-    await axios.get('clientOrders').then(response => {
+    await axios.get('orders').then(response => {
       orders.value = response.data
       isLoading.value = false
     }).catch(
@@ -22,7 +22,7 @@ const loadOrders = async () => {
       },
     )
   } else if (JSON.parse(sessionStorage.getItem('user_info')).role == "LogisticOperator") {
-    await axios.get('logisticOperators/' + JSON.parse(sessionStorage.getItem('user_info')).username).then(response => {
+    await axios.get('logistic-operators/' + JSON.parse(sessionStorage.getItem('user_info')).username).then(response => {
       orders.value = response.data.clientOrdersDTO
       isLoading.value = false
     }).catch(
@@ -32,7 +32,7 @@ const loadOrders = async () => {
       },
     )
   } else {
-    await axios.get('finalCostumers/' + JSON.parse(sessionStorage.getItem('user_info')).username).then(response => {
+    await axios.get('final-costumers/' + JSON.parse(sessionStorage.getItem('user_info')).username).then(response => {
       orders.value = response.data.clientOrdersDTO
       isLoading.value = false
     }).catch(
@@ -69,21 +69,12 @@ onMounted(async () => {
           <h2>Encomendas</h2>
         </div>
         <div v-if="!isUpdating">
-          <OrdersTable
-            v-if="!isLoading"
-            :orders="orders"
-            @updateLogisticOperator="updateLogisticOperator"
-            @loadOrders="loadOrders"
-          />
+          <OrdersTable v-if="!isLoading" :orders="orders" @updateLogisticOperator="updateLogisticOperator"
+            @loadOrders="loadOrders" />
         </div>
-        <div
-          v-else
-          class="client-orders-form"
-        >
-          <ClientOrderLogisticOperatorForm
-            :client-order="clientOrderToUpdate"
-            @addLogisticOperator="addLogisticOperator"
-          />
+        <div v-else class="client-orders-form">
+          <ClientOrderLogisticOperatorForm :client-order="clientOrderToUpdate"
+            @addLogisticOperator="addLogisticOperator" />
         </div>
       </VCard>
     </VCol>

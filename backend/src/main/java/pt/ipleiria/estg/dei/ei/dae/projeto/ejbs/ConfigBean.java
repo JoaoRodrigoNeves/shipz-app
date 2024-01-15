@@ -80,7 +80,6 @@ public class ConfigBean {
             productBean.addProductToPackage(100002, 100001);
 
             transportPackageBean.create("primário", "papel", "leiria", "01/01/2024");
-            //clientOrderBean.create("finalCostumer1", List.of(100001L, 100002L));
 
             sensorBean.create("Temperatura");
             sensorBean.create("Temperatura");
@@ -88,11 +87,6 @@ public class ConfigBean {
             sensorBean.create("Humidade");
             sensorBean.create("Pressão");
             sensorBean.create("Pressão");
-
-            /*List<Long> productList = new ArrayList<>();
-            productList.add(100002L);
-            clientOrderBean.create("finalCostumer1", productList);*/
-
         } catch (Exception e) {
             logger.severe(e.getMessage());
         }
