@@ -119,7 +119,7 @@ public class ClientOrderService {
     public Response create(ClientOrderCreateDTO clientOrderDTO) throws MyEntityNotFoundException, MyConstraintViolationException, NoStockException {
         clientOrderBean.create(
                 clientOrderDTO.getFinalCostumer(),
-                clientOrderDTO.getLogisticOperator(),
+                "logisticOperator1",
                 clientOrderDTO.getProducts());
         return Response.status(Response.Status.CREATED).build();
     }
@@ -158,7 +158,7 @@ public class ClientOrderService {
     @GET
     @Path("/{clientOrderCode}/observations")
     public List<ObservationPackageDTO> getAllObservations(@PathParam("clientOrderCode") long clientOrderCode) throws MyEntityNotFoundException {
-        var clientOrder = clientOrderBean.findClientOrderWithProducts(clientOrderCode);
+        var clientOrder = clientOrderBean.getProducts(clientOrderCode);
 
         List<ObservationPackageDTO> observationPackageDTO = new ArrayList<>();
 
