@@ -40,25 +40,36 @@ public class ClientOrderService {
     private ClientOrderDTO toDTO(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
                 clientOrder.getCode(),
-                clientOrder.getLocation()
+                clientOrder.getLocation(),
+                clientOrder.getStatus().getOrderStatus(),
+                clientOrder.getCreatedAt().toString()
         );
         clientOrderDTO.setProductsDTO(productToDTOs(clientOrder.getProducts()));
-        if(clientOrder.getLogisticOperator() != null){
+        if (clientOrder.getDeliveredAt() != null)
+            clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
+        if (clientOrder.getLogisticOperator() != null)
             clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
-        }
+        if (clientOrder.getFinalCostumer() != null)
+            clientOrderDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
         return clientOrderDTO;
     }
+
     private ClientOrderDTO toDTONoProducts(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
                 clientOrder.getCode(),
-                clientOrder.getLocation()
+                clientOrder.getLocation(),
+                clientOrder.getStatus().getOrderStatus(),
+                clientOrder.getCreatedAt().toString()
         );
-        if(clientOrder.getLogisticOperator() != null){
+        if (clientOrder.getDeliveredAt() != null)
+            clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
+        if (clientOrder.getLogisticOperator() != null) {
             clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
         }
 
         return clientOrderDTO;
     }
+
     private List<ClientOrderDTO> toDTOsNoProducts(List<ClientOrder> clientOrders) {
         return clientOrders.stream().map(this::toDTO).collect(Collectors.toList());
     }
@@ -71,7 +82,7 @@ public class ClientOrderService {
                 product.getProductManufacter().getName()
         );
 
-        if(product.getClientOrder() != null){
+        if (product.getClientOrder() != null) {
             productDTO.setClientOrderCode(product.getClientOrder().getCode());
         }
         return productDTO;
@@ -108,14 +119,15 @@ public class ClientOrderService {
     public Response create(ClientOrderCreateDTO clientOrderDTO) throws MyEntityNotFoundException, MyConstraintViolationException, NoStockException {
         clientOrderBean.create(
                 clientOrderDTO.getFinalCostumer(),
+                clientOrderDTO.getLogisticOperator(),
                 clientOrderDTO.getProducts());
         return Response.status(Response.Status.CREATED).build();
     }
 
     @GET // means: to call this endpoint, we need to use the HTTP GET method
-    @Path("/{code}") // means: the relative url path is “/api/client-order/{code}”
+    @Path("/{code}") // means: the relative url path is “/api/orders/{code}”
     public Response getDetails(@PathParam("code") long code) throws MyEntityExistsException, MyEntityNotFoundException {
-        var clientOrder = clientOrderBean.findClientOrderWithProducts(code);
+        var clientOrder = clientOrderBean.getProducts(code);
         if (clientOrder == null) {
             throw new MyEntityNotFoundException("ClientOrder with code: " + code + " doesn't exist");
         }
@@ -123,26 +135,26 @@ public class ClientOrderService {
     }
 
     @GET
-    @Path("/") // means: the relative url path is “/api/client-order”
+    @Path("/") // means: the relative url path is “/api/orders”
     public List<ClientOrderDTO> getAllClientOrders() {
         var clientOrders = clientOrderBean.getAll();
-
         return toDTOsNoProducts(clientOrders);
     }
 
     @PATCH
-    @Path("/{clientOrderCode}/changeLogistic/{logisticOperatorUsername}")
-    public Response changeLogistic(@PathParam("clientOrderCode") long clientOrderCode, @PathParam("logisticOperatorUsername") String logisticOperatorUsername) throws MyEntityNotFoundException, MyConstraintViolationException {
-        clientOrderBean.changeLogistic(clientOrderCode, logisticOperatorUsername);
+    @Path("/{code}/location/")
+    public Response changeLocation(@PathParam("code") long code, ClientOrderDTO clientOrderDTO) throws MyEntityNotFoundException {
+        clientOrderBean.changeLocation(code, clientOrderDTO.getLocation());
         return Response.status(Response.Status.OK).build();
     }
 
     @PATCH
-    @Path("/{clientOrderCode}/changeLocation/{location}")
-    public Response changeLocation(@PathParam("clientOrderCode") long clientOrderCode, @PathParam("location") String location) throws MyEntityNotFoundException {
-        clientOrderBean.changeLocation(clientOrderCode, location);
+    @Path("/{code}/status")
+    public Response changeStatus(@PathParam("code") long code, ClientOrderDTO clientOrderDTO) throws MyEntityNotFoundException {
+        clientOrderBean.changeStatus(code, clientOrderDTO.getStatus());
         return Response.status(Response.Status.OK).build();
     }
+
     @GET
     @Path("/{clientOrderCode}/observations")
     public List<ObservationPackageDTO> getAllObservations(@PathParam("clientOrderCode") long clientOrderCode) throws MyEntityNotFoundException {

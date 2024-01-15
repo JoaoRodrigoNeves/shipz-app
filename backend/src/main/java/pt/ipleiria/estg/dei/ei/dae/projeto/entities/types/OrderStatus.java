@@ -3,7 +3,7 @@ public enum OrderStatus {
     STATUS_0("Estado Inicial"),
     STATUS_1("Em Processamento"),
     STATUS_2("Enviada"),
-    STATUS_3("Recebida");
+    STATUS_3("Entregue");
     private final String orderStatus;
 
     OrderStatus(String orderStatus) {
@@ -12,5 +12,14 @@ public enum OrderStatus {
 
     public String getOrderStatus() {
         return orderStatus;
+    }
+
+    public static OrderStatus fromString(String text) {
+        for (OrderStatus orderStatus : OrderStatus.values()) {
+            if (orderStatus.orderStatus.equalsIgnoreCase(text)) {
+                return orderStatus;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found");
     }
 }

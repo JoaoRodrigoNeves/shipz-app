@@ -40,12 +40,12 @@ const router = createRouter({
         },
         {
           path: 'orders',
-          component: () => import('../pages/client-orders/client-orders.vue'),
+          component: () => import('../pages/orders/orders.vue'),
           meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true }
         },
         {
           path: 'order/:code',
-          component: () => import('../pages/client-orders/client-orders-details.vue'),
+          component: () => import('../pages/orders/orders-details.vue'),
           meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true }
         },
         {
@@ -103,7 +103,7 @@ router.beforeEach(async (to, from, next) => {
     } else {
       return next({ path: '/login' })
     }
-  }else{
+  } else {
     if (authUser) {
       return next({ path: '/dashboard' })
     }
