@@ -107,8 +107,7 @@ public class ProductPackageService {
     public Response create(ProductPackageDTO productPackageDTO) {
         ProductPackage productPackage = productPackageBean.create(
                 productPackageDTO.getType(),
-                productPackageDTO.getMaterial(),
-                productPackageDTO.getManufacturingDate()
+                productPackageDTO.getMaterial()
         );
         return Response.status(Response.Status.OK).entity(productPackage).build();
     }
@@ -125,7 +124,7 @@ public class ProductPackageService {
     @PUT
     @Path("/")
     public Response update(ProductPackageDTO productPackageDTO) throws MyEntityNotFoundException {
-        productPackageBean.update(productPackageDTO.getCode(), productPackageDTO.getType(), productPackageDTO.getMaterial(), productPackageDTO.getManufacturingDate());
+        productPackageBean.update(productPackageDTO.getCode(), productPackageDTO.getType(), productPackageDTO.getMaterial());
         ProductPackage productPackage = productPackageBean.find(productPackageDTO.getCode());
         return Response.status(Response.Status.OK).entity(productPackageToDTONoProducts(productPackage)).build();
     }

@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
@@ -52,9 +53,9 @@ public class ConfigBean {
             productCatalogBean.create("PC1", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1");
             productCatalogBean.create("PC2", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1");
 
-            productPackageBean.create("primário", "papel", "01/01/2024");
-            productPackageBean.create("secundário", "cartão", "02/01/2024");
-            productPackageBean.create("terciário", "plástico", "02/01/2024");
+            productPackageBean.create(PackageType.PRIMARY, "papel", "01/01/2024");
+            productPackageBean.create(PackageType.SECUNDARY, "cartão", "02/01/2024");
+            productPackageBean.create(PackageType.TERCIÁRIO, "plástico", "02/01/2024");
 
             productBean.create(100002);
             productBean.create(100002);
@@ -88,10 +89,6 @@ public class ConfigBean {
             sensorBean.create("Humidade");
             sensorBean.create("Pressão");
             sensorBean.create("Pressão");
-
-            /*List<Long> productList = new ArrayList<>();
-            productList.add(100002L);
-            clientOrderBean.create("finalCostumer1", productList);*/
 
         } catch (Exception e) {
             logger.severe(e.getMessage());

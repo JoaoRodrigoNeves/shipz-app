@@ -1,6 +1,7 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 
 import jakarta.persistence.*;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,12 +25,13 @@ public class ProductPackage extends Package implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "product_code", referencedColumnName = "code")
     )
     List<Product> products;
+    long mainPacakgeCode;
 
     public ProductPackage() {
     }
 
-    public ProductPackage(String type, String material, String manufacturingDate) {
-        super(type, material, manufacturingDate);
+    public ProductPackage(PackageType type, String material) {
+        super(type, material);
         this.products = new ArrayList<Product>();
     }
 
