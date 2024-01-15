@@ -7,12 +7,16 @@ const axios = inject('axios')
 
 const confirm = useConfirm();
 const props = defineProps({
-
+  productPackageView: {
+    type: Boolean,
+    required: true
+  },
   products: {
     type: Object,
     required: true
   }
 })
+const isLoading = ref(false)
 
 const deleteProductConfirm = (product) => {
   confirm.require({
@@ -21,13 +25,17 @@ const deleteProductConfirm = (product) => {
     rejectLabel: 'Não',
     acceptLabel: 'Sim',
     accept: async () => {
-      try {
-        await axios.delete('products/' + product.code).then(response => {
-          emit('loadProducts')
-        })
-      } catch (error) {
-        console.log(error)
-      }
+      isLoading.value = true;
+
+      await axios.delete('products/' + product.code).then(response => {
+        isLoading.value = false
+        emit('loadProducts')
+      }).catch(
+        error => {
+          isLoading.value = false;
+          console.error(error)
+        }
+      )
     }
   });
 }
@@ -35,6 +43,10 @@ const products = ref(Object.assign({}, props.products))
 
 const updateProduct = (product) => {
   emit('updateProduct', product)
+}
+
+const removeProduct = (product) => {
+  emit('removeProduct', product)
 }
 
 watch(
@@ -89,16 +101,23 @@ watch(
           {{ item.clientOrderCode ? item.clientOrderCode : "Sem encomenda" }}
         </td>
         <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
-          <VBtn rel="noopener noreferrer" color="primary" @click="updateProduct(item)">
+          <VBtn rel="noopener noreferrer" color="primary" v-if="!props.productPackageView" @click="updateProduct(item)">
             <VIcon size="20" icon="bx-pencil" />
             <VTooltip activator="parent" location="top">
               <span>Editar Produto</span>
             </VTooltip>
           </VBtn>
-          <VBtn rel="noopener noreferrer" color="primary" @click="deleteProductConfirm(item)">
+          <VBtn rel="noopener noreferrer" color="primary" v-if="!props.productPackageView"
+            @click="deleteProductConfirm(item)">
             <VIcon size="20" icon="bx-trash" />
             <VTooltip activator="parent" location="top">
               <span>Apagar Produto</span>
+            </VTooltip>
+          </VBtn>
+          <VBtn rel="noopener noreferrer" color="primary" v-if="props.productPackageView" @click="removeProduct(item)">
+            <VIcon size="20" icon="bx-trash" />
+            <VTooltip activator="parent" location="top">
+              <span>Remover Produto</span>
             </VTooltip>
           </VBtn>
 

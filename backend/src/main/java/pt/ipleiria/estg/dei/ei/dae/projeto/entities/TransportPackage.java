@@ -23,7 +23,7 @@ public class TransportPackage extends Package implements Serializable {
             joinColumns = @JoinColumn(name = "package_code", referencedColumnName = "code"),
             inverseJoinColumns = @JoinColumn(name = "transport_code", referencedColumnName = "code")
     )
-    List<Package> packages;
+    List<ClientOrder> clientOrders;
     String location;
     public TransportPackage() {
     }
@@ -31,23 +31,23 @@ public class TransportPackage extends Package implements Serializable {
     public TransportPackage(String type, String material, String location, String manufacturingDate) {
         super(type, material, manufacturingDate);
         this.location = location;
-        this.packages = new ArrayList<Package>();
+        this.clientOrders = new ArrayList<ClientOrder>();
     }
 
-    public List<Package> getPackages() {
-        return packages;
+    public List<ClientOrder> getClientOrders() {
+        return clientOrders;
     }
 
-    public void setPackages(List<Package> packages) {
-        this.packages = packages;
+    public void setClientOrders(List<ClientOrder> clientOrders) {
+        this.clientOrders = clientOrders;
     }
 
-    public void addPackage(Package pack) {
-        this.packages.add(pack);
+    public void addClientOrder(ClientOrder clientOrder) {
+        this.clientOrders.add(clientOrder);
     }
 
-    public void removePackage(Package pack) {
-        this.packages.remove(pack);
+    public void removeClientOrder(ClientOrder clientOrder) {
+        this.clientOrders.remove(clientOrder);
     }
 
     @Override
@@ -56,11 +56,11 @@ public class TransportPackage extends Package implements Serializable {
         if (!(o instanceof TransportPackage)) return false;
         if (!super.equals(o)) return false;
         TransportPackage that = (TransportPackage) o;
-        return packages.equals(that.packages);
+        return Objects.equals(clientOrders, that.clientOrders);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), packages);
+        return Objects.hash(super.hashCode(), clientOrders);
     }
 }

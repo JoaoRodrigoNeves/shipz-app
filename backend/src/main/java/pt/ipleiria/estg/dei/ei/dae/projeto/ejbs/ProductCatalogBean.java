@@ -18,6 +18,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.ws.ProductCatalogService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Stateless
 public class ProductCatalogBean {
@@ -102,6 +103,23 @@ public class ProductCatalogBean {
     public List<ProductCatalog> getAll() {
         return entityManager.createNamedQuery("getAllProductCatalogs", ProductCatalog.class).getResultList();
     }
+
+    public List<ProductCatalog> getAllAvailable() {
+        return entityManager
+                .createNamedQuery("getAllProductCatalogs", ProductCatalog.class)
+                .getResultList()
+                .stream()
+                .filter(productCatalog ->
+                        productCatalog.getProducts().stream().noneMatch(product ->
+                                product.getClientOrder() != null && product.getClientOrder().getCode() == 10000
+                        ) && productCatalog.getProducts().stream().anyMatch(product ->
+                                product.getClientOrder() == null
+                        )
+                )
+                .collect(Collectors.toList());
+    }
+
+
 
     public void addProduct(long productCatalogCode, long productCode) throws MyEntityNotFoundException, MyEntityExistsException {
         ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, productCatalogCode);

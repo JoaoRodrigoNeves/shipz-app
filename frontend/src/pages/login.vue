@@ -7,7 +7,7 @@ import { useToast } from "primevue/usetoast";
 const axios = inject('axios')
 const router = useRouter()
 const toast = useToast();
-
+const isLoading = ref(false);
 const form = ref({
   username: '',
   password: ''
@@ -16,19 +16,28 @@ const form = ref({
 const isPasswordVisible = ref(false)
 
 const submit = (async () => {
-
-  try {
-    const response = await axios.post('auth/login', form.value)
+  isLoading.value = true
+  await await axios.post('auth/login', form.value).then(response => {
     axios.defaults.headers.common.Authorization = "Bearer " + response.data.token
     sessionStorage.setItem("token", JSON.stringify(response.data.token));
     sessionStorage.setItem("user_info", JSON.stringify(response.data.user_info));
-    router.push({ path: 'dashboard' })
-    return true
-  } catch (error) {
-    toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
+    isLoading.value = false
 
+    router.push({ path: 'dashboard' })
   }
+  ).catch(
+    error => {
+      isLoading.value = false
+      toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
+    }
+  )
+
 })
+
+const navigateToSensorObservation = () => {
+  router.push({ path: '/sensor-observation' })
+}
+
 </script>
 
 <template>
@@ -75,6 +84,13 @@ const submit = (async () => {
         </VForm>
       </VCardText>
     </VCard>
+  </div>
+  <div style="position: absolute; bottom: 0; display: flex; justify-content: center; align-items: center; width: 100%;">
+    <div style="width: fit-content;">
+      <VBtn block type="submit" class="mt-4 mb-4" @click="navigateToSensorObservation">
+        Registar evento nos sensores
+      </VBtn>
+    </div>
   </div>
 </template>
 

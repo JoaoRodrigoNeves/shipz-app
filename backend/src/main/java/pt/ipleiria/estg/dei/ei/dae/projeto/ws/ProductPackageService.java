@@ -10,12 +10,14 @@ import jakarta.ws.rs.core.SecurityContext;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductManufacterDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductPackageDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.SensorDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductManufacterBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductPackageBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductPackage;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.security.Authenticated;
@@ -27,7 +29,7 @@ import java.util.stream.Collectors;
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
 @Authenticated
-@RolesAllowed({"LogisticOperator", "Administrator"})
+@RolesAllowed({"LogisticOperator", "ProductManufacter", "Administrator"})
 public class ProductPackageService {
     @Context
     private SecurityContext securityContext;
@@ -88,10 +90,21 @@ public class ProductPackageService {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
 
+    private SensorDTO sensorToDTO(Sensor sensor) {
+        return new SensorDTO(
+                sensor.getCode(),
+                sensor.getType().getSensorType()
+        );
+    }
+
+    private List<SensorDTO> sensorToDTOs(List<Sensor> sensors){
+        return sensors.stream().map(this::sensorToDTO).collect(Collectors.toList());
+    }
+
     //TODO create a product-package
     @POST
     @Path("/")
-    public Response create(ProductPackageDTO productPackageDTO) throws MyEntityExistsException {
+    public Response create(ProductPackageDTO productPackageDTO) {
         ProductPackage productPackage = productPackageBean.create(
                 productPackageDTO.getType(),
                 productPackageDTO.getMaterial(),
@@ -155,5 +168,13 @@ public class ProductPackageService {
     public Response removeProduct(@PathParam("code") long code, @PathParam("productCode") long productCode) throws MyEntityNotFoundException, MyEntityExistsException {
         productBean.removeProductFromPackage(productCode, code);
         return Response.status(Response.Status.OK).build();
+    }
+
+    //TODO get sensors from package
+    @GET
+    @Path("{code}/sensors")
+    public Response getSensors(@PathParam("code") long code) throws MyEntityNotFoundException {
+        ProductPackage productPackage = productPackageBean.getSensors(code);
+        return Response.status(Response.Status.OK).entity(sensorToDTOs(productPackage.getSensors())).build();
     }
 }

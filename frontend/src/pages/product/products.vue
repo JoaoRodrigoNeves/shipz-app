@@ -13,16 +13,16 @@ const productToUpdate = ref(null)
 
 const loadProducts = async () => {
     isLoading.value = true;
-    try {
-        await axios.get('product-manufacters/' + JSON.parse(sessionStorage.getItem('user_info')).username + '/products').then(response => {
-            isLoading.value = false;
-            products.value = response.data
-
-        })
-    } catch (error) {
+    await axios.get('product-manufacters/' + JSON.parse(sessionStorage.getItem('user_info')).username + '/products').then(response => {
         isLoading.value = false;
-        console.log(error)
-    }
+        products.value = response.data
+
+    }).catch(
+        error => {
+            isLoading.value = false;
+            console.error(error)
+        }
+    )
 }
 
 const closeFormAndUpdate = async () => {
@@ -55,10 +55,9 @@ onMounted(async () => {
                     </VBtn>
                 </div>
                 <ProductTable v-if="products && products.length > 0 && !isLoading" @updateProduct="updateProduct"
-                    @loadProducts="loadProducts" :products="products" />
+                    @loadProducts="loadProducts" :product-package-view="false" :products="products" />
             </VCard>
             <VCard v-if="isCreatingOrUpdating">
-
                 <VCard>
                     <div class="product-catalogs-header">
                         <h2>{{ isCreating ? 'Criar Produto' : 'Editar Produto' }}</h2>

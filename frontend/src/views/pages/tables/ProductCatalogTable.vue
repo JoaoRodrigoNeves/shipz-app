@@ -5,7 +5,7 @@ import { useConfirm } from "primevue/useconfirm";
 
 const emit = defineEmits(['updateProductCatalog', 'loadProductCatalogs'])
 const axios = inject('axios')
-
+const isLoading = ref(false)
 const router = useRouter()
 const confirm = useConfirm();
 const props = defineProps({
@@ -34,13 +34,16 @@ const deleteProductCatalogConfirm = (productCatalog) => {
     rejectLabel: 'Não',
     acceptLabel: 'Sim',
     accept: async () => {
-      try {
-        await axios.delete('product-catalogs/' + productCatalog.code).then(response => {
-          emit('loadProductCatalogs')
-        })
-      } catch (error) {
-        console.log(error)
-      }
+      isLoading.value = true
+      await axios.delete('product-catalogs/' + productCatalog.code).then(response => {
+        isLoading.value = false
+        emit('loadProductCatalogs')
+      }).catch(
+        error => {
+          isLoading.value = false;
+          console.error(error)
+        }
+      )
     }
   });
 }

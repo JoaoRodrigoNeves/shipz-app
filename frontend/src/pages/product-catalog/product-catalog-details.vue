@@ -22,48 +22,48 @@ const productToUpdate = ref(null)
 
 const loadProductCatalogDetails = async () => {
     isLoading.value = true;
-    try {
-        await axios.get('product-catalogs/' + router.currentRoute.value.params.code).then(response => {
-            isLoading.value = false;
-            productCatalog.value = response.data
-
-        })
-    } catch (error) {
+    await axios.get('product-catalogs/' + router.currentRoute.value.params.code).then(response => {
         isLoading.value = false;
-        console.log(error)
-    }
+        productCatalog.value = response.data
+    }).catch(
+        error => {
+            isLoading.value = false;
+            console.error(error)
+        }
+    )
 }
 
 const loadProductCatalogProducts = async () => {
     isLoading.value = true;
-    try {
-        await axios.get('product-catalogs/' + router.currentRoute.value.params.code + '/products').then(response => {
-            isLoading.value = false;
-            products.value = response.data
 
-        })
-    } catch (error) {
+    await axios.get('product-catalogs/' + router.currentRoute.value.params.code + '/products').then(response => {
         isLoading.value = false;
-        console.log(error)
-    }
+        products.value = response.data
+    }).catch(
+        error => {
+            isLoading.value = false;
+            console.error(error)
+        }
+    )
 }
 
 const createProduct = (async () => {
-
-    try {
-        var payload = {
-            productCatalogCode: productCatalog.value.code
-        }
-        const response = await axios.post('products', payload)
+    isLoading.value = true;
+    var payload = {
+        productCatalogCode: productCatalog.value.code
+    }
+    await axios.post('products', payload).then(response => {
         if (response.status == 201) {
             toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Produto criado com sucesso', life: 3000 });
-            await loadProductCatalogProducts();
+            loadProductCatalogProducts();
         }
-
-    } catch (error) {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
-
-    }
+        isLoading.value = false
+    }).catch(
+        error => {
+            isLoading.value = false;
+            console.error(error)
+        }
+    )
 });
 
 const deleteProductCatalogConfirm = (productCatalogItem) => {
@@ -74,13 +74,17 @@ const deleteProductCatalogConfirm = (productCatalogItem) => {
         rejectLabel: 'Não',
         acceptLabel: 'Sim',
         accept: async () => {
-            try {
-                await axios.delete('product-catalogs/' + productCatalogItem.code).then(response => {
-                    router.push({ path: '/product-catalogs' })
-                })
-            } catch (error) {
-                console.log(error)
-            }
+            isLoading.value = true;
+
+            await axios.delete('product-catalogs/' + productCatalogItem.code).then(response => {
+                isLoading.value = false
+                router.push({ path: '/product-catalogs' })
+            }).catch(
+                error => {
+                    isLoading.value = false;
+                    console.error(error)
+                }
+            )
         }
     });
 }

@@ -13,7 +13,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Path("/logisticOperators")
+@Path("/logistic-operators")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public class LogisticOperatorService {
@@ -77,25 +77,9 @@ public class LogisticOperatorService {
         return clientOrders.stream().map(this::clientOrderToDTO).collect(Collectors.toList());
     }
 
-    @GET // means: to call this endpoint, we need to use the HTTP GET method
-    @Path("/") // means: the relative url path is “/api/logisticOperators/”
-    public List<LogisticOperatorDTO> getAllLogisticOperators() {
-        var logisticOperators = logisticOperatorBean.getAll();
-        return toDTOsNoClientOrders(logisticOperators);
-    }
-
-    @GET // means: to call this endpoint, we need to use the HTTP GET method
-    @Path("/{username}") // means: the relative url path is “/api/logisticOperators/{username}”
-    public Response getDetails(@PathParam("username") String username) throws MyEntityExistsException, MyEntityNotFoundException {
-        var logisticOperator = logisticOperatorBean.findLogisticOperatorWithClientOrder(username);
-        if (logisticOperator == null)
-            throw new MyEntityExistsException("LogisticOperator with username: " + username + " doesn't exist");
-        return Response.ok(toDTO(logisticOperator)).build();
-    }
-
     @POST
     @Path("/")
-    public Response createNewStudent (LogisticOperatorDTO logisticOperatorDTO) throws MyEntityExistsException {
+    public Response create(LogisticOperatorDTO logisticOperatorDTO) throws MyEntityExistsException {
         logisticOperatorBean.create(
                 logisticOperatorDTO.getUsername(),
                 logisticOperatorDTO.getPassword(),
@@ -109,4 +93,19 @@ public class LogisticOperatorService {
         return Response.status(Response.Status.CREATED).entity(toDTO(newLogisticOperator)).build();
     }
 
+    @GET // means: to call this endpoint, we need to use the HTTP GET method
+    @Path("/{username}") // means: the relative url path is “/api/logistic-operators/{username}”
+    public Response getDetails(@PathParam("username") String username) throws MyEntityExistsException, MyEntityNotFoundException {
+        var logisticOperator = logisticOperatorBean.findLogisticOperatorWithClientOrder(username);
+        if (logisticOperator == null)
+            throw new MyEntityExistsException("LogisticOperator with username: " + username + " doesn't exist");
+        return Response.ok(toDTO(logisticOperator)).build();
+    }
+
+    @GET // means: to call this endpoint, we need to use the HTTP GET method
+    @Path("/") // means: the relative url path is “/api/logistic-operators/”
+    public List<LogisticOperatorDTO> getAll() {
+        var logisticOperators = logisticOperatorBean.getAll();
+        return toDTOsNoClientOrders(logisticOperators);
+    }
 }

@@ -10,6 +10,8 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
 import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
 import UserProfile from '@/layouts/components/UserProfile.vue'
 
+const user = JSON.parse(sessionStorage.getItem('user_info'))
+
 const vuetifyTheme = useTheme()
 
 const upgradeBanner = computed(() => {
@@ -35,58 +37,59 @@ const upgradeBanner = computed(() => {
     </template>
 
     <template #vertical-nav-content>
+      <VerticalNavSectionTitle :item="{
+        heading: 'Conta',
+      }" v-if="!user" />
       <VerticalNavLink :item="{
-        title: 'Dashboard',
-        icon: 'bx-home',
-        to: '/dashboard',
-      }" />
+        title: 'Definições da Conta',
+        icon: 'mdi-account-cog-outline',
+        to: '/account-settings',
+      }" v-if="user" />
+      <VerticalNavSectionTitle :item="{
+        heading: 'Gestão',
+      }" v-if="user" />
       <VerticalNavLink :item="{
         title: 'Produtos',
-        icon: 'bx-home',
+        icon: 'mdi-baguette',
         to: '/products-list',
-      }" />
+      }" v-if="user && user.role === 'FinalCostumer'" />
       <VerticalNavLink :item="{
         title: 'Catálogo',
-        icon: 'bx-home',
+        icon: 'mdi-list-box',
         to: '/product-catalogs',
-      }" />
+      }" v-if="user && user.role === 'ProductManufacter'" />
       <VerticalNavLink :item="{
         title: 'Produtos',
-        icon: 'bx-home',
+        icon: 'mdi-baguette',
         to: '/products',
-      }" />
+      }" v-if="user && user.role === 'ProductManufacter'" />
       <VerticalNavLink :item="{
         title: 'Embalagens de Produto',
-        icon: 'bx-home',
+        icon: 'mdi-package-variant-closed',
         to: '/product-packages'
-      }" />
+      }" v-if="user && user.role == 'ProductManufacter'" />
       <VerticalNavLink :item="{
         title: 'Encomendas',
         icon: 'bi-box-seam',
         to: '/orders',
-      }" />
-      <VerticalNavLink :item="{
-        title: 'Account Settings',
-        icon: 'mdi-account-cog-outline',
-        to: '/account-settings',
-      }" />
+      }" v-if="user && user.role != 'FinalCostumer'" />
+
 
       <!-- 👉 Pages -->
       <VerticalNavSectionTitle :item="{
         heading: 'Pages',
-      }" />
+      }" v-if="!user" />
       <VerticalNavLink :item="{
         title: 'Login',
         icon: 'bx-log-in',
         to: '/login',
-      }" />
+      }" v-if="!user" />
 
       <VerticalNavLink :item="{
-        title: 'Error',
-        icon: 'bx-info-circle',
-        to: '/no-existence',
-      }" />
-
+        title: 'Sensores',
+        icon: 'mdi-thermometer-low',
+        to: '/sensor-observation',
+      }" v-if="!user" />
     </template>
     <slot />
   </VerticalNavLayout>

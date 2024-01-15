@@ -42,7 +42,6 @@
     box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgb(var(--v-theme-primary)), 0 1px 2px 0 black;
 }
 
-.p-dialog .p-dialog-footer button.p-confirm-dialog-reject {}
 
 .p-dialog .p-dialog-footer button.p-confirm-dialog-accept {
 
@@ -67,4 +66,11 @@
 
 .p-toast .p-toast-message .p-toast-message-content .p-toast-message-text{
     margin: 0 0 0 1rem;
+}
+
+.product-quantity{
+    .v-field__input{
+        padding: 8px;
+        min-height: 30px
+    }
 }

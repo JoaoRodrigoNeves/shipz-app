@@ -129,7 +129,7 @@ public class ProductService {
     public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException {
         Product product = productBean.find(code);
         productBean.delete(code);
-        return Response.status(Response.Status.OK).entity("Success").build();
+        return Response.status(Response.Status.OK).entity(productToDTO(product)).build();
     }
 
     //TODO get all products

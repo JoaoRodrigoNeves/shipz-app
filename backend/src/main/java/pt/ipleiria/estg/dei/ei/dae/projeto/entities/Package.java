@@ -5,7 +5,9 @@ import jakarta.validation.constraints.NotNull;
 
 import javax.xml.stream.Location;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -29,14 +31,11 @@ public class Package extends Versionable implements Serializable {
     @NotNull
     String material;
 
-    // conjunto de valores observados -> temperatura, humidade...
-    //Set<Sensor> observations;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "packages")
+    List<Sensor> sensors;
 
-    // data de fabrico da embalagem
     @NotNull
     String manufacturingDate;
-
-    //QualityControl qualityControlData;
 
     public Package() {
     }
@@ -45,6 +44,7 @@ public class Package extends Versionable implements Serializable {
         this.type = type;
         this.material = material;
         this.manufacturingDate = manufacturingDate;
+        this.sensors = new ArrayList<Sensor>();
     }
 
     public long getCode() {
@@ -79,16 +79,32 @@ public class Package extends Versionable implements Serializable {
         this.manufacturingDate = manufacturingDate;
     }
 
+    public List<Sensor> getSensors() {
+        return sensors;
+    }
+
+    public void setSensors(List<Sensor> sensors) {
+        this.sensors = sensors;
+    }
+
+    public void addSensor(Sensor sensor) {
+        this.sensors.add(sensor);
+    }
+
+    public void removeSensor(Sensor sensor) {
+        this.sensors.remove(sensor);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Package aPackage = (Package) o;
-        return code == aPackage.code && Objects.equals(type, aPackage.type) && Objects.equals(material, aPackage.material) && Objects.equals(manufacturingDate, aPackage.manufacturingDate);
+        return code == aPackage.code && Objects.equals(type, aPackage.type) && Objects.equals(material, aPackage.material) && Objects.equals(sensors, aPackage.sensors) && Objects.equals(manufacturingDate, aPackage.manufacturingDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, type, material, manufacturingDate);
+        return Objects.hash(code, type, material, sensors, manufacturingDate);
     }
 }

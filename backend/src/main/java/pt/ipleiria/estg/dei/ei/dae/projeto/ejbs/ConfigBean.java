@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
@@ -24,6 +25,8 @@ public class ConfigBean {
     private ProductManufacterBean productManufacterBean;
     @EJB
     private ProductPackageBean productPackageBean;
+    @EJB
+    private TransportPackageBean transportPackageBean;
     @EJB
     private FinalCostumerBean finalCostumerBean;
     @EJB
@@ -49,26 +52,41 @@ public class ConfigBean {
             productCatalogBean.create("PC1", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1");
             productCatalogBean.create("PC2", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1");
 
-            productPackageBean.create("primário", "tinteiro", "01/01/2024");
-            productPackageBean.create("secundário", "tinteiro", "02/01/2024");
-            productPackageBean.create("terciário", "tinteiro", "02/01/2024");
+            productPackageBean.create("primário", "papel", "01/01/2024");
+            productPackageBean.create("secundário", "cartão", "02/01/2024");
+            productPackageBean.create("terciário", "plástico", "02/01/2024");
 
+            productBean.create(100002);
+            productBean.create(100002);
+            productBean.create(100002);
+            productBean.create(100002);
+            productBean.create(100002);
+            productBean.create(100002);
+            productBean.create(100002);
+            productBean.create(100002);
+            productBean.create(100002);
             productBean.create(100001);
-            productBean.create(100002);
-            productBean.create(100002);
+            productBean.create(100001);
+            productBean.create(100001);
+            productBean.create(100001);
+            productBean.create(100001);
+            productBean.create(100001);
+            productBean.create(100001);
+            productBean.create(100001);
+
 
             productBean.addProductToPackage(100000, 100002);
             productBean.addProductToPackage(100001, 100002);
             productBean.addProductToPackage(100002, 100001);
 
-            sensorBean.create("temperature");
-            sensorBean.create("humidade");
-            sensorBean.create("pressão");
+            transportPackageBean.create("primário", "papel", "leiria", "01/01/2024");
 
-            List<Long> productList = new ArrayList<>();
-            productList.add(100002L);
-            clientOrderBean.create("finalCostumer1", productList);
-
+            sensorBean.create("Temperatura");
+            sensorBean.create("Temperatura");
+            sensorBean.create("Humidade");
+            sensorBean.create("Humidade");
+            sensorBean.create("Pressão");
+            sensorBean.create("Pressão");
         } catch (Exception e) {
             logger.severe(e.getMessage());
         }

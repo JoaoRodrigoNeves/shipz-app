@@ -6,11 +6,11 @@ import java.util.List;
 
 public class ClientOrderCreateDTO {
     String finalCostumer;
-    List<Long> products;
+    List<ProductOrderDTO> products;
     public ClientOrderCreateDTO(){
 
     }
-    public ClientOrderCreateDTO(String finalCostumer, List<Long> products) {
+    public ClientOrderCreateDTO(String finalCostumer, List<ProductOrderDTO> products) {
         this.finalCostumer = finalCostumer;
         this.products = products;
     }
@@ -23,11 +23,11 @@ public class ClientOrderCreateDTO {
         this.finalCostumer = finalCostumer;
     }
 
-    public List<Long> getProducts() {
+    public List<ProductOrderDTO> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Long> products) {
+    public void setProducts(List<ProductOrderDTO> products) {
         this.products = products;
     }
 }

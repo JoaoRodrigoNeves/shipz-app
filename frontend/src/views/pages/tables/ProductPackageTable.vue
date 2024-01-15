@@ -2,11 +2,13 @@
 import { ref, inject, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useConfirm } from "primevue/useconfirm";
+import { useToast } from 'primevue/usetoast';
 
 const axios = inject('axios')
 
 const router = useRouter()
 const confirm = useConfirm()
+const toast = useToast()
 
 const emit = defineEmits(['loadProductPackages', 'updateProductPackage'])
 const props = defineProps({
@@ -28,18 +30,21 @@ const updateProductPackage = (productPackage) => {
 
 const deleteProductPackage = (productPackage) => {
     confirm.require({
-        message: 'Tem a certeza que pretende apagar a embalagem ' + productPackage.code + ' ?',
+        message: 'Tem a certeza que pretende apagar a embalagem #' + productPackage.code + ' ?',
         header: 'Apagar Embalagem',
         rejectLabel: 'Não',
         acceptLabel: 'Sim',
         accept: async () => {
-            try {
-                await axios.delete('product-packages/' + productPackage.code).then(response => {
-                    emit('loadProductPackages')
-                })
-            } catch (error) {
-                console.log(error)
-            }
+            isLoading.value = true
+            await axios.delete('product-packages/' + productPackage.code).then(() => {
+                toast.add({ severity: 'info', summary: 'Embalagem Apagada', life: 3000 });
+                isLoading.value = false
+                emit('loadProductPackages')
+            }).catch(error => {
+                console.error(error)
+                isLoading.value = false
+                toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema!', life: 3000 });
+            })
         }
     })
 }
@@ -67,9 +72,6 @@ watch(
                     Material
                 </th>
                 <th>
-                    Estado
-                </th>
-                <th>
                     Data de Fabrico
                 </th>
                 <th>
@@ -80,17 +82,14 @@ watch(
 
         <tbody>
             <tr v-for="item in productPackages" :key="item.code">
-                <td style="width: 10%;">
+                <td style="width: 20%;">
                     {{ item.code }}
                 </td>
-                <td style="width: 20%; text-align: center;">
+                <td style="width: 30%; text-align: center;">
                     {{ item.type }}
                 </td>
                 <td style="width: 30%; text-align: center;">
                     {{ item.material }}
-                </td>
-                <td style="width: 30%; text-align: center;">
-                    {{ item.status }}
                 </td>
                 <td style="width: 10%; text-align: center;">
                     {{ item.manufacturingDate }}

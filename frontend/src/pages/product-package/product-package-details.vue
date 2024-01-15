@@ -9,14 +9,13 @@ import ProductPackageForm from '@/views/pages/form-layouts/ProductPackageForm.vu
 
 const axios = inject('axios')
 const router = useRouter()
-//const confirm = useConfirm()
-//const toast = useToast()
+const toast = useToast()
+const confirm = useConfirm()
 
 const isLoading = ref(false)
-const isCreatingOrUpdatingProductPackage = ref(false)
+const isUpdating = ref(false)
 const isAddingProduct = ref(false)
 const productPackage = ref([])
-//const productPackageToUpdate = ref(null)
 const products = ref([])
 
 const packageCode = router.currentRoute.value.params.code
@@ -45,26 +44,56 @@ const loadProducts = async () => {
         })
 }
 
-const addProduct = async () => {
-    isAddingProduct.value = false
-    await loadProducts()
-    isCreatingOrUpdatingProductPackage.value = false
-}
-
-/*
-const removeProduct = async (productCode) => {
+const removeProduct = async (product) => {
     isLoading.value = true
-    await axios.delete('product-packages/' + router.currentRoute.value.params.code + '/products/' + productCode)
-        .then(async response => {
+    await axios.delete('product-packages/' + router.currentRoute.value.params.code + '/products/' + product.code)
+        .then(async () => {
             isLoading.value = false
             await loadProducts()
+            toast.add({ severity: 'info', summary: 'Produto Removido', life: 3000 });
         }).catch(error => {
             isLoading.value = false
             console.error(error)
             toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema!', life: 3000 });
         })
 }
-*/
+
+const updateProductPackage = async () => {
+    isUpdating.value = true
+    isAddingProduct.value = false
+}
+
+const deleteProductPackageConfirm = async () => {
+    confirm.require({
+        message: 'Tem a certeza que pretende apagar a embalagem #' + productPackage.value.code + ' ?',
+        header: 'Apagar Embalagem',
+        rejectLabel: 'Não',
+        acceptLabel: 'Sim',
+        accept: async () => {
+            isLoading.value = true
+
+            await axios.delete('product-packages/' + productPackage.value.code).then(() => {
+                toast.add({ severity: 'info', summary: 'Embalagem Apagada', life: 3000 });
+                isLoading.value = false
+
+                router.back()
+            }).catch(error => {
+                console.error(error)
+                isLoading.value = false
+
+                toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema!', life: 3000 });
+            })
+        }
+    })
+}
+
+const closeFormAndUpdate = async () => {
+    isUpdating.value = false
+    isAddingProduct.value = false
+
+    await loadProductPackage()
+    await loadProducts()
+}
 
 onMounted(async () => {
     await loadProductPackage()
@@ -74,33 +103,26 @@ onMounted(async () => {
 </script>
 
 <template>
-    <VRow v-if="!isCreatingOrUpdatingProductPackage">
+    <VRow v-if="!isUpdating && !isAddingProduct">
         <VCol cols="12">
             <VCard v-if="productPackage">
                 <div class="product-package-details-header">
-                    <h2>{{ productPackage.name }}</h2>
+                    <h2>Embalagem de Produto #{{ productPackage.code }}</h2>
                     <div class="product-package-details-actions">
-                        <!--
-                        <VBtn rel="noopener noreferrer" color="primary" @click="updateProductPackage(productPackage)">
+                        <VBtn rel="noopener noreferrer" color="primary" @click="updateProductPackage">
                             <VIcon size="20" icon="bx-pencil" />
                             <VTooltip activator="parent" location="top">
                                 <span>Editar Embalagem</span>
                             </VTooltip>
                         </VBtn>
-                        -->
-                        <!--
-                        <VBtn rel="noopener noreferrer" color="primary" v-if="productPackage && productPackage.length == 0"
-                            @click="deleteProductPackageConfirm(productPackage)">
+                        <VBtn rel="noopener noreferrer" color="primary" @click="deleteProductPackageConfirm">
                             <VIcon size="20" icon="bx-trash" />
                             <VTooltip activator="parent" location="top">
                                 <span>Apagar Embalagem</span>
                             </VTooltip>
                         </VBtn>
-                        -->
                     </div>
-
                 </div>
-
                 <div class="product-package-details">
                     <div class="product-package-item">
                         <label>
@@ -128,14 +150,6 @@ onMounted(async () => {
                     </div>
                     <div class="product-package-item">
                         <label>
-                            Estado
-                        </label>
-                        <span>
-                            {{ productPackage.status }}
-                        </span>
-                    </div>
-                    <div class="product-package-item">
-                        <label>
                             Data de Fabrico
                         </label>
                         <span>
@@ -146,8 +160,7 @@ onMounted(async () => {
                 </div>
                 <div class="products-actions">
                     <h2>Produtos</h2>
-                    <VBtn rel="noopener noreferrer" color="primary"
-                        @click="isAddingProduct = true; isCreatingOrUpdatingProductPackage = true">
+                    <VBtn rel="noopener noreferrer" color="primary" @click="isAddingProduct = true; isUpdating = false">
                         <VIcon size="20" icon="bx-plus" />
                         <VTooltip activator="parent" location="top">
                             <span>Adicionar Produto</span>
@@ -155,7 +168,8 @@ onMounted(async () => {
                     </VBtn>
                 </div>
                 <div v-if="products && products.length > 0 && !isLoading">
-                    <ProductTable v-if="!isLoading" @loadProducts="loadProducts" :products="products" />
+                    <ProductTable v-if="!isLoading" @loadProducts="loadProducts" @removeProduct="removeProduct"
+                        :product-package-view="true" :products="products" />
                 </div>
                 <div v-else class="no-products">
                     Não tem produtos associados a esta embalagem
@@ -163,16 +177,32 @@ onMounted(async () => {
             </VCard>
         </VCol>
     </VRow>
-    <VCard v-if="isAddingProduct">
-        <VCard>
-            <div class="product-packages-header">
-                <h2>Adicionar Produto</h2>
-            </div>
-            <VCardText>
-                <ProductPackageForm @add-product="addProduct" :package-code="Number(packageCode)" />
-            </VCardText>
-        </VCard>
-    </VCard>
+    <VRow v-if="isUpdating">
+        <VCol cols="12">
+            <VCard>
+                <div class="product-packages-header">
+                    <h2>Editar Embalagem de Produto</h2>
+                </div>
+                <VCardText>
+                    <ProductPackageForm @closeFormAndUpdate="closeFormAndUpdate" :productPackage="productPackage"
+                        :is-adding-product="false" :is-creating="!isUpdating" :is-updating="isUpdating" />
+                </VCardText>
+            </VCard>
+        </VCol>
+    </VRow>
+    <VRow v-if="isAddingProduct">
+        <VCol cols="12">
+            <VCard>
+                <div class="product-packages-header">
+                    <h2>Adicionar Produto</h2>
+                </div>
+                <VCardText>
+                    <ProductPackageForm @add-product="closeFormAndUpdate" :product-package="productPackage"
+                        :is-adding-product="true" :is-creating="false" :is-updating="false" />
+                </VCardText>
+            </VCard>
+        </VCol>
+    </VRow>
 </template>
 
 <style scoped>

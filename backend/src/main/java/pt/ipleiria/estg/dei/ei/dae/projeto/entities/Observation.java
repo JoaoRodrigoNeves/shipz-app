@@ -3,6 +3,7 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 public class Observation implements Serializable {
@@ -14,7 +15,13 @@ public class Observation implements Serializable {
     @ManyToOne
     @JoinColumn(name = "sensor_code")
     Sensor sensor;
+    @Column(name = "created_at")
+    Date createdAt;
 
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+    }
     public Observation(){
 
     }

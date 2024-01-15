@@ -2,6 +2,7 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.FinalCostumerDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.OrderStatus;
 
 import java.util.ArrayList;
@@ -32,6 +33,9 @@ public class ClientOrder {
     @OneToMany(mappedBy = "clientOrder", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Product> products;
 
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "clientOrders")
+    List<TransportPackage> transportPackages;
+
     private OrderStatus status;
     private String location;
     @Column(name = "created_at")
@@ -57,9 +61,16 @@ public class ClientOrder {
     public LogisticOperator getLogisticOperator() {
         return logisticOperator;
     }
+    public FinalCostumer getFinalCostumer() {
+        return finalCostumer;
+    }
 
     public void setLogisticOperator(LogisticOperator logisticOperator) {
         this.logisticOperator = logisticOperator;
+    }
+
+    public void setFinalCostumer(FinalCostumer finalCostumer) {
+        this.finalCostumer = finalCostumer;
     }
 
     public void addProduct(Product product) {
@@ -76,6 +87,18 @@ public class ClientOrder {
 
     public void setProducts(List<Product> products) {
         this.products = products;
+    }
+
+    public void setTransportPackages(List<TransportPackage> transportPackages) {
+        this.transportPackages = transportPackages;
+    }
+
+    public void addTransportPackage(TransportPackage transportPackage) {
+        this.transportPackages.add(transportPackage);
+    }
+
+    public void removeTransportPackage(TransportPackage transportPackage) {
+        this.transportPackages.remove(transportPackage);
     }
 
     @PrePersist

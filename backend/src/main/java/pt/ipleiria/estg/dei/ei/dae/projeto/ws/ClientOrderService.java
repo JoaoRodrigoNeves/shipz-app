@@ -23,12 +23,13 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.NoStockException;
 
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-@Path("/clientOrders")
+@Path("/orders")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public class ClientOrderService {
@@ -82,17 +83,18 @@ public class ClientOrderService {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
 
-    @GET
-    @Path("/") // means: the relative url path is “/api/clientOrder”
-    public List<ClientOrderDTO> getAllClientOrders() {
-        var clientOrders = clientOrderBean.getAll();
-
-        return toDTOsNoProducts(clientOrders);
+    @POST
+    @Path("/")
+    public Response create(ClientOrderCreateDTO clientOrderDTO) throws MyEntityNotFoundException, MyConstraintViolationException, NoStockException {
+        clientOrderBean.create(
+                clientOrderDTO.getFinalCostumer(),
+                clientOrderDTO.getProducts());
+        return Response.status(Response.Status.CREATED).build();
     }
 
     @GET // means: to call this endpoint, we need to use the HTTP GET method
-    @Path("/{code}") // means: the relative url path is “/api/clientOrder/{code}”
-    public Response getDetails(@PathParam("code") long code) throws MyEntityNotFoundException {
+    @Path("/{code}") // means: the relative url path is “/api/client-order/{code}”
+    public Response getDetails(@PathParam("code") long code) throws MyEntityExistsException, MyEntityNotFoundException {
         var clientOrder = clientOrderBean.findClientOrderWithProducts(code);
         if (clientOrder == null) {
             throw new MyEntityNotFoundException("ClientOrder with code: " + code + " doesn't exist");
@@ -100,13 +102,12 @@ public class ClientOrderService {
         return Response.ok(toDTO(clientOrder)).build();
     }
 
-    @POST
-    @Path("/")
-    public Response create(ClientOrderCreateDTO clientOrderDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
-        clientOrderBean.create(
-                clientOrderDTO.getFinalCostumer(),
-                clientOrderDTO.getProducts());
-        return Response.status(Response.Status.CREATED).build();
+    @GET
+    @Path("/") // means: the relative url path is “/api/client-order”
+    public List<ClientOrderDTO> getAllClientOrders() {
+        var clientOrders = clientOrderBean.getAll();
+
+        return toDTOsNoProducts(clientOrders);
     }
 
     @PATCH

@@ -8,36 +8,48 @@ const isLoading = ref(false)
 const orders = ref([])
 const isUpdating = ref(false)
 const clientOrderToUpdate = ref(null)
+
 const loadOrders = async () => {
   isLoading.value = true
   if (JSON.parse(sessionStorage.getItem('user_info')).role == "ProductManufacter") {
-    try {
-      await axios.get('clientOrders').then(response => {
-        orders.value = response.data
-        isLoading.value = false
-      })
-    } catch (error) {
+    await axios.get('orders').then(response => {
+      orders.value = response.data
       isLoading.value = false
-      console.log(error)
-    }
+    }).catch(
+      error => {
+        isLoading.value = false
+        console.error(error)
+      },
+    )
+  } else if (JSON.parse(sessionStorage.getItem('user_info')).role == "LogisticOperator") {
+    await axios.get('logistic-operators/' + JSON.parse(sessionStorage.getItem('user_info')).username).then(response => {
+      orders.value = response.data.clientOrdersDTO
+      isLoading.value = false
+    }).catch(
+      error => {
+        isLoading.value = false
+        console.error(error)
+      },
+    )
   } else {
-    try {
-      await axios.get('logisticOperators/' + JSON.parse(sessionStorage.getItem('user_info')).username).then(response => {
-        orders.value = response.data.clientOrdersDTO
-        isLoading.value = false
-      })
-    } catch (error) {
+    await axios.get('final-costumers/' + JSON.parse(sessionStorage.getItem('user_info')).username).then(response => {
+      orders.value = response.data.clientOrdersDTO
       isLoading.value = false
-      console.log(error)
-    }
+    }).catch(
+      error => {
+        isLoading.value = false
+        console.error(error)
+      },
+    )
   }
 }
 
 
-const updateLogisticOperator = (product) => {
+const updateLogisticOperator = product => {
   clientOrderToUpdate.value = product
   isUpdating.value = true
 }
+
 const addLogisticOperator = async () => {
   isUpdating.value = false
   await loadOrders()
@@ -57,11 +69,12 @@ onMounted(async () => {
           <h2>Encomendas</h2>
         </div>
         <div v-if="!isUpdating">
-          <OrdersTable v-if="!isLoading" @updateLogisticOperator="updateLogisticOperator" @loadOrders="loadOrders"
-            :orders="orders" />
+          <OrdersTable v-if="!isLoading" :orders="orders" @updateLogisticOperator="updateLogisticOperator"
+            @loadOrders="loadOrders" />
         </div>
         <div v-else class="client-orders-form">
-          <ClientOrderLogisticOperatorForm :clientOrder="clientOrderToUpdate" @addLogisticOperator="addLogisticOperator"></ClientOrderLogisticOperatorForm>
+          <ClientOrderLogisticOperatorForm :client-order="clientOrderToUpdate"
+            @addLogisticOperator="addLogisticOperator" />
         </div>
       </VCard>
     </VCol>
@@ -76,7 +89,7 @@ onMounted(async () => {
   padding: 24px;
 }
 
-.client-orders-form{
+.client-orders-form {
   padding: 20px;
 }
 </style>

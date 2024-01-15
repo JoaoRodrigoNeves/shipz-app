@@ -3,7 +3,7 @@ import { ref, inject } from 'vue'
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const axios = inject('axios')
-
+const isLoading = ref(false)
 const user = ref(JSON.parse(sessionStorage.getItem('user_info')))
 
 const accountDetails = ref({
@@ -16,9 +16,9 @@ const accountDetails = ref({
 const accountDetailsLocal = ref(Object.assign({}, accountDetails.value))
 
 const save = (async () => {
-  try {
-    const response = await axios.put('product-manufacters', accountDetailsLocal.value)
+  isLoading.value = true
 
+  await axios.put('product-manufacters', accountDetailsLocal.value).then(response => {
     if (response.status == 201) {
       let user_info = {
         username: response.data.username,
@@ -34,13 +34,17 @@ const save = (async () => {
         name: response.data.name,
       }
       sessionStorage.setItem('user_info', JSON.stringify(user_info))
-      
+      isLoading.value = false
+
       toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Utilizador atualizado com sucesso', life: 3000 });
     }
 
-  } catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });
-  }
+  }).catch(
+    error => {
+      isLoading.value = false;
+      toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um erro ao atualizar o utilizador', life: 3000 });
+    }
+  )
 });
 
 const resetForm = () => {

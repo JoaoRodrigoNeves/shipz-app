@@ -51,4 +51,5 @@ public class FinalCostumer extends User implements Serializable {
     public void setClientOrders(List<ClientOrder> clientOrders) {
         this.clientOrders = clientOrders;
     }
+
 }

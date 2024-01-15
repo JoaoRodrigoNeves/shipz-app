@@ -24,7 +24,7 @@ public class ProductPackageBean {
 
     //TODO CRUD operations for ProductPackage entity
 
-    public ProductPackage create(String type, String material, String manufacturingDate) throws MyEntityExistsException {
+    public ProductPackage create(String type, String material, String manufacturingDate) {
         ProductPackage productPackage = new ProductPackage(type, material, manufacturingDate);
         entityManager.persist(productPackage);
         return productPackage;
@@ -60,9 +60,14 @@ public class ProductPackageBean {
     //TODO get all products of a product package
     public ProductPackage getProducts(long code) throws MyEntityNotFoundException {
         ProductPackage productPackage = this.find(code);
-        if (productPackage != null)
-            Hibernate.initialize(productPackage.getProducts());
+        Hibernate.initialize(productPackage.getProducts());
+        return productPackage;
+    }
 
+    //TODO get sensors
+    public ProductPackage getSensors(long code) throws MyEntityNotFoundException {
+        ProductPackage productPackage = this.find(code);
+        Hibernate.initialize(productPackage.getSensors());
         return productPackage;
     }
 }
