@@ -2,27 +2,25 @@
 import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router';
 
-const emit = defineEmits(['loadOrders', 'updateLogisticOperator'])
-const axios = inject('axios')
+const emit = defineEmits(['loadOrders', 'updateOrder'])
 const router = useRouter()
-const user_info = JSON.parse(sessionStorage.getItem('user_info'))
-
 const props = defineProps({
     orders: {
         type: Object,
         required: true
     }
-    
+
 })
 
 const orders = ref(Object.assign({}, props.orders))
+const userRole = JSON.parse(sessionStorage.getItem('user_info')).role
 
 const navigateTo = (path) => {
     router.push({ path: path })
 }
 
-const updateLogisticOperator = (product) => {
-  emit('updateLogisticOperator', product)
+const updateOrder = (order, flagStatus) => {
+    emit('updateOrder', order, flagStatus)
 }
 
 
@@ -49,6 +47,9 @@ watch(
                     Número de produtos
                 </th>
                 <th>
+                    Estado
+                </th>
+                <th>
                     Ações
                 </th>
             </tr>
@@ -60,16 +61,20 @@ watch(
                     {{ item.code }}
                 </td>
                 <td style="width: 20%; text-align: center;">
-                    {{ item.logisticOperator ? item.logisticOperator : "Sem operador logistico" }}
+                    {{ item.logisticOperator }}
                 </td>
-                <td style="width: 100%; text-align: center;">
+                <td style="width: 30%; text-align: center;">
                     {{ item.productsDTO.length > 0 ? item.productsDTO.length : "Sem produtos" }}
                 </td>
+                <td style="width: 20%; text-align: center;">
+                    {{ item.status }}
+                </td>
                 <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
-                    <VBtn v-if="user_info.role === 'ProductManufacter'" rel="noopener noreferrer" color="primary" @click="updateLogisticOperator(item)">
-                        <VIcon size="20" icon="mdi-account-edit" />
+                    <VBtn v-if="userRole == 'LogisticOperator'" rel="noopener noreferrer" color="primary"
+                        @click="updateOrder(item, true)">
+                        <VIcon size="20" icon="mdi-package" />
                         <VTooltip activator="parent" location="top">
-                            <span>Atualizar Operador Logitico</span>
+                            <span>Atualizar Estado</span>
                         </VTooltip>
                     </VBtn>
                     <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('order/' + item.code)">

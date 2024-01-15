@@ -1,13 +1,14 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue'
 import OrdersTable from '@/views/pages/tables/OrdersTable.vue'
-import ClientOrderLogisticOperatorForm from '@/views/pages/form-layouts/ClientOrderLogisticOperatorForm.vue'
+import OrderForm from '@/views/pages/form-layouts/OrderForm.vue'
 
 const axios = inject('axios')
 const isLoading = ref(false)
 const orders = ref([])
 const isUpdating = ref(false)
-const clientOrderToUpdate = ref(null)
+const isUpdatingStatus = ref(null)
+const orderToUpdate = ref(null)
 
 const loadOrders = async () => {
   isLoading.value = true
@@ -45,15 +46,17 @@ const loadOrders = async () => {
 }
 
 
-const updateLogisticOperator = product => {
-  clientOrderToUpdate.value = product
+const updateOrder = async (order, flagStatus) => {
+  orderToUpdate.value = order
   isUpdating.value = true
+  isUpdatingStatus.value = flagStatus
 }
 
-const addLogisticOperator = async () => {
+const closeFormAndUpdate = async () => {
   isUpdating.value = false
+  isUpdatingStatus.value = null
+  orderToUpdate.value = null
   await loadOrders()
-
 }
 
 onMounted(async () => {
@@ -65,16 +68,15 @@ onMounted(async () => {
   <VRow>
     <VCol cols="12">
       <VCard>
-        <div class="client-orders-header">
+        <div class="orders-header">
           <h2>Encomendas</h2>
         </div>
         <div v-if="!isUpdating">
-          <OrdersTable v-if="!isLoading" :orders="orders" @updateLogisticOperator="updateLogisticOperator"
-            @loadOrders="loadOrders" />
+          <OrdersTable v-if="!isLoading" :orders="orders" @updateOrder="updateOrder" @loadOrders="loadOrders" />
         </div>
-        <div v-else class="client-orders-form">
-          <ClientOrderLogisticOperatorForm :client-order="clientOrderToUpdate"
-            @addLogisticOperator="addLogisticOperator" />
+        <div v-else class="orders-form">
+          <OrderForm @closeFormAndUpdate="closeFormAndUpdate" :order="orderToUpdate"
+            :is-updating-status="isUpdatingStatus" />
         </div>
       </VCard>
     </VCol>
@@ -82,14 +84,14 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.client-orders-header {
+.orders-header {
   display: flex;
   justify-content: space-between;
   align-self: center;
   padding: 24px;
 }
 
-.client-orders-form {
+.orders-form {
   padding: 20px;
 }
 </style>

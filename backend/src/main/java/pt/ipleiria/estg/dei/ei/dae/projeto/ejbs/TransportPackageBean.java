@@ -6,6 +6,7 @@ import jakarta.persistence.PersistenceContext;
 import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackage;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
@@ -22,8 +23,8 @@ public class TransportPackageBean {
     }
 
     //TODO CRUD operations for TransportPackage entity
-    public TransportPackage create(String type, String material, String location, String manufacturingDate) throws MyEntityExistsException {
-        TransportPackage transportPackage = new TransportPackage(type, material, location, manufacturingDate);
+    public TransportPackage create(PackageType type, String material, String location) throws MyEntityExistsException {
+        TransportPackage transportPackage = new TransportPackage(type, material, location);
         entityManager.persist(transportPackage);
         return transportPackage;
     }
@@ -35,11 +36,10 @@ public class TransportPackageBean {
         return transportPackage;
     }
 
-    public void update(long code, String type, String material, String manufacturingDate) throws MyEntityNotFoundException {
+    public void update(long code, PackageType type, String material) throws MyEntityNotFoundException {
         TransportPackage transportPackage = this.find(code);
         transportPackage.setType(type);
         transportPackage.setMaterial(material);
-        transportPackage.setManufacturingDate(manufacturingDate);
         entityManager.merge(transportPackage);
     }
 

@@ -2,9 +2,11 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 
 import javax.xml.stream.Location;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +28,7 @@ public class Package extends Versionable implements Serializable {
     long code;
 
     @NotNull
-    String type;
+    PackageType type;
 
     @NotNull
     String material;
@@ -35,15 +37,17 @@ public class Package extends Versionable implements Serializable {
     List<Sensor> sensors;
 
     @NotNull
-    String manufacturingDate;
-
+    LocalDateTime createdAt;
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
     public Package() {
     }
 
-    public Package(String type, String material, String manufacturingDate) {
+    public Package(PackageType type, String material) {
         this.type = type;
         this.material = material;
-        this.manufacturingDate = manufacturingDate;
         this.sensors = new ArrayList<Sensor>();
     }
 
@@ -55,11 +59,11 @@ public class Package extends Versionable implements Serializable {
         this.code = code;
     }
 
-    public String getType() {
+    public PackageType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(PackageType type) {
         this.type = type;
     }
 
@@ -71,12 +75,8 @@ public class Package extends Versionable implements Serializable {
         this.material = material;
     }
 
-    public String getManufacturingDate() {
-        return manufacturingDate;
-    }
-
-    public void setManufacturingDate(String manufacturingDate) {
-        this.manufacturingDate = manufacturingDate;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public List<Sensor> getSensors() {
@@ -100,11 +100,11 @@ public class Package extends Versionable implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Package aPackage = (Package) o;
-        return code == aPackage.code && Objects.equals(type, aPackage.type) && Objects.equals(material, aPackage.material) && Objects.equals(sensors, aPackage.sensors) && Objects.equals(manufacturingDate, aPackage.manufacturingDate);
+        return code == aPackage.code && type == aPackage.type && Objects.equals(material, aPackage.material) && Objects.equals(sensors, aPackage.sensors) && Objects.equals(createdAt, aPackage.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, type, material, sensors, manufacturingDate);
+        return Objects.hash(code, type, material, sensors, createdAt);
     }
 }

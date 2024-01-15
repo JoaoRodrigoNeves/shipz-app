@@ -6,6 +6,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.validation.ConstraintViolationException;
 import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.*;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
@@ -33,6 +34,9 @@ public class ProductBean {
 
             productCatalog.addProduct(product);
             productCatalog.getProductManufacter().addProduct(product);
+
+            ProductPackage productPackage = new ProductPackage(PackageType.PRIMARY, "Plástico");
+            entityManager.persist(productPackage);
 
             return product;
         } catch (ConstraintViolationException e) {

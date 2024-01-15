@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductPackage;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
@@ -24,8 +25,8 @@ public class ProductPackageBean {
 
     //TODO CRUD operations for ProductPackage entity
 
-    public ProductPackage create(String type, String material, String manufacturingDate) {
-        ProductPackage productPackage = new ProductPackage(type, material, manufacturingDate);
+    public ProductPackage create(PackageType type, String material) {
+        ProductPackage productPackage = new ProductPackage(type, material);
         entityManager.persist(productPackage);
         return productPackage;
     }
@@ -37,11 +38,10 @@ public class ProductPackageBean {
         return productPackage;
     }
 
-    public void update(long code, String type, String material, String manufacturingDate) throws MyEntityNotFoundException {
+    public void update(long code, PackageType type, String material) throws MyEntityNotFoundException {
         ProductPackage productPackage = this.find(code);
         productPackage.setType(type);
         productPackage.setMaterial(material);
-        productPackage.setManufacturingDate(manufacturingDate);
         entityManager.merge(productPackage);
     }
 

@@ -10,21 +10,17 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ClientOrderCreateDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ClientOrderDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.FinalCostumerDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ClientOrderBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ObservationBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.SensorBean;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.FinalCostumer;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.NoStockException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -38,29 +34,42 @@ public class ClientOrderService {
 
     @EJB
     private ObservationBean observationBean;
+    @EJB
+    private SensorBean sensorBean;
 
     private ClientOrderDTO toDTO(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
                 clientOrder.getCode(),
-                clientOrder.getLocation()
+                clientOrder.getLocation(),
+                clientOrder.getStatus().getOrderStatus(),
+                clientOrder.getCreatedAt().toString()
         );
         clientOrderDTO.setProductsDTO(productToDTOs(clientOrder.getProducts()));
-        if(clientOrder.getLogisticOperator() != null){
+        if (clientOrder.getDeliveredAt() != null)
+            clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
+        if (clientOrder.getLogisticOperator() != null)
             clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
-        }
+        if (clientOrder.getFinalCostumer() != null)
+            clientOrderDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
         return clientOrderDTO;
     }
+
     private ClientOrderDTO toDTONoProducts(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
                 clientOrder.getCode(),
-                clientOrder.getLocation()
+                clientOrder.getLocation(),
+                clientOrder.getStatus().getOrderStatus(),
+                clientOrder.getCreatedAt().toString()
         );
-        if(clientOrder.getLogisticOperator() != null){
+        if (clientOrder.getDeliveredAt() != null)
+            clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
+        if (clientOrder.getLogisticOperator() != null) {
             clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
         }
 
         return clientOrderDTO;
     }
+
     private List<ClientOrderDTO> toDTOsNoProducts(List<ClientOrder> clientOrders) {
         return clientOrders.stream().map(this::toDTO).collect(Collectors.toList());
     }
@@ -73,7 +82,7 @@ public class ClientOrderService {
                 product.getProductManufacter().getName()
         );
 
-        if(product.getClientOrder() != null){
+        if (product.getClientOrder() != null) {
             productDTO.setClientOrderCode(product.getClientOrder().getCode());
         }
         return productDTO;
@@ -82,20 +91,43 @@ public class ClientOrderService {
     private List<ProductDTO> productToDTOs(List<Product> products) {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
+    private ObservationPackageDTO observationPackageDTO(long packageCode, String packageType, List<ObservationDetailDTO> observationDetailDTO) {
+        return new ObservationPackageDTO(
+                packageCode,
+                packageType,
+                observationDetailDTO
+        );
+    }
+
+    private ObservationDetailDTO observationDTO(Observation observation) {
+        return new ObservationDetailDTO(
+                observation.getValue(),
+                observation.getSensor().getCode(),
+                observation.getSensor().getType().getSensorType()
+        );
+    }
+
+
+    private List<ObservationDetailDTO> observationDTOs(List<Observation> observations) {
+        return observations.stream().map(this::observationDTO).collect(Collectors.toList());
+    }
+
+
 
     @POST
     @Path("/")
     public Response create(ClientOrderCreateDTO clientOrderDTO) throws MyEntityNotFoundException, MyConstraintViolationException, NoStockException {
         clientOrderBean.create(
                 clientOrderDTO.getFinalCostumer(),
+                clientOrderDTO.getLogisticOperator(),
                 clientOrderDTO.getProducts());
         return Response.status(Response.Status.CREATED).build();
     }
 
     @GET // means: to call this endpoint, we need to use the HTTP GET method
-    @Path("/{code}") // means: the relative url path is “/api/client-order/{code}”
+    @Path("/{code}") // means: the relative url path is “/api/orders/{code}”
     public Response getDetails(@PathParam("code") long code) throws MyEntityExistsException, MyEntityNotFoundException {
-        var clientOrder = clientOrderBean.findClientOrderWithProducts(code);
+        var clientOrder = clientOrderBean.getProducts(code);
         if (clientOrder == null) {
             throw new MyEntityNotFoundException("ClientOrder with code: " + code + " doesn't exist");
         }
@@ -103,25 +135,60 @@ public class ClientOrderService {
     }
 
     @GET
-    @Path("/") // means: the relative url path is “/api/client-order”
+    @Path("/") // means: the relative url path is “/api/orders”
     public List<ClientOrderDTO> getAllClientOrders() {
         var clientOrders = clientOrderBean.getAll();
-
         return toDTOsNoProducts(clientOrders);
     }
 
     @PATCH
-    @Path("/{clientOrderCode}/changeLogistic/{logisticOperatorUsername}")
-    public Response changeLogistic(@PathParam("clientOrderCode") long clientOrderCode, @PathParam("logisticOperatorUsername") String logisticOperatorUsername) throws MyEntityNotFoundException, MyConstraintViolationException {
-        clientOrderBean.changeLogistic(clientOrderCode, logisticOperatorUsername);
+    @Path("/{code}/location/")
+    public Response changeLocation(@PathParam("code") long code, ClientOrderDTO clientOrderDTO) throws MyEntityNotFoundException {
+        clientOrderBean.changeLocation(code, clientOrderDTO.getLocation());
         return Response.status(Response.Status.OK).build();
     }
 
     @PATCH
-    @Path("/{clientOrderCode}/changeLocation/{location}")
-    public Response changeLocation(@PathParam("clientOrderCode") long clientOrderCode, @PathParam("location") String location) throws MyEntityNotFoundException {
-        clientOrderBean.changeLocation(clientOrderCode, location);
+    @Path("/{code}/status")
+    public Response changeStatus(@PathParam("code") long code, ClientOrderDTO clientOrderDTO) throws MyEntityNotFoundException {
+        clientOrderBean.changeStatus(code, clientOrderDTO.getStatus());
         return Response.status(Response.Status.OK).build();
+    }
+
+    @GET
+    @Path("/{clientOrderCode}/observations")
+    public List<ObservationPackageDTO> getAllObservations(@PathParam("clientOrderCode") long clientOrderCode) throws MyEntityNotFoundException {
+        var clientOrder = clientOrderBean.findClientOrderWithProducts(clientOrderCode);
+
+        List<ObservationPackageDTO> observationPackageDTO = new ArrayList<>();
+
+        for (Product product: clientOrder.getProducts()) {
+            for (ProductPackage productPackage: product.getProductPackages()) {
+                if(!productPackage.getSensors().isEmpty()){
+                    List<ObservationDetailDTO> observationSensorDetailDTOS = new ArrayList<>();
+                    for (Sensor sensor: productPackage.getSensors()) {
+                        observationSensorDetailDTOS.addAll(observationDTOs(sensorBean.getFilteredObservations(sensor.getCode(), clientOrder.getCreatedAt(), clientOrder.getDeliveredAt())));
+                    }
+                    observationPackageDTO.add(observationPackageDTO(productPackage.getCode(),productPackage.getType().getPackageType(), observationSensorDetailDTOS));
+                }
+            }
+        }
+
+        for (TransportPackage transportPackage: clientOrder.getTransportPackages()) {
+            if(!transportPackage.getSensors().isEmpty()){
+                List<ObservationDetailDTO> observationSensorDetailDTOS = new ArrayList<>();
+                for (Sensor sensor: transportPackage.getSensors()) {
+                    observationSensorDetailDTOS.addAll(observationDTOs(sensorBean.getFilteredObservations(sensor.getCode(), clientOrder.getCreatedAt(), clientOrder.getDeliveredAt())));
+                }
+                observationPackageDTO.add(observationPackageDTO(transportPackage.getCode(),transportPackage.getType().getPackageType(), observationSensorDetailDTOS));
+            }
+        }
+
+        if(observationPackageDTO.isEmpty()){
+            throw new MyEntityNotFoundException("Sem observações");
+        }
+
+        return observationPackageDTO;
     }
 
     /*@GET

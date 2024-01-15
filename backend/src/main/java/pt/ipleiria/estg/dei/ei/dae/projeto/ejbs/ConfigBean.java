@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
@@ -52,9 +53,8 @@ public class ConfigBean {
             productCatalogBean.create("PC1", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1");
             productCatalogBean.create("PC2", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1");
 
-            productPackageBean.create("primário", "papel", "01/01/2024");
-            productPackageBean.create("secundário", "cartão", "02/01/2024");
-            productPackageBean.create("terciário", "plástico", "02/01/2024");
+            productPackageBean.create(PackageType.SECUNDARY, "cartão");
+            productPackageBean.create(PackageType.TERTIARY, "plástico");
 
             productBean.create(100002);
             productBean.create(100002);
@@ -79,7 +79,8 @@ public class ConfigBean {
             productBean.addProductToPackage(100001, 100002);
             productBean.addProductToPackage(100002, 100001);
 
-            transportPackageBean.create("primário", "papel", "leiria", "01/01/2024");
+            //transportPackageBean.create("primário", "papel", "leiria", "01/01/2024");
+            //clientOrderBean.create("finalCostumer1", List.of(100001L, 100002L));
 
             sensorBean.create("Temperatura");
             sensorBean.create("Temperatura");
