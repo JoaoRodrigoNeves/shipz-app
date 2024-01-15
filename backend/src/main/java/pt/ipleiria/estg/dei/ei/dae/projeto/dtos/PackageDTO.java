@@ -2,33 +2,35 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
 import jakarta.ws.rs.Path;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class PackageDTO implements Serializable {
 
     long code;
 
-    String type;
+    PackageType type;
 
     String material;
 
     //Set<Sensor> observations;
 
     // data de fabrico
-    String manufacturingDate;
+    LocalDateTime createdAt;
 
     //QualityControl qualityControlData;
 
     public PackageDTO() {
     }
 
-    public PackageDTO(long code, String type, String material, String manufacturingDate) {
+    public PackageDTO(long code, PackageType type, String material, LocalDateTime createdAt) {
         this.code = code;
         this.type = type;
         this.material = material;
-        this.manufacturingDate = manufacturingDate;
+        this.createdAt = createdAt;
     }
 
     public long getCode() {
@@ -39,11 +41,11 @@ public class PackageDTO implements Serializable {
         this.code = code;
     }
 
-    public String getType() {
+    public PackageType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(PackageType type) {
         this.type = type;
     }
 
@@ -55,11 +57,8 @@ public class PackageDTO implements Serializable {
         this.material = material;
     }
 
-    public String getManufacturingDate() {
-        return manufacturingDate;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setManufacturingDate(String manufacturingDate) {
-        this.manufacturingDate = manufacturingDate;
-    }
 }

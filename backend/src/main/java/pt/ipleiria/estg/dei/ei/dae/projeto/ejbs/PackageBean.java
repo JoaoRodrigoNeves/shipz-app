@@ -7,6 +7,7 @@ import jakarta.persistence.Query;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackage;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
@@ -37,11 +38,10 @@ public class PackageBean {
         return pack;
     }
 
-    public void update(long code, String type, String material, String manufacturingDate) throws MyEntityNotFoundException {
+    public void update(long code, PackageType type, String material) throws MyEntityNotFoundException {
         Package pack = this.find(code);
         pack.setType(type);
         pack.setMaterial(material);
-        pack.setManufacturingDate(manufacturingDate);
         entityManager.merge(pack);
     }
 

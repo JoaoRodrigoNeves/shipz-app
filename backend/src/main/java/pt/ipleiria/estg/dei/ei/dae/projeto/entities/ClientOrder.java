@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.FinalCostumerDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.OrderStatus;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,7 +40,8 @@ public class ClientOrder {
     private OrderStatus status;
     private String location;
     @Column(name = "created_at")
-    Date createdAt;
+    LocalDateTime createdAt;
+    LocalDateTime deliveredAt;
 
     public ClientOrder(FinalCostumer finalCostumer) {
         this.finalCostumer = finalCostumer;
@@ -89,6 +91,10 @@ public class ClientOrder {
         this.products = products;
     }
 
+    public List<TransportPackage> getTransportPackages() {
+        return transportPackages;
+    }
+
     public void setTransportPackages(List<TransportPackage> transportPackages) {
         this.transportPackages = transportPackages;
     }
@@ -103,10 +109,10 @@ public class ClientOrder {
 
     @PrePersist
     public void onCreate() {
-        this.createdAt = new Date();
+        this.createdAt = LocalDateTime.now();
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
@@ -116,6 +122,14 @@ public class ClientOrder {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+    
+    public LocalDateTime getDeliveredAt() {
+        return deliveredAt;
+    }
+
+    public void setDeliveredAt(LocalDateTime deliveredAt) {
+        this.deliveredAt = deliveredAt;
     }
 
     @Override
