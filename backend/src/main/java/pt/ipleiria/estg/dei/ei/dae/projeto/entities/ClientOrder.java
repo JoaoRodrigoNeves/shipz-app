@@ -38,6 +38,7 @@ public class ClientOrder {
     List<TransportPackage> transportPackages;
 
     private OrderStatus status;
+  
     private String location;
     @Column(name = "created_at")
     LocalDateTime createdAt;
@@ -95,6 +96,10 @@ public class ClientOrder {
         this.products = products;
     }
 
+    public List<TransportPackage> getTransportPackages() {
+        return transportPackages;
+    }
+
     public void setTransportPackages(List<TransportPackage> transportPackages) {
         this.transportPackages = transportPackages;
     }
@@ -113,6 +118,14 @@ public class ClientOrder {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public String getLocation() {
@@ -121,6 +134,14 @@ public class ClientOrder {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+    
+    public LocalDateTime getDeliveredAt() {
+        return deliveredAt;
+    }
+
+    public void setDeliveredAt(LocalDateTime deliveredAt) {
+        this.deliveredAt = deliveredAt;
     }
 
     @PrePersist

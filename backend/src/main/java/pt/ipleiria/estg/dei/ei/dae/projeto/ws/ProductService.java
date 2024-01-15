@@ -49,7 +49,7 @@ public class ProductService {
                 productPackage.getCode(),
                 productPackage.getType(),
                 productPackage.getMaterial(),
-                productPackage.getManufacturingDate()
+                productPackage.getCreatedAt()
         );
     }
 
