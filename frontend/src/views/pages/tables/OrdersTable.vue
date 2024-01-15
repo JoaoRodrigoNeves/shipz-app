@@ -49,6 +49,9 @@ watch(
                     Número de produtos
                 </th>
                 <th>
+                    Estado
+                </th>
+                <th>
                     Ações
                 </th>
             </tr>
@@ -60,19 +63,15 @@ watch(
                     {{ item.code }}
                 </td>
                 <td style="width: 20%; text-align: center;">
-                    {{ item.logisticOperator ? item.logisticOperator : "Sem operador logistico" }}
+                    {{ item.logisticOperator }}
                 </td>
-                <td style="width: 100%; text-align: center;">
+                <td style="width: 30%; text-align: center;">
                     {{ item.productsDTO.length > 0 ? item.productsDTO.length : "Sem produtos" }}
                 </td>
+                <td style="width: 20%; text-align: center;">
+                    {{ item.status }}
+                </td>
                 <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
-                    <VBtn v-if="userRole == 'ProductManufacter'" rel="noopener noreferrer" color="primary"
-                        @click="updateOrder(item, false)">
-                        <VIcon size="20" icon="mdi-account-edit" />
-                        <VTooltip activator="parent" location="top">
-                            <span>Atualizar Operador Logístico</span>
-                        </VTooltip>
-                    </VBtn>
                     <VBtn v-if="userRole == 'LogisticOperator'" rel="noopener noreferrer" color="primary"
                         @click="updateOrder(item, true)">
                         <VIcon size="20" icon="mdi-package" />

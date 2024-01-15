@@ -24,7 +24,7 @@ const loadOrders = async () => {
     )
   } else if (JSON.parse(sessionStorage.getItem('user_info')).role == "LogisticOperator") {
     await axios.get('logistic-operators/' + JSON.parse(sessionStorage.getItem('user_info')).username).then(response => {
-      orders.value = response.data.ordersDTO
+      orders.value = response.data.clientOrdersDTO
       isLoading.value = false
     }).catch(
       error => {
@@ -34,7 +34,7 @@ const loadOrders = async () => {
     )
   } else {
     await axios.get('final-costumers/' + JSON.parse(sessionStorage.getItem('user_info')).username).then(response => {
-      orders.value = response.data.ordersDTO
+      orders.value = response.data.clientOrdersDTO
       isLoading.value = false
     }).catch(
       error => {

@@ -47,10 +47,13 @@ public class LogisticOperatorService {
     private ClientOrderDTO clientOrderToDTO(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
                 clientOrder.getCode(),
-                clientOrder.getLocation()
-                clientOrder.getStatus().getOrderStatus()
+                clientOrder.getLocation(),
+                clientOrder.getStatus().getOrderStatus(),
+                clientOrder.getCreatedAt().toString()
         );
         clientOrderDTO.setProductsDTO(productToDTOs(clientOrder.getProducts()));
+        if (clientOrder.getDeliveredAt() != null)
+            clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
         if(clientOrder.getLogisticOperator() != null){
             clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
         }

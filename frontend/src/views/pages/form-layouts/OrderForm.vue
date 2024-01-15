@@ -19,24 +19,8 @@ const props = defineProps({
   }
 })
 
-const logisticOperators = ref([])
-const logisticOperatorSelected = ref(null)
+const statusSelected = ref(props.order.status)
 const isLoading = ref(false)
-
-const loadLogisticOperators = async () => {
-  isLoading.value = true
-
-  await axios.get('logistic-operators').then(response => {
-    logisticOperators.value = response.data
-    isLoading.value = false
-  }).catch(
-    error => {
-      isLoading.value = false;
-      console.error(error)
-    }
-  )
-
-}
 
 const save = (async () => {
   isLoading.value = true;
@@ -53,29 +37,10 @@ const save = (async () => {
         isLoading.value = false;
         console.error(error)
       })
-  } else {
-    await axios.patch('orders/' + props.order.code + '/logistic-operator',
-      {
-        logisticOperator: logisticOperatorSelected.value
-      }).then(response => {
-        isLoading.value = false;
-        if (response.status == 200) {
-          toast.add({ severity: 'success', summary: 'Sucesso', detail: (props.order.logisticOperator ? 'Operador logistico alterado com sucesso na encomenda #' : 'Operador logistico adicionado com sucesso à encomenda #') + props.order.code, life: 3000 });
-          emit('closeFormAndUpdate')
-        }
-      }).catch(
-        error => {
-          toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema!', life: 3000 });
-          isLoading.value = false;
-          console.error(error)
-        }
-      )
   }
 })
 
 onMounted(async () => {
-  await loadLogisticOperators()
-  logisticOperatorSelected.value = props.order.logisticOperator
 })
 
 </script>
@@ -83,22 +48,13 @@ onMounted(async () => {
 <template>
   <VForm @submit.prevent="save">
     <VRow>
-      <VCol v-if="!props.isUpdatingStatus" cols="12">
-        <VAutocomplete v-model="logisticOperatorSelected" label="Operadores Logisticos"
-          placeholder="Selecionar Operador Logistico" :items="logisticOperators" item-title="name"
-          item-value="username" />
-      </VCol>
-      <VCol v-if="props.isUpdatingStatus" cols="12">
+      <VCol v-if="props.isUpdatingStatus" cols="6">
         <VSelect v-model="statusSelected" label="Estado" placeholder="Selecionar Estado"
           :items="['Estado Inicial', 'Em Processamento', 'Enviada', 'Entregue']" />
       </VCol>
-      <VCol cols=" 12" class="d-flex gap-4">
+      <VCol cols="12" class="d-flex gap-4">
         <VBtn type="submit">
-          {{ props.isUpdatingStatus ? 'Atualizar Estado' : 'Atualizar Operador Logistico' }}
-        </VBtn>
-
-        <VBtn type="reset" color="secondary" variant="tonal">
-          Reset
+          Atualizar Estado
         </VBtn>
       </VCol>
     </VRow>

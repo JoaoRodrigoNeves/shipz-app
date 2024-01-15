@@ -42,10 +42,13 @@ public class ClientOrderService {
     private ClientOrderDTO toDTO(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
                 clientOrder.getCode(),
-                clientOrder.getLocation()
-                clientOrder.getStatus().getOrderStatus()
+                clientOrder.getLocation(),
+                clientOrder.getStatus().getOrderStatus(),
+                clientOrder.getCreatedAt().toString()
         );
         clientOrderDTO.setProductsDTO(productToDTOs(clientOrder.getProducts()));
+        if (clientOrder.getDeliveredAt() != null)
+            clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
         if (clientOrder.getLogisticOperator() != null)
             clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
         if (clientOrder.getFinalCostumer() != null)
@@ -56,9 +59,12 @@ public class ClientOrderService {
     private ClientOrderDTO toDTONoProducts(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
                 clientOrder.getCode(),
-                clientOrder.getLocation()
-                clientOrder.getStatus().getOrderStatus()
+                clientOrder.getLocation(),
+                clientOrder.getStatus().getOrderStatus(),
+                clientOrder.getCreatedAt().toString()
         );
+        if (clientOrder.getDeliveredAt() != null)
+            clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
         if (clientOrder.getLogisticOperator() != null) {
             clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
         }
@@ -93,6 +99,7 @@ public class ClientOrderService {
     public Response create(ClientOrderCreateDTO clientOrderDTO) throws MyEntityNotFoundException, MyConstraintViolationException, NoStockException {
         clientOrderBean.create(
                 clientOrderDTO.getFinalCostumer(),
+                clientOrderDTO.getLogisticOperator(),
                 clientOrderDTO.getProducts());
         return Response.status(Response.Status.CREATED).build();
     }
@@ -111,21 +118,13 @@ public class ClientOrderService {
     @Path("/") // means: the relative url path is “/api/orders”
     public List<ClientOrderDTO> getAllClientOrders() {
         var clientOrders = clientOrderBean.getAll();
-
         return toDTOsNoProducts(clientOrders);
     }
 
     @PATCH
-    @Path("/{code}/logistic-operator")
-    public Response changeLogisticOperator(@PathParam("code") long code, ClientOrderDTO clientOrderDTO) throws MyEntityNotFoundException {
-        clientOrderBean.changeLogistic(code, clientOrderDTO.getLogisticOperator());
-        return Response.status(Response.Status.OK).build();
-    }
-
-    @PATCH
-    @Path("/{clientOrderCode}/changeLocation/{location}")
-    public Response changeLocation(@PathParam("clientOrderCode") long clientOrderCode, @PathParam("location") String location) throws MyEntityNotFoundException {
-        clientOrderBean.changeLocation(clientOrderCode, location);
+    @Path("/{code}/location/")
+    public Response changeLocation(@PathParam("code") long code, ClientOrderDTO clientOrderDTO) throws MyEntityNotFoundException {
+        clientOrderBean.changeLocation(code, clientOrderDTO.getLocation());
         return Response.status(Response.Status.OK).build();
     }
 

@@ -81,10 +81,13 @@ public class FinalCostumerService {
     private ClientOrderDTO clientOrderToDTO(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
                 clientOrder.getCode(),
-                clientOrder.getLocation()
-                clientOrder.getStatus().getOrderStatus()
+                clientOrder.getLocation(),
+                clientOrder.getStatus().getOrderStatus(),
+                clientOrder.getCreatedAt().toString()
         );
         clientOrderDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
+        if (clientOrder.getDeliveredAt() != null)
+            clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
         return clientOrderDTO;
     }
 

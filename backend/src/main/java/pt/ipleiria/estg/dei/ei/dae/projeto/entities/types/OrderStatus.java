@@ -3,7 +3,7 @@ public enum OrderStatus {
     STATUS_0("Estado Inicial"),
     STATUS_1("Em Processamento"),
     STATUS_2("Enviada"),
-    STATUS_3("Recebida");
+    STATUS_3("Entregue");
     private final String orderStatus;
 
     OrderStatus(String orderStatus) {
