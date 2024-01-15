@@ -44,7 +44,7 @@ public class ProductPackageService {
                 productPackage.getCode(),
                 productPackage.getType(),
                 productPackage.getMaterial(),
-                productPackage.getManufacturingDate()
+                productPackage.getCreatedAt()
         );
         productPackageDTO.setProducts(productToDTOs(productPackage.getProducts()));
 
@@ -62,7 +62,7 @@ public class ProductPackageService {
                 productPackage.getCode(),
                 productPackage.getType(),
                 productPackage.getMaterial(),
-                productPackage.getManufacturingDate()
+                productPackage.getCreatedAt()
         );
     }
 

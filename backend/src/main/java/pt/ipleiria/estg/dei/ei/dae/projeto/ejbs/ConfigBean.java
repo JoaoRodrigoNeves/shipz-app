@@ -53,9 +53,8 @@ public class ConfigBean {
             productCatalogBean.create("PC1", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1");
             productCatalogBean.create("PC2", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1");
 
-            productPackageBean.create(PackageType.PRIMARY, "papel", "01/01/2024");
-            productPackageBean.create(PackageType.SECUNDARY, "cartão", "02/01/2024");
-            productPackageBean.create(PackageType.TERCIÁRIO, "plástico", "02/01/2024");
+            productPackageBean.create(PackageType.SECUNDARY, "cartão");
+            productPackageBean.create(PackageType.TERTIARY, "plástico");
 
             productBean.create(100002);
             productBean.create(100002);
@@ -80,7 +79,7 @@ public class ConfigBean {
             productBean.addProductToPackage(100001, 100002);
             productBean.addProductToPackage(100002, 100001);
 
-            transportPackageBean.create("primário", "papel", "leiria", "01/01/2024");
+            //transportPackageBean.create("primário", "papel", "leiria", "01/01/2024");
             //clientOrderBean.create("finalCostumer1", List.of(100001L, 100002L));
 
             sensorBean.create("Temperatura");

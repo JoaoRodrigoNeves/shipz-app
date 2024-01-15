@@ -45,4 +45,8 @@ public class Observation implements Serializable {
     public void setSensor(Sensor sensor) {
         this.sensor = sensor;
     }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
 }

@@ -6,6 +6,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 
 import javax.xml.stream.Location;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,10 +37,10 @@ public class Package extends Versionable implements Serializable {
     List<Sensor> sensors;
 
     @NotNull
-    Date manufacturingDate;
+    LocalDateTime createdAt;
     @PrePersist
-    protected void onCreate() {
-        manufacturingDate = new Date();
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
     }
     public Package() {
     }
@@ -74,12 +75,8 @@ public class Package extends Versionable implements Serializable {
         this.material = material;
     }
 
-    public Date getManufacturingDate() {
-        return manufacturingDate;
-    }
-
-    public void setManufacturingDate(Date manufacturingDate) {
-        this.manufacturingDate = manufacturingDate;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public List<Sensor> getSensors() {
@@ -103,11 +100,11 @@ public class Package extends Versionable implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Package aPackage = (Package) o;
-        return code == aPackage.code && Objects.equals(type, aPackage.type) && Objects.equals(material, aPackage.material) && Objects.equals(sensors, aPackage.sensors) && Objects.equals(manufacturingDate, aPackage.manufacturingDate);
+        return code == aPackage.code && type == aPackage.type && Objects.equals(material, aPackage.material) && Objects.equals(sensors, aPackage.sensors) && Objects.equals(createdAt, aPackage.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, type, material, sensors, manufacturingDate);
+        return Objects.hash(code, type, material, sensors, createdAt);
     }
 }

@@ -39,6 +39,7 @@ public class ClientOrder {
     private OrderStatus status;
     @Column(name = "created_at")
     Date createdAt;
+    Date deliveredAt;
 
     public ClientOrder(FinalCostumer finalCostumer) {
         this.finalCostumer = finalCostumer;
@@ -88,6 +89,10 @@ public class ClientOrder {
         this.products = products;
     }
 
+    public List<TransportPackage> getTransportPackages() {
+        return transportPackages;
+    }
+
     public void setTransportPackages(List<TransportPackage> transportPackages) {
         this.transportPackages = transportPackages;
     }
@@ -107,6 +112,14 @@ public class ClientOrder {
 
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    public Date getDeliveredAt() {
+        return deliveredAt;
+    }
+
+    public void setDeliveredAt(Date deliveredAt) {
+        this.deliveredAt = deliveredAt;
     }
 
     @Override

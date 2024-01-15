@@ -10,21 +10,17 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ClientOrderCreateDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ClientOrderDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.FinalCostumerDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ClientOrderBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ObservationBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.SensorBean;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.FinalCostumer;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.NoStockException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -38,6 +34,8 @@ public class ClientOrderService {
 
     @EJB
     private ObservationBean observationBean;
+    @EJB
+    private SensorBean sensorBean;
 
     private ClientOrderDTO toDTO(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
@@ -80,6 +78,28 @@ public class ClientOrderService {
     private List<ProductDTO> productToDTOs(List<Product> products) {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
+    private ObservationPackageDTO observationPackageDTO(long packageCode, String packageType, List<ObservationDetailDTO> observationDetailDTO) {
+        return new ObservationPackageDTO(
+                packageCode,
+                packageType,
+                observationDetailDTO
+        );
+    }
+
+    private ObservationDetailDTO observationDTO(Observation observation) {
+        return new ObservationDetailDTO(
+                observation.getValue(),
+                observation.getSensor().getCode(),
+                observation.getSensor().getType().getSensorType()
+        );
+    }
+
+
+    private List<ObservationDetailDTO> observationDTOs(List<Observation> observations) {
+        return observations.stream().map(this::observationDTO).collect(Collectors.toList());
+    }
+
+
 
     @POST
     @Path("/")
@@ -113,6 +133,42 @@ public class ClientOrderService {
     public Response changeLogistic(@PathParam("clientOrderCode") long clientOrderCode, @PathParam("logisticOperatorUsername") String logisticOperatorUsername) throws MyEntityNotFoundException, MyConstraintViolationException {
         clientOrderBean.changeLogistic(clientOrderCode, logisticOperatorUsername);
         return Response.status(Response.Status.OK).build();
+    }
+
+    @GET
+    @Path("/{clientOrderCode}/observations")
+    public List<ObservationPackageDTO> getAllObservations(@PathParam("clientOrderCode") long clientOrderCode) throws MyEntityNotFoundException {
+        var clientOrder = clientOrderBean.findClientOrderWithProducts(clientOrderCode);
+
+        List<ObservationPackageDTO> observationPackageDTO = new ArrayList<>();
+
+        for (Product product: clientOrder.getProducts()) {
+            for (ProductPackage productPackage: product.getProductPackages()) {
+                if(!productPackage.getSensors().isEmpty()){
+                    List<ObservationDetailDTO> observationSensorDetailDTOS = new ArrayList<>();
+                    for (Sensor sensor: productPackage.getSensors()) {
+                        observationSensorDetailDTOS.addAll(observationDTOs(sensorBean.getFilteredObservations(sensor.getCode(), clientOrder.getCreatedAt(), clientOrder.getDeliveredAt())));
+                    }
+                    observationPackageDTO.add(observationPackageDTO(productPackage.getCode(),productPackage.getType().getPackageType(), observationSensorDetailDTOS));
+                }
+            }
+        }
+
+        for (TransportPackage transportPackage: clientOrder.getTransportPackages()) {
+            if(!transportPackage.getSensors().isEmpty()){
+                List<ObservationDetailDTO> observationSensorDetailDTOS = new ArrayList<>();
+                for (Sensor sensor: transportPackage.getSensors()) {
+                    observationSensorDetailDTOS.addAll(observationDTOs(sensorBean.getFilteredObservations(sensor.getCode(), clientOrder.getCreatedAt(), clientOrder.getDeliveredAt())));
+                }
+                observationPackageDTO.add(observationPackageDTO(transportPackage.getCode(),transportPackage.getType().getPackageType(), observationSensorDetailDTOS));
+            }
+        }
+
+        if(observationPackageDTO.isEmpty()){
+            throw new MyEntityNotFoundException("Sem observações");
+        }
+
+        return observationPackageDTO;
     }
 
     /*@GET

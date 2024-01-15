@@ -3,7 +3,7 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.entities.types;
 public enum PackageType {
     PRIMARY("Primário"),
     SECUNDARY("Humidade"),
-    TERCIÁRIO("Pressão");
+    TERTIARY("Pressão");
     private final String packageType;
 
     PackageType(String packageType) {

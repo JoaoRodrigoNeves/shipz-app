@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.validation.ConstraintViolationException;
 import org.hibernate.Hibernate;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Observation;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductPackage;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
@@ -13,7 +14,9 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationExcep
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 public class SensorBean {
@@ -95,5 +98,23 @@ public class SensorBean {
         Sensor sensor = this.find(code);
         Hibernate.initialize(sensor.getPackages());
         return sensor;
+    }
+
+    public List<Observation> getFilteredObservations(long code, Date startDate, Date endDate) throws MyEntityNotFoundException {
+        Sensor sensor = this.find(code);
+
+        if (sensor == null) {
+            throw new MyEntityNotFoundException("Sensor not found with code: " + code);
+        }
+
+        Hibernate.initialize(sensor.getObservations());
+
+        return sensor.getObservations().stream()
+                .filter(observation -> isWithinDateRange(observation.getCreatedAt(), startDate, endDate))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isWithinDateRange(Date date, Date startDate, Date endDate) {
+        return date != null && !date.before(startDate) && !date.after(endDate);
     }
 }
