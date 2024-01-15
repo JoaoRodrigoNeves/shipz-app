@@ -61,7 +61,8 @@ public class ProductService {
 
     private ClientOrderDTO clientOrderToDTONoProducts(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
-                clientOrder.getCode()
+                clientOrder.getCode(),
+                clientOrder.getLocation()
         );
         if(clientOrder.getLogisticOperator() != null){
             clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());

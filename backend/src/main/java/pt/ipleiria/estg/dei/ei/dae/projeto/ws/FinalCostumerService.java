@@ -80,7 +80,8 @@ public class FinalCostumerService {
 
     private ClientOrderDTO clientOrderToDTO(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
-                clientOrder.getCode()
+                clientOrder.getCode(),
+                clientOrder.getLocation()
         );
         clientOrderDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
         return clientOrderDTO;

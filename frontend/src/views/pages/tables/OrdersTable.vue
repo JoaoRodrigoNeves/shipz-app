@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 const emit = defineEmits(['loadOrders', 'updateLogisticOperator'])
 const axios = inject('axios')
 const router = useRouter()
+const user_info = JSON.parse(sessionStorage.getItem('user_info'))
 
 const props = defineProps({
     orders: {
@@ -65,7 +66,7 @@ watch(
                     {{ item.productsDTO.length > 0 ? item.productsDTO.length : "Sem produtos" }}
                 </td>
                 <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
-                    <VBtn rel="noopener noreferrer" color="primary" @click="updateLogisticOperator(item)">
+                    <VBtn v-if="user_info.role === 'ProductManufacter'" rel="noopener noreferrer" color="primary" @click="updateLogisticOperator(item)">
                         <VIcon size="20" icon="mdi-account-edit" />
                         <VTooltip activator="parent" location="top">
                             <span>Atualizar Operador Logitico</span>
