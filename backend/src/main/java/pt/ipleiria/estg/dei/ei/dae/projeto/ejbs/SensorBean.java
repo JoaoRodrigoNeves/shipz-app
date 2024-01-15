@@ -14,6 +14,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationExcep
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -100,7 +101,7 @@ public class SensorBean {
         return sensor;
     }
 
-    public List<Observation> getFilteredObservations(long code, Date startDate, Date endDate) throws MyEntityNotFoundException {
+    public List<Observation> getFilteredObservations(long code, LocalDateTime startDate, LocalDateTime endDate) throws MyEntityNotFoundException {
         Sensor sensor = this.find(code);
 
         if (sensor == null) {
@@ -114,7 +115,7 @@ public class SensorBean {
                 .collect(Collectors.toList());
     }
 
-    private boolean isWithinDateRange(Date date, Date startDate, Date endDate) {
-        return date != null && !date.before(startDate) && !date.after(endDate);
+    private boolean isWithinDateRange(LocalDateTime date, LocalDateTime startDate, LocalDateTime endDate) {
+        return date != null && (!date.isBefore(startDate) && !date.isAfter(endDate) || date.isEqual(startDate) || date.isEqual(endDate));
     }
 }

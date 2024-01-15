@@ -3,6 +3,7 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -16,11 +17,11 @@ public class Observation implements Serializable {
     @JoinColumn(name = "sensor_code")
     Sensor sensor;
     @Column(name = "created_at")
-    Date createdAt;
+    LocalDateTime createdAt;
 
     @PrePersist
     protected void onCreate() {
-        createdAt = new Date();
+        createdAt = LocalDateTime.now();
     }
     public Observation(){
 
@@ -46,7 +47,7 @@ public class Observation implements Serializable {
         this.sensor = sensor;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 }
