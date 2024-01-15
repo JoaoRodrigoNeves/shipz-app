@@ -118,6 +118,7 @@ public class ClientOrder {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
 
     @PrePersist
     public void onCreate() {
@@ -136,23 +137,6 @@ public class ClientOrder {
         this.location = location;
     }
     
-    public LocalDateTime getDeliveredAt() {
-        return deliveredAt;
-    }
-
-    public void setDeliveredAt(LocalDateTime deliveredAt) {
-        this.deliveredAt = deliveredAt;
-    }
-
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
     public LocalDateTime getDeliveredAt() {
         return deliveredAt;
     }
