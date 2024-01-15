@@ -48,6 +48,7 @@ public class LogisticOperatorService {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
                 clientOrder.getCode(),
                 clientOrder.getLocation()
+                clientOrder.getStatus().getOrderStatus()
         );
         clientOrderDTO.setProductsDTO(productToDTOs(clientOrder.getProducts()));
         if(clientOrder.getLogisticOperator() != null){

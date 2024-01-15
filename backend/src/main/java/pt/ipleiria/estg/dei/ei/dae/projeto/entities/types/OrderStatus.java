@@ -13,4 +13,13 @@ public enum OrderStatus {
     public String getOrderStatus() {
         return orderStatus;
     }
+
+    public static OrderStatus fromString(String text) {
+        for (OrderStatus orderStatus : OrderStatus.values()) {
+            if (orderStatus.orderStatus.equalsIgnoreCase(text)) {
+                return orderStatus;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found");
+    }
 }

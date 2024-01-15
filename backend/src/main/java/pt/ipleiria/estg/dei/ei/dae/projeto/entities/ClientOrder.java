@@ -41,6 +41,9 @@ public class ClientOrder {
     @Column(name = "created_at")
     Date createdAt;
 
+    @Column(name = "delivered_at")
+    Date deliveredAt;
+
     public ClientOrder(FinalCostumer finalCostumer) {
         this.finalCostumer = finalCostumer;
         this.products = new ArrayList<>();
@@ -61,6 +64,7 @@ public class ClientOrder {
     public LogisticOperator getLogisticOperator() {
         return logisticOperator;
     }
+
     public FinalCostumer getFinalCostumer() {
         return finalCostumer;
     }
@@ -101,6 +105,14 @@ public class ClientOrder {
         this.transportPackages.remove(transportPackage);
     }
 
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
     @PrePersist
     public void onCreate() {
         this.createdAt = new Date();
@@ -118,16 +130,24 @@ public class ClientOrder {
         this.location = location;
     }
 
+    public Date getDeliveredAt() {
+        return deliveredAt;
+    }
+
+    public void setDeliveredAt(Date deliveredAt) {
+        this.deliveredAt = deliveredAt;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ClientOrder that = (ClientOrder) o;
-        return code == that.code && Objects.equals(logisticOperator, that.logisticOperator) && Objects.equals(products, that.products) && Objects.equals(createdAt, that.createdAt);
+        return code == that.code && Objects.equals(finalCostumer, that.finalCostumer) && Objects.equals(logisticOperator, that.logisticOperator) && Objects.equals(products, that.products) && Objects.equals(transportPackages, that.transportPackages) && status == that.status && Objects.equals(createdAt, that.createdAt) && Objects.equals(deliveredAt, that.deliveredAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, logisticOperator, products, createdAt);
+        return Objects.hash(code, finalCostumer, logisticOperator, products, transportPackages, status, createdAt, deliveredAt);
     }
 }

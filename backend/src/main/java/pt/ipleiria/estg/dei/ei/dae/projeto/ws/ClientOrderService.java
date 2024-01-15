@@ -43,24 +43,29 @@ public class ClientOrderService {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
                 clientOrder.getCode(),
                 clientOrder.getLocation()
+                clientOrder.getStatus().getOrderStatus()
         );
         clientOrderDTO.setProductsDTO(productToDTOs(clientOrder.getProducts()));
-        if(clientOrder.getLogisticOperator() != null){
+        if (clientOrder.getLogisticOperator() != null)
             clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
-        }
+        if (clientOrder.getFinalCostumer() != null)
+            clientOrderDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
         return clientOrderDTO;
     }
+
     private ClientOrderDTO toDTONoProducts(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
                 clientOrder.getCode(),
                 clientOrder.getLocation()
+                clientOrder.getStatus().getOrderStatus()
         );
-        if(clientOrder.getLogisticOperator() != null){
+        if (clientOrder.getLogisticOperator() != null) {
             clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
         }
 
         return clientOrderDTO;
     }
+
     private List<ClientOrderDTO> toDTOsNoProducts(List<ClientOrder> clientOrders) {
         return clientOrders.stream().map(this::toDTO).collect(Collectors.toList());
     }
@@ -73,7 +78,7 @@ public class ClientOrderService {
                 product.getProductManufacter().getName()
         );
 
-        if(product.getClientOrder() != null){
+        if (product.getClientOrder() != null) {
             productDTO.setClientOrderCode(product.getClientOrder().getCode());
         }
         return productDTO;
@@ -93,9 +98,9 @@ public class ClientOrderService {
     }
 
     @GET // means: to call this endpoint, we need to use the HTTP GET method
-    @Path("/{code}") // means: the relative url path is “/api/client-order/{code}”
+    @Path("/{code}") // means: the relative url path is “/api/orders/{code}”
     public Response getDetails(@PathParam("code") long code) throws MyEntityExistsException, MyEntityNotFoundException {
-        var clientOrder = clientOrderBean.findClientOrderWithProducts(code);
+        var clientOrder = clientOrderBean.getProducts(code);
         if (clientOrder == null) {
             throw new MyEntityNotFoundException("ClientOrder with code: " + code + " doesn't exist");
         }
@@ -103,7 +108,7 @@ public class ClientOrderService {
     }
 
     @GET
-    @Path("/") // means: the relative url path is “/api/client-order”
+    @Path("/") // means: the relative url path is “/api/orders”
     public List<ClientOrderDTO> getAllClientOrders() {
         var clientOrders = clientOrderBean.getAll();
 
@@ -111,9 +116,9 @@ public class ClientOrderService {
     }
 
     @PATCH
-    @Path("/{clientOrderCode}/changeLogistic/{logisticOperatorUsername}")
-    public Response changeLogistic(@PathParam("clientOrderCode") long clientOrderCode, @PathParam("logisticOperatorUsername") String logisticOperatorUsername) throws MyEntityNotFoundException, MyConstraintViolationException {
-        clientOrderBean.changeLogistic(clientOrderCode, logisticOperatorUsername);
+    @Path("/{code}/logistic-operator")
+    public Response changeLogisticOperator(@PathParam("code") long code, ClientOrderDTO clientOrderDTO) throws MyEntityNotFoundException {
+        clientOrderBean.changeLogistic(code, clientOrderDTO.getLogisticOperator());
         return Response.status(Response.Status.OK).build();
     }
 
@@ -124,6 +129,12 @@ public class ClientOrderService {
         return Response.status(Response.Status.OK).build();
     }
 
+    @PATCH
+    @Path("/{code}/status")
+    public Response changeStatus(@PathParam("code") long code, ClientOrderDTO clientOrderDTO) throws MyEntityNotFoundException {
+        clientOrderBean.changeStatus(code, clientOrderDTO.getStatus());
+        return Response.status(Response.Status.OK).build();
+    }
     /*@GET
     @Path("/test")
     public Response getCurrentWeather() {
