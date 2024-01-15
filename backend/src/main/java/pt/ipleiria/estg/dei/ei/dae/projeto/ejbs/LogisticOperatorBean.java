@@ -8,6 +8,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.LogisticOperator;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.security.Hasher;
@@ -70,11 +71,8 @@ public class LogisticOperatorBean {
         return em.find(LogisticOperator.class, username);
     }
 
-    public LogisticOperator findLogisticOperatorWithClientOrder(String username) throws MyEntityNotFoundException {
-        if (!exists(username)) {
-            throw new MyEntityNotFoundException("Logistic Operator with username '" + username + "' not found");
-        }
-        LogisticOperator logisticOperator = em.find(LogisticOperator.class, username);
+    public LogisticOperator getOrders(String username) throws MyEntityNotFoundException {
+        LogisticOperator logisticOperator = this.find(username);
         Hibernate.initialize(logisticOperator.getClientorders());
         return logisticOperator;
     }

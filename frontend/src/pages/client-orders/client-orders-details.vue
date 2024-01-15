@@ -44,7 +44,7 @@ const loadCities = async () => {
 const changeLocation = async () => {
   isLoading.value = true
   try {
-    await axios.patch('clientOrders/' + router.currentRoute.value.params.code +'/changeLocation/' + order.value.location).then(response => {
+    await axios.patch('orders/' + router.currentRoute.value.params.code +'/changeLocation/' + order.value.location).then(response => {
       isLoading.value = false
       toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Localização alterada com sucesso', life: 3000, });
     })
