@@ -11,25 +11,20 @@ import java.util.Date;
 public class PackageDTO implements Serializable {
 
     long code;
-
     PackageType type;
-
     String material;
-
     //Set<Sensor> observations;
-
-    // data de fabrico
+    long volume
     String createdAt;
-
-    //QualityControl qualityControlData;
 
     public PackageDTO() {
     }
 
-    public PackageDTO(long code, PackageType type, String material, String createdAt) {
+    public PackageDTO(long code, PackageType type, String material, long volume, String createdAt) {
         this.code = code;
         this.type = type;
         this.material = material;
+        this.volume = volume;
         this.createdAt = createdAt;
     }
 
@@ -57,8 +52,19 @@ public class PackageDTO implements Serializable {
         this.material = material;
     }
 
+    public long getVolume() {
+        return volume;
+    }
+
+    public void setVolume(long volume) {
+        this.volume = volume;
+    }
+  
     public String getCreatedAt() {
         return createdAt;
     }
 
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
 }

@@ -29,8 +29,8 @@ public class ProductPackageBean {
 
     //TODO CRUD operations for ProductPackage entity
 
-    public ProductPackage create(PackageType type, String material) {
-        ProductPackage productPackage = new ProductPackage(type, material);
+    public ProductPackage create(PackageType type, String material, Long volume) {
+        ProductPackage productPackage = new ProductPackage(type, material, volume);
         entityManager.persist(productPackage);
         return productPackage;
     }
@@ -78,13 +78,14 @@ public class ProductPackageBean {
     public void addProductToAllPackages(Product product) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, product.getProductCatalog().getCode());
 
-        if(productCatalog.getSecondaryPackageMaterial() != null && productCatalog.getMaxSecondaryPackage() != null){
+        if (productCatalog.getSecondaryPackageMaterial() != null && productCatalog.getMaxSecondaryPackage() != null) {
             ProductPackage productPackageSecondary = productCatalog.getActiveProductPackageSecondaryCode() != null ? this.find(productCatalog.getActiveProductPackageSecondaryCode()) : null;
-            if(productPackageSecondary != null && productPackageSecondary.getProducts().size() < productCatalog.getMaxSecondaryPackage()){
+            if (productPackageSecondary != null && productPackageSecondary.getProducts().size() < productCatalog.getMaxSecondaryPackage()) {
                 product.addProductPackage(productPackageSecondary);
                 productPackageSecondary.addProduct(product);
-            }else{
-                ProductPackage newProductPackageSecondary = new ProductPackage(PackageType.SECONDARY, productCatalog.getSecondaryPackageMaterial());
+            } else {
+                Long productPackageSecondaryVolume = productCatalog.getPrimaryPackageVolume() * productCatalog.getMaxSecondaryPackage();
+                ProductPackage newProductPackageSecondary = new ProductPackage(PackageType.SECONDARY, productCatalog.getSecondaryPackageMaterial(), productPackageSecondaryVolume);
                 entityManager.persist(newProductPackageSecondary);
                 product.addProductPackage(newProductPackageSecondary);
                 newProductPackageSecondary.addProduct(product);
@@ -92,13 +93,14 @@ public class ProductPackageBean {
             }
         }
 
-        if(productCatalog.getTertiaryPackageMaterial() != null && productCatalog.getMaxTertiaryPackage() != null){
+        if (productCatalog.getTertiaryPackageMaterial() != null && productCatalog.getMaxTertiaryPackage() != null) {
             ProductPackage productPackageTertiary = productCatalog.getActiveProductPackageTertiaryCode() != null ? this.find(productCatalog.getActiveProductPackageTertiaryCode()) : null;
-            if(productPackageTertiary != null && productPackageTertiary.getProducts().size() < (productCatalog.getMaxTertiaryPackage() * productCatalog.getMaxSecondaryPackage())){
+            if (productPackageTertiary != null && productPackageTertiary.getProducts().size() < (productCatalog.getMaxTertiaryPackage() * productCatalog.getMaxSecondaryPackage())) {
                 product.addProductPackage(productPackageTertiary);
                 productPackageTertiary.addProduct(product);
-            }else{
-                ProductPackage newProductPackageTertiary = new ProductPackage(PackageType.TERTIARY, productCatalog.getTertiaryPackageMaterial());
+            } else {
+                Long productPackageTertiaryVolume = productCatalog.getPrimaryPackageVolume() * productCatalog.getMaxSecondaryPackage() * productCatalog.getMaxTertiaryPackage();
+                ProductPackage newProductPackageTertiary = new ProductPackage(PackageType.TERTIARY, productCatalog.getTertiaryPackageMaterial(), productPackageTertiaryVolume);
                 entityManager.persist(newProductPackageTertiary);
                 product.addProductPackage(newProductPackageTertiary);
                 newProductPackageTertiary.addProduct(product);

@@ -5,9 +5,7 @@ import java.io.Serializable;
 public class ProductOrderDTO implements Serializable {
 
     long code;
-
     long quantity;
-
     String name;
     String catalogArea;
     String category;
@@ -48,16 +46,16 @@ public class ProductOrderDTO implements Serializable {
         return quantity;
     }
 
-    public void setQuantity(long quantity) {
-        this.quantity = quantity;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setQuantity(long quantity) {
+        this.quantity = quantity;
     }
 
     public String getCatalogArea() {

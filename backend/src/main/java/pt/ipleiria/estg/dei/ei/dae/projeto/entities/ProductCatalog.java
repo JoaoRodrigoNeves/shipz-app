@@ -29,6 +29,7 @@ public class ProductCatalog extends Versionable implements Serializable {
     String description;
     Integer maxSecondaryPackage;
     Integer maxTertiaryPackage;
+    long primaryPackageVolume;
     String primaryPackageMaterial;
     String secondaryPackageMaterial;
     String tertiaryPackageMaterial;
@@ -36,6 +37,7 @@ public class ProductCatalog extends Versionable implements Serializable {
     Long activeProductPackageTertiaryCode;
 
     @OneToMany(mappedBy = "productCatalog", cascade = CascadeType.REMOVE)
+    @OrderBy("createdAt desc")
     @NotNull
     List<Product> products;
     @ManyToOne
@@ -47,7 +49,7 @@ public class ProductCatalog extends Versionable implements Serializable {
 
     }
 
-    public ProductCatalog(String name, String catalogArea, String category, String description, ProductManufacter productManufacter, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial,String tertiaryPackageMaterial) {
+    public ProductCatalog(String name, String catalogArea, String category, String description, ProductManufacter productManufacter, Integer maxSecondaryPackage, Integer maxTertiaryPackage, long primaryPackageVolume, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial) {
         this.name = name;
         this.catalogArea = catalogArea;
         this.category = category;
@@ -56,6 +58,7 @@ public class ProductCatalog extends Versionable implements Serializable {
         this.products = new ArrayList<Product>();
         this.maxSecondaryPackage = maxSecondaryPackage;
         this.maxTertiaryPackage = maxTertiaryPackage;
+        this.primaryPackageVolume = primaryPackageVolume;
         this.primaryPackageMaterial = primaryPackageMaterial;
         this.secondaryPackageMaterial = secondaryPackageMaterial;
         this.tertiaryPackageMaterial = tertiaryPackageMaterial;
@@ -133,6 +136,14 @@ public class ProductCatalog extends Versionable implements Serializable {
         this.maxTertiaryPackage = maxTertiaryPackage;
     }
 
+    public long getPrimaryPackageVolume() {
+        return primaryPackageVolume;
+    }
+
+    public void setPrimaryPackageVolume(long primaryPackageVolume) {
+        this.primaryPackageVolume = primaryPackageVolume;
+    }
+
     public String getPrimaryPackageMaterial() {
         return primaryPackageMaterial;
     }
@@ -186,11 +197,11 @@ public class ProductCatalog extends Versionable implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProductCatalog that = (ProductCatalog) o;
-        return code == that.code && Objects.equals(name, that.name) && Objects.equals(catalogArea, that.catalogArea) && Objects.equals(category, that.category) && Objects.equals(description, that.description) && Objects.equals(products, that.products) && Objects.equals(productManufacter, that.productManufacter);
+        return code == that.code && Objects.equals(name, that.name) && Objects.equals(catalogArea, that.catalogArea) && Objects.equals(category, that.category) && Objects.equals(description, that.description) && Objects.equals(maxSecondaryPackage, that.maxSecondaryPackage) && Objects.equals(maxTertiaryPackage, that.maxTertiaryPackage) && Objects.equals(primaryPackageVolume, that.primaryPackageVolume) && Objects.equals(primaryPackageMaterial, that.primaryPackageMaterial) && Objects.equals(secondaryPackageMaterial, that.secondaryPackageMaterial) && Objects.equals(tertiaryPackageMaterial, that.tertiaryPackageMaterial) && Objects.equals(activeProductPackageSecondaryCode, that.activeProductPackageSecondaryCode) && Objects.equals(activeProductPackageTertiaryCode, that.activeProductPackageTertiaryCode) && Objects.equals(products, that.products) && Objects.equals(productManufacter, that.productManufacter);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, name, catalogArea, category, description, products, productManufacter);
+        return Objects.hash(code, name, catalogArea, category, description, maxSecondaryPackage, maxTertiaryPackage, primaryPackageVolume, primaryPackageMaterial, secondaryPackageMaterial, tertiaryPackageMaterial, activeProductPackageSecondaryCode, activeProductPackageTertiaryCode, products, productManufacter);
     }
 }

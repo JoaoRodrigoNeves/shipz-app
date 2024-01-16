@@ -23,8 +23,8 @@ public class TransportPackageBean {
     }
 
     //TODO CRUD operations for TransportPackage entity
-    public TransportPackage create(PackageType type, String material, String location) throws MyEntityExistsException {
-        TransportPackage transportPackage = new TransportPackage(type, material, location);
+    public TransportPackage create(PackageType type, String material, String location, long volume) throws MyEntityExistsException {
+        TransportPackage transportPackage = new TransportPackage(type, material, location, volume);
         entityManager.persist(transportPackage);
         return transportPackage;
     }

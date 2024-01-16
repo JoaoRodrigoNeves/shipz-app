@@ -36,18 +36,18 @@ public class Package extends Versionable implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "packages")
     List<Sensor> sensors;
 
+    long volume;
+
     @NotNull
     LocalDateTime createdAt;
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
+
     public Package() {
     }
 
-    public Package(PackageType type, String material) {
+    public Package(PackageType type, String material, long volume) {
         this.type = type;
         this.material = material;
+        this.volume = volume;
         this.sensors = new ArrayList<Sensor>();
     }
 
@@ -75,10 +75,6 @@ public class Package extends Versionable implements Serializable {
         this.material = material;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
     public List<Sensor> getSensors() {
         return sensors;
     }
@@ -95,16 +91,33 @@ public class Package extends Versionable implements Serializable {
         this.sensors.remove(sensor);
     }
 
+    public long getVolume() {
+        return volume;
+    }
+
+    public void setVolume(long volume) {
+        this.volume = volume;
+    }
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Package aPackage = (Package) o;
-        return code == aPackage.code && type == aPackage.type && Objects.equals(material, aPackage.material) && Objects.equals(sensors, aPackage.sensors) && Objects.equals(createdAt, aPackage.createdAt);
+        return code == aPackage.code && type == aPackage.type && Objects.equals(material, aPackage.material) && Objects.equals(sensors, aPackage.sensors) && Objects.equals(volume, aPackage.volume) && Objects.equals(createdAt, aPackage.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, type, material, sensors, createdAt);
+        return Objects.hash(code, type, material, sensors, volume, createdAt);
     }
 }

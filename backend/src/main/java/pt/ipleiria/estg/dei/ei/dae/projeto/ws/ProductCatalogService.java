@@ -39,6 +39,7 @@ public class ProductCatalogService {
                 productCatalog.getProductManufacter().getUsername(),
                 productCatalog.getMaxSecondaryPackage(),
                 productCatalog.getMaxTertiaryPackage(),
+                productCatalog.getPrimaryPackageVolume(),
                 productCatalog.getPrimaryPackageMaterial(),
                 productCatalog.getSecondaryPackageMaterial(),
                 productCatalog.getTertiaryPackageMaterial()
@@ -83,6 +84,7 @@ public class ProductCatalogService {
                 productCatalogDTO.getProductManufacterUsername(),
                 productCatalogDTO.getMaxSecondaryPackage(),
                 productCatalogDTO.getMaxTertiaryPackage(),
+                productCatalogDTO.getPrimaryPackageVolume(),
                 productCatalogDTO.getPrimaryPackageMaterial(),
                 productCatalogDTO.getSecondaryPackageMaterial(),
                 productCatalogDTO.getTertiaryPackageMaterial()

@@ -31,6 +31,7 @@ public class ProductService {
     private ProductPackageBean productPackageBean;
     @EJB
     private ProductCatalogBean productCatalogBean;
+
     private ProductDTO productToDTO(Product product) {
         ProductDTO productDTO = new ProductDTO(
                 product.getCode(),
@@ -39,7 +40,7 @@ public class ProductService {
                 product.getProductManufacter().getName()
         );
 
-        if(product.getClientOrder() != null){
+        if (product.getClientOrder() != null) {
             productDTO.setClientOrderCode(product.getClientOrder().getCode());
         }
         return productDTO;
@@ -55,6 +56,7 @@ public class ProductService {
                 productPackage.getType(),
                 productPackage.getType().getPackageType(),
                 productPackage.getMaterial(),
+                productPackage.getVolume(),
                 productPackage.getCreatedAt().toString()
         );
     }
@@ -72,7 +74,7 @@ public class ProductService {
                 clientOrder.getStatus().getOrderStatus(),
                 clientOrder.getCreatedAt().toString()
         );
-        if(clientOrder.getLogisticOperator() != null){
+        if (clientOrder.getLogisticOperator() != null) {
             clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
         }
         if (clientOrder.getDeliveredAt() != null)
@@ -80,6 +82,7 @@ public class ProductService {
 
         return clientOrderDTO;
     }
+
     private List<ClientOrderDTO> clientOrderToDTOsNoProducts(List<ClientOrder> clientOrders) {
         return clientOrders.stream().map(this::clientOrderToDTONoProducts).collect(Collectors.toList());
     }
@@ -94,6 +97,7 @@ public class ProductService {
                 productCatalog.getProductManufacter().getUsername(),
                 productCatalog.getMaxSecondaryPackage(),
                 productCatalog.getMaxTertiaryPackage(),
+                productCatalog.getPrimaryPackageVolume(),
                 productCatalog.getPrimaryPackageMaterial(),
                 productCatalog.getSecondaryPackageMaterial(),
                 productCatalog.getTertiaryPackageMaterial()
@@ -111,12 +115,14 @@ public class ProductService {
     //TODO create a new product
     @POST
     @Path("/")
-    public Response create(ProductDTO productDTO) throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
-        Product product = productBean.create(
-                productDTO.getProductCatalogCode()
-        );
-        productPackageBean.addProductToAllPackages(product);
-        return Response.status(Response.Status.CREATED).entity(productToDTO(product)).build();
+    public Response create(ProductCreateDTO productCreateDTO) throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+        for (int i = 0; i < productCreateDTO.getQuantity(); i++) {
+            Product product = productBean.create(
+                    productCreateDTO.getProductCatalogCode()
+            );
+            productPackageBean.addProductToAllPackages(product);
+        }
+        return Response.status(Response.Status.CREATED).build();
     }
 
     //TODO find product by code
@@ -173,20 +179,20 @@ public class ProductService {
     }
 
     //TODO add product to product-package
-    @POST
+    /*@POST
     @Path("{code}/product-package/{packageCode}")
     public Response addToProductPackage(@PathParam("code") long code, @PathParam("packageCode") long packageCode) throws MyEntityNotFoundException, MyEntityExistsException {
         productBean.addProductToPackage(code, packageCode);
         return Response.status(Response.Status.OK).build();
-    }
+    }*/
 
     //TODO remove product from product-package
-    @DELETE
+    /*@DELETE
     @Path("{code}/product-package/{packageCode}")
     public Response removeFromProductPackage(@PathParam("code") long code, @PathParam("packageCode") long packageCode) throws MyEntityNotFoundException, MyEntityExistsException {
         productBean.removeProductFromPackage(code, packageCode);
         return Response.status(Response.Status.OK).build();
-    }
+    }*/
 
     //TODO get order
     @GET
