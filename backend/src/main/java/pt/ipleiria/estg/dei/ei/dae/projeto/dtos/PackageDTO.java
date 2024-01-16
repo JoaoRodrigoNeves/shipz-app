@@ -14,7 +14,7 @@ public class PackageDTO implements Serializable {
     PackageType type;
     String material;
     //Set<Sensor> observations;
-    long volume
+    long volume;
     String createdAt;
 
     public PackageDTO() {
