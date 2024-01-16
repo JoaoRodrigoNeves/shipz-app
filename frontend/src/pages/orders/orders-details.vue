@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import ProductTable from '@/views/pages/tables/ProductTableOrders.vue'
 import { useToast } from "primevue/usetoast";
 
-const toast = useToast()  
+const toast = useToast()
 const axios = inject('axios')
 const router = useRouter()
 const isLoading = ref(false)
@@ -34,7 +34,7 @@ const loadCities = async () => {
       cities.value = response.data
       isLoading.value = false
     })
-    
+
   } catch (error) {
     isLoading.value = false
     console.log(error)
@@ -43,8 +43,11 @@ const loadCities = async () => {
 
 const changeLocation = async () => {
   isLoading.value = true
+  let payload = {
+    location : order.value.location
+  }
   try {
-    await axios.patch('clientOrders/' + router.currentRoute.value.params.code +'/changeLocation/' + order.value.location).then(response => {
+    await axios.patch('orders/' + router.currentRoute.value.params.code + '/location', payload).then(response => {
       isLoading.value = false
       toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Localização alterada com sucesso', life: 3000, });
     })
@@ -71,7 +74,8 @@ onMounted(async () => {
           <h2>Encomenda nº{{ order.code }}</h2>
         </div>
         <div class="w-50 my-5">
-          <VAutocomplete v-model="order.location" label="Localização" placeholder="Selecionar Localização" :items="cities" @update:model-value="changeLocation()" />
+          <VAutocomplete v-model="order.location" label="Localização" placeholder="Selecionar Localização" :items="cities"
+            @update:model-value="changeLocation()" />
         </div>
         <div class="products-actions">
           <h3>Produtos</h3>
