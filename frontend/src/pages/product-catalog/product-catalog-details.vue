@@ -19,6 +19,7 @@ const isCreatingOrUpdatingCatalog = ref(false)
 const isCreatingOrUpdatingProduct = ref(false)
 const catalogToUpdate = ref(null)
 const productToUpdate = ref(null)
+const createQuantity = ref(1)
 
 const loadProductCatalogDetails = async () => {
     isLoading.value = true;
@@ -50,14 +51,15 @@ const loadProductCatalogProducts = async () => {
 const createProduct = (async () => {
     isLoading.value = true;
     var payload = {
-        productCatalogCode: productCatalog.value.code
+        productCatalogCode: productCatalog.value.code,
+        quantity: createQuantity.value
     }
-    await axios.post('products', payload).then(response => {
+    await axios.post('products', payload
+    ).then(response => {
         if (response.status == 201) {
             toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Produto criado com sucesso', life: 3000 });
             loadProductCatalogProducts();
         }
-        isLoading.value = false
     }).catch(
         error => {
             isLoading.value = false;
@@ -184,16 +186,19 @@ onMounted(async () => {
                 </div>
                 <div class="products-actions">
                     <h2>Produtos</h2>
-                    <VBtn rel="noopener noreferrer" color="primary" @click="createProduct">
-                        <VIcon size="20" icon="bx-plus" />
-                        <VTooltip activator="parent" location="top">
-                            <span>Adicionar Produto</span>
-                        </VTooltip>
-                    </VBtn>
+                    <div class="product-quantity">
+                        <VTextField type="number" v-model="createQuantity" class="product-quantity" style="width:75px" />
+                        <VBtn rel="noopener noreferrer" color="primary" @click="createProduct">
+                            <VIcon size="20" icon="bx-plus" />
+                            <VTooltip activator="parent" location="top">
+                                <span>Adicionar Produto</span>
+                            </VTooltip>
+                        </VBtn>
+                    </div>
                 </div>
                 <div v-if="products && products.length > 0 && !isLoading">
-                    <ProductTable @updateProduct="updateProduct"
-                        @loadProducts="loadProductCatalogProducts" :product-package-view="false" :products="products" />
+                    <ProductTable @updateProduct="updateProduct" @loadProducts="loadProductCatalogProducts"
+                        :product-package-view="false" :products="products" />
                 </div>
                 <div v-else class="no-products">
                     Não tem produtos associados a este catálogo
@@ -260,6 +265,12 @@ onMounted(async () => {
     display: flex;
     justify-content: space-between;
     padding: 24px;
+}
+
+.products-actions .product-quantity {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .no-products {

@@ -37,6 +37,7 @@ public class ProductCatalog extends Versionable implements Serializable {
     Long activeProductPackageTertiaryCode;
 
     @OneToMany(mappedBy = "productCatalog", cascade = CascadeType.REMOVE)
+    @OrderBy("createdAt desc")
     @NotNull
     List<Product> products;
     @ManyToOne

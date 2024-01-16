@@ -114,12 +114,14 @@ public class ProductService {
     //TODO create a new product
     @POST
     @Path("/")
-    public Response create(ProductDTO productDTO) throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
-        Product product = productBean.create(
-                productDTO.getProductCatalogCode()
-        );
-        productPackageBean.addProductToAllPackages(product);
-        return Response.status(Response.Status.CREATED).entity(productToDTO(product)).build();
+    public Response create(ProductCreateDTO productCreateDTO) throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+        for (int i = 0; i < productCreateDTO.getQuantity(); i++) {
+            Product product = productBean.create(
+                    productCreateDTO.getProductCatalogCode()
+            );
+            productPackageBean.addProductToAllPackages(product);
+        }
+        return Response.status(Response.Status.CREATED).build();
     }
 
     //TODO find product by code
