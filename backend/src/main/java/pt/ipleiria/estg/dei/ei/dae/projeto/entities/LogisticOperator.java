@@ -15,15 +15,14 @@ import java.util.List;
 })
 public class LogisticOperator extends User implements Serializable {
     @OneToMany(mappedBy = "logisticOperator", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<ClientOrder> clientorders;
+    List<ClientOrder> clientorders;
 
     public LogisticOperator(String username, String password, String name, String email) {
         super(username, password, name, email);
-        clientorders = new ArrayList<>();
+        this.clientorders = new ArrayList<>();
     }
 
     public LogisticOperator() {
-        clientorders = new ArrayList<>();
     }
 
     public void addOrder(ClientOrder clientOrder){
