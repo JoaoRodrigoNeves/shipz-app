@@ -17,13 +17,15 @@ public class ProductCatalogDTO implements Serializable {
     String productManufacterUsername;
     Integer maxSecondaryPackage;
     Integer maxTertiaryPackage;
+    long primaryPackageVolume;
     String primaryPackageMaterial;
     String secondaryPackageMaterial;
     String tertiaryPackageMaterial;
+
     public ProductCatalogDTO() {
     }
 
-    public ProductCatalogDTO(long code, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial,String tertiaryPackageMaterial) {
+    public ProductCatalogDTO(long code, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, long primaryPackageVolume, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial) {
         this.code = code;
         this.name = name;
         this.catalogArea = catalogArea;
@@ -32,6 +34,7 @@ public class ProductCatalogDTO implements Serializable {
         this.productManufacterUsername = productManufacterUsername;
         this.maxSecondaryPackage = maxSecondaryPackage;
         this.maxTertiaryPackage = maxTertiaryPackage;
+        this.primaryPackageVolume = primaryPackageVolume;
         this.primaryPackageMaterial = primaryPackageMaterial;
         this.secondaryPackageMaterial = secondaryPackageMaterial;
         this.tertiaryPackageMaterial = tertiaryPackageMaterial;
@@ -99,6 +102,14 @@ public class ProductCatalogDTO implements Serializable {
 
     public void setMaxTertiaryPackage(Integer maxTertiaryPackage) {
         this.maxTertiaryPackage = maxTertiaryPackage;
+    }
+
+    public long getPrimaryPackageVolume() {
+        return primaryPackageVolume;
+    }
+
+    public void setPrimaryPackageVolume(long primaryPackageVolume) {
+        this.primaryPackageVolume = primaryPackageVolume;
     }
 
     public String getPrimaryPackageMaterial() {

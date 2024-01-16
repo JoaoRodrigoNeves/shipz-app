@@ -44,7 +44,8 @@ public class ProductPackageService {
                 productPackage.getCode(),
                 productPackage.getType(),
                 productPackage.getMaterial(),
-                productPackage.getCreatedAt()
+                productPackage.getVolume(),
+                productPackage.getCreatedAt().toString()
         );
         productPackageDTO.setProducts(productToDTOs(productPackage.getProducts()));
 
@@ -62,7 +63,8 @@ public class ProductPackageService {
                 productPackage.getCode(),
                 productPackage.getType(),
                 productPackage.getMaterial(),
-                productPackage.getCreatedAt()
+                productPackage.getVolume(),
+                productPackage.getCreatedAt().toString()
         );
     }
 
@@ -107,7 +109,8 @@ public class ProductPackageService {
     public Response create(ProductPackageDTO productPackageDTO) {
         ProductPackage productPackage = productPackageBean.create(
                 productPackageDTO.getType(),
-                productPackageDTO.getMaterial()
+                productPackageDTO.getMaterial(),
+                productPackageDTO.getVolume()
         );
         return Response.status(Response.Status.OK).entity(productPackage).build();
     }
@@ -154,20 +157,20 @@ public class ProductPackageService {
     }
 
     //TODO add product to package
-    @POST
+    /*@POST
     @Path("{code}/products/{productCode}")
     public Response addProduct(@PathParam("code") long code, @PathParam("productCode") long productCode) throws MyEntityNotFoundException, MyEntityExistsException {
         productBean.addProductToPackage(productCode, code);
         return Response.status(Response.Status.OK).build();
-    }
+    }*/
 
     //TODO remove product from package
-    @DELETE
+    /*@DELETE
     @Path("{code}/products/{productCode}")
     public Response removeProduct(@PathParam("code") long code, @PathParam("productCode") long productCode) throws MyEntityNotFoundException, MyEntityExistsException {
         productBean.removeProductFromPackage(productCode, code);
         return Response.status(Response.Status.OK).build();
-    }
+    }*/
 
     //TODO get sensors from package
     @GET

@@ -28,8 +28,8 @@ public class ProductPackage extends Package implements Serializable {
     public ProductPackage() {
     }
 
-    public ProductPackage(PackageType type, String material) {
-        super(type, material);
+    public ProductPackage(PackageType type, String material, long volume) {
+        super(type, material, volume);
         this.products = new ArrayList<Product>();
     }
 

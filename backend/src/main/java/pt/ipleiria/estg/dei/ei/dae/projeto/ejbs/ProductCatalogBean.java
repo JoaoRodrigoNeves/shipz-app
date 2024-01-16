@@ -34,14 +34,14 @@ public class ProductCatalogBean {
         return (Long) query.getSingleResult() > 0L;
     }
 
-    public ProductCatalog create(String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial,String tertiaryPackageMaterial) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
+    public ProductCatalog create(String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, long primaryPackageVolume, String primaryPackageMaterial, String secondaryPackageMaterial,String tertiaryPackageMaterial) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
         ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, productManufacterUsername);
 
         if (productManufacter == null)
             throw new MyEntityNotFoundException("Product Manufacter with username: '" + productManufacterUsername + "' not found");
 
         try {
-            var productCatalog = new ProductCatalog(name, catalogArea, category, description, productManufacter, maxSecondaryPackage, maxTertiaryPackage, primaryPackageMaterial, secondaryPackageMaterial, tertiaryPackageMaterial);
+            var productCatalog = new ProductCatalog(name, catalogArea, category, description, productManufacter, maxSecondaryPackage, maxTertiaryPackage, primaryPackageVolume, primaryPackageMaterial, secondaryPackageMaterial, tertiaryPackageMaterial);
             productManufacter.addProductCatalog(productCatalog);
             entityManager.persist(productCatalog);
             entityManager.flush();
@@ -123,8 +123,6 @@ public class ProductCatalogBean {
                 )
                 .collect(Collectors.toList());
     }
-
-
 
     public void addProduct(long productCatalogCode, long productCode) throws MyEntityNotFoundException, MyEntityExistsException {
         ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, productCatalogCode);
