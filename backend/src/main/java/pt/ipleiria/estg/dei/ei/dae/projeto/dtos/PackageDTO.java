@@ -19,14 +19,14 @@ public class PackageDTO implements Serializable {
     //Set<Sensor> observations;
 
     // data de fabrico
-    LocalDateTime createdAt;
+    String createdAt;
 
     //QualityControl qualityControlData;
 
     public PackageDTO() {
     }
 
-    public PackageDTO(long code, PackageType type, String material, LocalDateTime createdAt) {
+    public PackageDTO(long code, PackageType type, String material, String createdAt) {
         this.code = code;
         this.type = type;
         this.material = material;
@@ -57,7 +57,7 @@ public class PackageDTO implements Serializable {
         this.material = material;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 

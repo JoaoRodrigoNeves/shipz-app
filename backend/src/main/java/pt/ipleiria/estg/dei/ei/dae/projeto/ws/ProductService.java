@@ -53,8 +53,9 @@ public class ProductService {
         return new ProductPackageDTO(
                 productPackage.getCode(),
                 productPackage.getType(),
+                productPackage.getType().getPackageType(),
                 productPackage.getMaterial(),
-                productPackage.getCreatedAt()
+                productPackage.getCreatedAt().toString()
         );
     }
 

@@ -7,6 +7,7 @@ const toast = useToast();
 const isLoading = ref(false);
 const productCatalogs = ref([]);
 const productCatalogsSelected = ref([]);
+const logisticOperators = ref([]);
 
 const loadProductCatalogs = async () => {
   isLoading.value = true;
@@ -22,6 +23,20 @@ const loadProductCatalogs = async () => {
   )
 }
 
+const loadLogisticOperators = async () => {
+  isLoading.value = true
+
+  await axios.get('logistic-operators').then(response => {
+    logisticOperators.value = response.data
+    isLoading.value = false
+  }).catch(
+    error => {
+      isLoading.value = false;
+      console.error(error)
+    }
+  )
+
+}
 
 const createOrder = async () => {
   isLoading.value = true
@@ -66,6 +81,7 @@ const resetProducts = () => {
 
 onMounted(async () => {
   await loadProductCatalogs();
+  await loadLogisticOperators();
 })
 </script>
 <template>
@@ -129,7 +145,9 @@ onMounted(async () => {
               </VIcon>
             </span>
           </div>
-
+          <VAutocomplete v-model="productCatalog.logisticOperator" label="Operadores Logisticos"
+          placeholder="Selecionar Operador Logistico" :items="logisticOperators" item-title="name"
+          item-value="username" />
 
         </div>
         <div class="product-submit">

@@ -11,13 +11,14 @@ import java.util.List;
 public class ProductPackageDTO extends PackageDTO implements Serializable {
 
     List<ProductDTO> products;
-
+    String typeName;
     public ProductPackageDTO() {
     }
 
-    public ProductPackageDTO(long code, PackageType type, String material, LocalDateTime manufacturingDate) {
+    public ProductPackageDTO(long code, PackageType type, String typeName, String material, String manufacturingDate) {
         super(code, type, material, manufacturingDate);
-        this.products = new ArrayList<ProductDTO>();
+        this.products = new ArrayList<>();
+        this.typeName = typeName;
     }
 
     public List<ProductDTO> getProducts() {
@@ -26,5 +27,13 @@ public class ProductPackageDTO extends PackageDTO implements Serializable {
 
     public void setProducts(List<ProductDTO> products) {
         this.products = products;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 }

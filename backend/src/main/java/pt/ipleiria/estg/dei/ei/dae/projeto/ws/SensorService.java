@@ -41,7 +41,7 @@ public class SensorService {
                 p.getCode(),
                 p.getType(),
                 p.getMaterial(),
-                p.getCreatedAt()
+                p.getCreatedAt().toString()
         );
     }
 

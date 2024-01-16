@@ -51,8 +51,8 @@ const removeProduct = (product) => {
   emit('removeProduct', product)
 }
 
-const navigateTo = (path, productCatalogCode) => {
-    router.push({ path: path, params: { catalog: productCatalogCode } })
+const navigateTo = (path) => {
+    router.push({ path: path })
 }
 watch(
   () => props,
@@ -106,7 +106,7 @@ watch(
           {{ item.clientOrderCode ? item.clientOrderCode : "Sem encomenda" }}
         </td>
         <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
-          <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('product/' + item.code, item.productCatalogCode)">
+          <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('/product/' + item.code)">
             <VIcon size="20" icon="bx-show" />
             <VTooltip activator="parent" location="top">
               <span>Ver Detalhes</span>
