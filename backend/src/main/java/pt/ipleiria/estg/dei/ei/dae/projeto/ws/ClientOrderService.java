@@ -119,7 +119,7 @@ public class ClientOrderService {
     public Response create(ClientOrderCreateDTO clientOrderDTO) throws MyEntityNotFoundException, MyConstraintViolationException, NoStockException {
         clientOrderBean.create(
                 clientOrderDTO.getFinalCostumer(),
-                "logisticOperator1",
+                clientOrderDTO.getLogisticOperator(),
                 clientOrderDTO.getProducts());
         return Response.status(Response.Status.CREATED).build();
     }

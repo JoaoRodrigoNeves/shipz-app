@@ -1,26 +1,14 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue'
-import ProductTable from '@/views/pages/tables/ProductTable.vue'
+import ProductPackageTable from '@/views/pages/tables/ProductPackageTable.vue';
 import { useRouter } from 'vue-router'
-import { useRoute } from 'vue-router';
-import ProductCatalogForm from '@/views/pages/form-layouts/ProductCatalogForm.vue'
-import ProductForm from '@/views/pages/form-layouts/ProductForm.vue'
-import { useToast } from "primevue/usetoast";
-import { useConfirm } from "primevue/useconfirm";
 
 const axios = inject('axios')
 const isLoading = ref(false)
 const router = useRouter()
-const route = useRoute()
-const confirm = useConfirm();
-const toast = useToast();
 
-const products = ref([])
 const productCatalog = ref(null)
-const isCreatingOrUpdatingCatalog = ref(false)
-const isCreatingOrUpdatingProduct = ref(false)
-const catalogToUpdate = ref(null)
-const productToUpdate = ref(null)
+const productPackages = ref(null)
 
 const loadProductCatalogDetails = async () => {
     isLoading.value = true;
@@ -35,97 +23,31 @@ const loadProductCatalogDetails = async () => {
     )
 }
 
-const createProduct = (async () => {
+const loadProductPackages = async () => {
     isLoading.value = true;
-    var payload = {
-        productCatalogCode: productCatalog.value.code
-    }
-    await axios.post('products', payload).then(response => {
-        if (response.status == 201) {
-            toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Produto criado com sucesso', life: 3000 });
-            loadProductCatalogProducts();
-        }
-        isLoading.value = false
+    await axios.get('products/' + router.currentRoute.value.params.code + '/product-package').then(response => {
+        isLoading.value = false;
+        productPackages.value = response.data
     }).catch(
         error => {
             isLoading.value = false;
             console.error(error)
         }
     )
-});
-
-const deleteProductCatalogConfirm = (productCatalogItem) => {
-    console.log(productCatalogItem)
-    confirm.require({
-        message: 'Tem a certeza que pretende apagar o catálogo ' + productCatalogItem.name + ' ?',
-        header: 'Apagar Catálogo',
-        rejectLabel: 'Não',
-        acceptLabel: 'Sim',
-        accept: async () => {
-            isLoading.value = true;
-
-            await axios.delete('product-catalogs/' + productCatalogItem.code).then(response => {
-                isLoading.value = false
-                router.push({ path: '/product-catalogs' })
-            }).catch(
-                error => {
-                    isLoading.value = false;
-                    console.error(error)
-                }
-            )
-        }
-    });
-}
-
-const closeFormAndUpdateCatalog = async () => {
-    isCreatingOrUpdatingCatalog.value = false
-    await loadProductCatalogDetails()
-}
-
-const closeFormAndUpdateProduct = async () => {
-    isCreatingOrUpdatingProduct.value = false
-    await loadProductCatalogProducts()
-}
-
-
-const updateProductCatalog = async (productCatalog) => {
-    catalogToUpdate.value = productCatalog
-    isCreatingOrUpdatingCatalog.value = true
-}
-
-const updateProduct = async (product) => {
-    productToUpdate.value = product
-    isCreatingOrUpdatingProduct.value = true
 }
 
 onMounted(async () => {
     await loadProductCatalogDetails();
+    await loadProductPackages();
 })
 </script>
 
 <template>
-    <VRow v-if="!isCreatingOrUpdatingCatalog && !isCreatingOrUpdatingProduct">
+    <VRow>
         <VCol cols="12">
             <VCard v-if="productCatalog">
                 <div class="product-catalog-details-header">
-                    <h2>{{ productCatalog.name }}</h2>
-                    <div class="product-catalog-details-actions">
-
-                        <VBtn rel="noopener noreferrer" color="primary" @click="updateProductCatalog(productCatalog)">
-                            <VIcon size="20" icon="bx-pencil" />
-                            <VTooltip activator="parent" location="top">
-                                <span>Editar Catálogo</span>
-                            </VTooltip>
-                        </VBtn>
-                        <VBtn rel="noopener noreferrer" color="primary" v-if="products && products.length == 0"
-                            @click="deleteProductCatalogConfirm(productCatalog)">
-                            <VIcon size="20" icon="bx-trash" />
-                            <VTooltip activator="parent" location="top">
-                                <span>Apagar Catálogo</span>
-                            </VTooltip>
-                        </VBtn>
-                    </div>
-
+                    <h2>{{  router.currentRoute.value.params.code + " - " + productCatalog.name }}</h2>
                 </div>
 
                 <div class="product-catalog-details">
@@ -172,46 +94,17 @@ onMounted(async () => {
 
                 </div>
                 <div class="products-actions">
-                    <h2>Produtos</h2>
-                    <VBtn rel="noopener noreferrer" color="primary" @click="createProduct">
-                        <VIcon size="20" icon="bx-plus" />
-                        <VTooltip activator="parent" location="top">
-                            <span>Adicionar Produto</span>
-                        </VTooltip>
-                    </VBtn>
+                    <h2>Embalagens de Produto</h2>
                 </div>
-                <div v-if="products && products.length > 0 && !isLoading">
-                    <ProductTable v-if="!isLoading" @updateProduct="updateProduct"
-                        @loadProducts="loadProductCatalogProducts" :products="products" />
+                <div v-if="productPackages && productPackages.length > 0 && !isLoading">
+                    <ProductPackageTable v-if="productPackages && productPackages.length > 0 && !isLoading" :productPackages="productPackages" />
                 </div>
                 <div v-else class="no-products">
-                    Não tem produtos associados a este catálogo
+                    Não tem embalagens de produto associados a este produto
                 </div>
             </VCard>
         </VCol>
     </VRow>
-    <VCard v-if="isCreatingOrUpdatingCatalog">
-        <VCard>
-            <div class="product-catalogs-header">
-                <h2>Editar Catálogo</h2>
-            </div>
-            <VCardText>
-                <ProductCatalogForm @closeFormAndUpdate="closeFormAndUpdateCatalog"
-                    :productCatalogToUpdate="catalogToUpdate" :isCreating="false"></ProductCatalogForm>
-            </VCardText>
-        </VCard>
-    </VCard>
-    <VCard v-if="isCreatingOrUpdatingProduct">
-        <VCard>
-            <div class="product-catalogs-header">
-                <h2>Editar Produto</h2>
-            </div>
-            <VCardText>
-                <ProductForm @closeFormAndUpdate="closeFormAndUpdateProduct" :productToUpdate="productToUpdate"
-                    :isCreating="false"></ProductForm>
-            </VCardText>
-        </VCard>
-    </VCard>
 </template>
 <style scoped>
 .product-catalog-details-header {

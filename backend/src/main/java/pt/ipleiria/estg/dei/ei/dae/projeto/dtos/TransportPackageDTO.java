@@ -10,12 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TransportPackageDTO extends PackageDTO implements Serializable {
-
-    public TransportPackageDTO() {
-    }
-
+  
     List<ClientOrderDTO> clientOrders;
-
+    
+    public TransportPackageDTO() {}
+    
     public TransportPackageDTO(long code, PackageType type, String material, long volume, String createdAt) {
         super(code, type, material, volume, createdAt);
         this.clientOrders = new ArrayList<ClientOrderDTO>();

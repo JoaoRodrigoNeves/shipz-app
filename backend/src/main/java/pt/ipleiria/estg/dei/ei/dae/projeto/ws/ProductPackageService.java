@@ -43,6 +43,7 @@ public class ProductPackageService {
         ProductPackageDTO productPackageDTO = new ProductPackageDTO(
                 productPackage.getCode(),
                 productPackage.getType(),
+                productPackage.getType().getPackageType(),
                 productPackage.getMaterial(),
                 productPackage.getVolume(),
                 productPackage.getCreatedAt().toString()
@@ -62,6 +63,7 @@ public class ProductPackageService {
         return new ProductPackageDTO(
                 productPackage.getCode(),
                 productPackage.getType(),
+                productPackage.getType().getPackageType(),
                 productPackage.getMaterial(),
                 productPackage.getVolume(),
                 productPackage.getCreatedAt().toString()

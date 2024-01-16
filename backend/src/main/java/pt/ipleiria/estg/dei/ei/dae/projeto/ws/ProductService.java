@@ -54,6 +54,7 @@ public class ProductService {
         return new ProductPackageDTO(
                 productPackage.getCode(),
                 productPackage.getType(),
+                productPackage.getType().getPackageType(),
                 productPackage.getMaterial(),
                 productPackage.getVolume(),
                 productPackage.getCreatedAt().toString()

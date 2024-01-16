@@ -1,6 +1,5 @@
 <script setup>
 import ProductPackageTable from '@/views/pages/tables/ProductPackageTable.vue';
-import ProductPackageForm from '@/views/pages/form-layouts/ProductPackageForm.vue';
 import { onMounted } from 'vue';
 import { ref, inject } from 'vue'
 
@@ -9,7 +8,6 @@ const isLoading = ref(false)
 const isCreatingOrUpdating = ref(false)
 const isCreating = ref(false)
 const productPackages = ref([])
-const productPackageToUpdate = ref(null)
 
 const loadProductPackages = async () => {
     isLoading.value = true;
@@ -24,18 +22,6 @@ const loadProductPackages = async () => {
             console.error(error)
         }
     )
-}
-
-const updateProductPackage = async (productPackage) => {
-    productPackageToUpdate.value = productPackage
-    isCreatingOrUpdating.value = true
-    isCreating.value = false
-}
-
-const closeFormAndUpdate = async () => {
-    isCreatingOrUpdating.value = false
-    productPackageToUpdate.value = null
-    await loadProductPackages()
 }
 
 onMounted(async () => {
@@ -60,18 +46,6 @@ onMounted(async () => {
                 <ProductPackageTable v-if="productPackages && productPackages.length > 0 && !isLoading"
                     @updateProductPackage="updateProductPackage" @loadProductPackages="loadProductPackages"
                     :productPackages="productPackages" />
-            </VCard>
-            <VCard v-if="isCreatingOrUpdating">
-                <VCard>
-                    <div class="product-packages-header">
-                        <h2>{{ isCreating ? 'Criar Embalagem de Produto' : 'Editar Embalagem de Produto' }}</h2>
-                    </div>
-                    <VCardText>
-                        <ProductPackageForm @closeFormAndUpdate="closeFormAndUpdate"
-                            :productPackage="productPackageToUpdate" :is-adding-product="false" :is-creating="isCreating"
-                            :is-updating="!isCreating" />
-                    </VCardText>
-                </VCard>
             </VCard>
         </VCol>
     </VRow>

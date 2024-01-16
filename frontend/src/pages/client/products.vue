@@ -7,6 +7,8 @@ const toast = useToast();
 const isLoading = ref(false);
 const productCatalogs = ref([]);
 const productCatalogsSelected = ref([]);
+const logisticOperatorSelected = ref(null);
+const logisticOperators = ref([]);
 
 const loadProductCatalogs = async () => {
   isLoading.value = true;
@@ -22,12 +24,27 @@ const loadProductCatalogs = async () => {
   )
 }
 
+const loadLogisticOperators = async () => {
+  isLoading.value = true
+
+  await axios.get('logistic-operators').then(response => {
+    logisticOperators.value = response.data
+    isLoading.value = false
+  }).catch(
+    error => {
+      isLoading.value = false;
+      console.error(error)
+    }
+  )
+
+}
 
 const createOrder = async () => {
   isLoading.value = true
 
   var payload = {
     products: productCatalogsSelected.value,
+    logisticOperator: logisticOperatorSelected.value,
     finalCostumer: JSON.parse(sessionStorage.getItem('user_info')).username
   }
   await axios.post('orders', payload).then(response => {
@@ -62,10 +79,12 @@ const addProduct = (catalog) => {
 
 const resetProducts = () => {
   productCatalogsSelected.value = []
+  logisticOperatorSelected.value = null
 }
 
 onMounted(async () => {
   await loadProductCatalogs();
+  await loadLogisticOperators();
 })
 </script>
 <template>
@@ -129,14 +148,17 @@ onMounted(async () => {
               </VIcon>
             </span>
           </div>
-
-
+        </div>
+        <div style="margin-top: 12px;">
+          <VAutocomplete v-model="logisticOperatorSelected" label="Operadores Logisticos"
+              placeholder="Selecionar Operador Logistico" :items="logisticOperators" item-title="name"
+              item-value="username" />
         </div>
         <div class="product-submit">
           <VBtn color="secondary" variant="tonal" type="reset" @click.prevent="resetProducts">
             Repor
           </VBtn>
-          <VBtn rel="noopener noreferrer" color="primary" @click="createOrder">
+          <VBtn rel="noopener noreferrer" color="primary" :disabled="!logisticOperatorSelected || productCatalogsSelected && productCatalogsSelected.length == 0" @click="createOrder">
             Submeter
           </VBtn>
         </div>
