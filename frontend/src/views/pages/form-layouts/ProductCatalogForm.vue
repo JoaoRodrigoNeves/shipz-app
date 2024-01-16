@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, inject } from 'vue'
+import { ref, onMounted, inject, computed } from 'vue'
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const axios = inject('axios')
@@ -23,19 +23,29 @@ const isSecondaryPackageActive = ref(productCatalogToUpdate.value.maxSecondaryPa
 const isTertiaryPackageActive = ref(productCatalogToUpdate.value.maxTertiaryPackage != null)
 const productCatalogForm = ref({
     code: -1,
-    name: '',
-    catalogArea: '',
-    category: '',
-    description: '',
+    name: null,
+    catalogArea: null,
+    category: null,
+    description: null,
     productManufacterUsername: JSON.parse(sessionStorage.getItem('user_info')).username,
     maxSecondaryPackage: null,
     maxTertiaryPackage: null,
-    primaryPackageMaterial: '',
-    secondaryPackageMaterial: '',
-    tertiaryPackageMaterial: ''
+    primaryPackageMaterial: null,
+    secondaryPackageMaterial: null,
+    tertiaryPackageMaterial: null
 })
 
+const validateForm = ()=>{
+    return !productCatalogForm.value.name || !productCatalogForm.value.catalogArea || !productCatalogForm.value.category || !productCatalogForm.value.description || 
+    !productCatalogForm.value.productManufacterUsername || !productCatalogForm.value.primaryPackageMaterial || isSecondaryPackageActive.value ? !(productCatalogForm.value.maxSecondaryPackage && productCatalogForm.value.secondaryPackageMaterial) : false ||
+    isTertiaryPackageActive.value ? !(productCatalogForm.value.maxTertiaryPackage && productCatalogForm.value.tertiaryPackageMaterial) : false
+}
+
 const save = (async () => {
+    if(validateForm()){
+        toast.add({ severity: 'error', summary: 'Erro', detail: 'O12312', life: 3000 });
+        return;
+    }
     isLoading.value = true
 
     if (props.isCreating) {

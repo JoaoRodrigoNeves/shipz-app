@@ -7,6 +7,7 @@ const toast = useToast();
 const isLoading = ref(false);
 const productCatalogs = ref([]);
 const productCatalogsSelected = ref([]);
+const logisticOperatorSelected = ref(null);
 const logisticOperators = ref([]);
 
 const loadProductCatalogs = async () => {
@@ -43,6 +44,7 @@ const createOrder = async () => {
 
   var payload = {
     products: productCatalogsSelected.value,
+    logisticOperator: logisticOperatorSelected.value,
     finalCostumer: JSON.parse(sessionStorage.getItem('user_info')).username
   }
   await axios.post('orders', payload).then(response => {
@@ -77,6 +79,7 @@ const addProduct = (catalog) => {
 
 const resetProducts = () => {
   productCatalogsSelected.value = []
+  logisticOperatorSelected.value = null
 }
 
 onMounted(async () => {
@@ -145,16 +148,17 @@ onMounted(async () => {
               </VIcon>
             </span>
           </div>
-          <VAutocomplete v-model="productCatalog.logisticOperator" label="Operadores Logisticos"
-          placeholder="Selecionar Operador Logistico" :items="logisticOperators" item-title="name"
-          item-value="username" />
-
+        </div>
+        <div style="margin-top: 12px;">
+          <VAutocomplete v-model="logisticOperatorSelected" label="Operadores Logisticos"
+              placeholder="Selecionar Operador Logistico" :items="logisticOperators" item-title="name"
+              item-value="username" />
         </div>
         <div class="product-submit">
           <VBtn color="secondary" variant="tonal" type="reset" @click.prevent="resetProducts">
             Repor
           </VBtn>
-          <VBtn rel="noopener noreferrer" color="primary" @click="createOrder">
+          <VBtn rel="noopener noreferrer" color="primary" :disabled="!logisticOperatorSelected || productCatalogsSelected && productCatalogsSelected.length == 0" @click="createOrder">
             Submeter
           </VBtn>
         </div>
