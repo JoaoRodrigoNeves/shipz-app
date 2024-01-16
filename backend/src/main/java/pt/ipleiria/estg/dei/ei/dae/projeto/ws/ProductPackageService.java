@@ -35,7 +35,6 @@ public class ProductPackageService {
     private SecurityContext securityContext;
     @EJB
     private ProductPackageBean productPackageBean;
-
     @EJB
     private ProductBean productBean;
 

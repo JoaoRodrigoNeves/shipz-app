@@ -15,8 +15,9 @@ public class ProductPackageDTO extends PackageDTO implements Serializable {
     public ProductPackageDTO() {
     }
 
-    public ProductPackageDTO(long code, PackageType type, String material, long volume, String createdAt) {
+    public ProductPackageDTO(long code, PackageType type, String typeName, String material, long volume, String createdAt) {
         super(code, type, material, volume, createdAt);
+        this.typeName = typeName;
         this.products = new ArrayList<ProductDTO>();
     }
 
