@@ -25,8 +25,6 @@ public class ProductPackage extends Package implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "product_code", referencedColumnName = "code")
     )
     List<Product> products;
-    long mainPacakgeCode;
-
     public ProductPackage() {
     }
 

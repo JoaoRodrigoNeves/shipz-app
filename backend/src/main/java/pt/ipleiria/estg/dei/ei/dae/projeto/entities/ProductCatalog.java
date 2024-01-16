@@ -27,6 +27,14 @@ public class ProductCatalog extends Versionable implements Serializable {
     String catalogArea;
     String category;
     String description;
+    Integer maxSecondaryPackage;
+    Integer maxTertiaryPackage;
+    String primaryPackageMaterial;
+    String secondaryPackageMaterial;
+    String tertiaryPackageMaterial;
+    Long activeProductPackageSecondaryCode;
+    Long activeProductPackageTertiaryCode;
+
     @OneToMany(mappedBy = "productCatalog", cascade = CascadeType.REMOVE)
     @NotNull
     List<Product> products;
@@ -39,13 +47,18 @@ public class ProductCatalog extends Versionable implements Serializable {
 
     }
 
-    public ProductCatalog(String name, String catalogArea, String category, String description, ProductManufacter productManufacter) {
+    public ProductCatalog(String name, String catalogArea, String category, String description, ProductManufacter productManufacter, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial,String tertiaryPackageMaterial) {
         this.name = name;
         this.catalogArea = catalogArea;
         this.category = category;
         this.description = description;
         this.productManufacter = productManufacter;
         this.products = new ArrayList<Product>();
+        this.maxSecondaryPackage = maxSecondaryPackage;
+        this.maxTertiaryPackage = maxTertiaryPackage;
+        this.primaryPackageMaterial = primaryPackageMaterial;
+        this.secondaryPackageMaterial = secondaryPackageMaterial;
+        this.tertiaryPackageMaterial = tertiaryPackageMaterial;
     }
 
     public long getCode() {
@@ -102,6 +115,62 @@ public class ProductCatalog extends Versionable implements Serializable {
 
     public void setProductManufacter(ProductManufacter productManufacter) {
         this.productManufacter = productManufacter;
+    }
+
+    public Integer getMaxSecondaryPackage() {
+        return maxSecondaryPackage;
+    }
+
+    public void setMaxSecondaryPackage(Integer maxSecondaryPackage) {
+        this.maxSecondaryPackage = maxSecondaryPackage;
+    }
+
+    public Integer getMaxTertiaryPackage() {
+        return maxTertiaryPackage;
+    }
+
+    public void setMaxTertiaryPackage(Integer maxTertiaryPackage) {
+        this.maxTertiaryPackage = maxTertiaryPackage;
+    }
+
+    public String getPrimaryPackageMaterial() {
+        return primaryPackageMaterial;
+    }
+
+    public void setPrimaryPackageMaterial(String primaryPackageMaterial) {
+        this.primaryPackageMaterial = primaryPackageMaterial;
+    }
+
+    public String getSecondaryPackageMaterial() {
+        return secondaryPackageMaterial;
+    }
+
+    public void setSecondaryPackageMaterial(String secondaryPackageMaterial) {
+        this.secondaryPackageMaterial = secondaryPackageMaterial;
+    }
+
+    public String getTertiaryPackageMaterial() {
+        return tertiaryPackageMaterial;
+    }
+
+    public void setTertiaryPackageMaterial(String tertiaryPackageMaterial) {
+        this.tertiaryPackageMaterial = tertiaryPackageMaterial;
+    }
+
+    public Long getActiveProductPackageSecondaryCode() {
+        return activeProductPackageSecondaryCode;
+    }
+
+    public void setActiveProductPackageSecondaryCode(Long activeProductPackageSecondaryCode) {
+        this.activeProductPackageSecondaryCode = activeProductPackageSecondaryCode;
+    }
+
+    public Long getActiveProductPackageTertiaryCode() {
+        return activeProductPackageTertiaryCode;
+    }
+
+    public void setActiveProductPackageTertiaryCode(Long activeProductPackageTertiaryCode) {
+        this.activeProductPackageTertiaryCode = activeProductPackageTertiaryCode;
     }
 
     public void addProduct(Product product) {

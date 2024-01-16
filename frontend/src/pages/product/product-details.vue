@@ -2,6 +2,7 @@
 import { ref, onMounted, inject } from 'vue'
 import ProductTable from '@/views/pages/tables/ProductTable.vue'
 import { useRouter } from 'vue-router'
+import { useRoute } from 'vue-router';
 import ProductCatalogForm from '@/views/pages/form-layouts/ProductCatalogForm.vue'
 import ProductForm from '@/views/pages/form-layouts/ProductForm.vue'
 import { useToast } from "primevue/usetoast";
@@ -10,6 +11,7 @@ import { useConfirm } from "primevue/useconfirm";
 const axios = inject('axios')
 const isLoading = ref(false)
 const router = useRouter()
+const route = useRoute()
 const confirm = useConfirm();
 const toast = useToast();
 
@@ -22,23 +24,9 @@ const productToUpdate = ref(null)
 
 const loadProductCatalogDetails = async () => {
     isLoading.value = true;
-    await axios.get('product-catalogs/' + router.currentRoute.value.params.code).then(response => {
+    await axios.get('products/' + router.currentRoute.value.params.code + '/product-catalog').then(response => {
         isLoading.value = false;
         productCatalog.value = response.data
-    }).catch(
-        error => {
-            isLoading.value = false;
-            console.error(error)
-        }
-    )
-}
-
-const loadProductCatalogProducts = async () => {
-    isLoading.value = true;
-
-    await axios.get('product-catalogs/' + router.currentRoute.value.params.code + '/products').then(response => {
-        isLoading.value = false;
-        products.value = response.data
     }).catch(
         error => {
             isLoading.value = false;
@@ -112,7 +100,6 @@ const updateProduct = async (product) => {
 
 onMounted(async () => {
     await loadProductCatalogDetails();
-    await loadProductCatalogProducts();
 })
 </script>
 
@@ -138,7 +125,9 @@ onMounted(async () => {
                             </VTooltip>
                         </VBtn>
                     </div>
+
                 </div>
+
                 <div class="product-catalog-details">
                     <div class="catalog-item">
                         <label>
@@ -192,8 +181,8 @@ onMounted(async () => {
                     </VBtn>
                 </div>
                 <div v-if="products && products.length > 0 && !isLoading">
-                    <ProductTable @updateProduct="updateProduct"
-                        @loadProducts="loadProductCatalogProducts" :product-package-view="false" :products="products" />
+                    <ProductTable v-if="!isLoading" @updateProduct="updateProduct"
+                        @loadProducts="loadProductCatalogProducts" :products="products" />
                 </div>
                 <div v-else class="no-products">
                     Não tem produtos associados a este catálogo

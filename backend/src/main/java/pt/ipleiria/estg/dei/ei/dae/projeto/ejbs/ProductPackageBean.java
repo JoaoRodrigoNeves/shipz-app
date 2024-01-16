@@ -2,8 +2,12 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.ejbs;
 
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import org.hibernate.Hibernate;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductPackage;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
@@ -69,5 +73,37 @@ public class ProductPackageBean {
         ProductPackage productPackage = this.find(code);
         Hibernate.initialize(productPackage.getSensors());
         return productPackage;
+    }
+
+    public void addProductToAllPackages(Product product) throws MyEntityNotFoundException {
+        ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, product.getProductCatalog().getCode());
+
+        if(productCatalog.getSecondaryPackageMaterial() != null && productCatalog.getMaxSecondaryPackage() != null){
+            ProductPackage productPackageSecondary = productCatalog.getActiveProductPackageSecondaryCode() != null ? this.find(productCatalog.getActiveProductPackageSecondaryCode()) : null;
+            if(productPackageSecondary != null && productPackageSecondary.getProducts().size() < productCatalog.getMaxSecondaryPackage()){
+                product.addProductPackage(productPackageSecondary);
+                productPackageSecondary.addProduct(product);
+            }else{
+                ProductPackage newProductPackageSecondary = new ProductPackage(PackageType.SECONDARY, productCatalog.getSecondaryPackageMaterial());
+                entityManager.persist(newProductPackageSecondary);
+                product.addProductPackage(newProductPackageSecondary);
+                newProductPackageSecondary.addProduct(product);
+                productCatalog.setActiveProductPackageSecondaryCode(newProductPackageSecondary.getCode());
+            }
+        }
+
+        if(productCatalog.getTertiaryPackageMaterial() != null && productCatalog.getMaxTertiaryPackage() != null){
+            ProductPackage productPackageTertiary = productCatalog.getActiveProductPackageTertiaryCode() != null ? this.find(productCatalog.getActiveProductPackageTertiaryCode()) : null;
+            if(productPackageTertiary != null && productPackageTertiary.getProducts().size() < (productCatalog.getMaxTertiaryPackage() * productCatalog.getMaxSecondaryPackage())){
+                product.addProductPackage(productPackageTertiary);
+                productPackageTertiary.addProduct(product);
+            }else{
+                ProductPackage newProductPackageTertiary = new ProductPackage(PackageType.TERTIARY, productCatalog.getTertiaryPackageMaterial());
+                entityManager.persist(newProductPackageTertiary);
+                product.addProductPackage(newProductPackageTertiary);
+                newProductPackageTertiary.addProduct(product);
+                productCatalog.setActiveProductPackageTertiaryCode(newProductPackageTertiary.getCode());
+            }
+        }
     }
 }

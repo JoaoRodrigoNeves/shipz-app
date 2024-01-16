@@ -35,13 +35,19 @@ public class ProductBean {
             productCatalog.addProduct(product);
             productCatalog.getProductManufacter().addProduct(product);
 
-            ProductPackage productPackage = new ProductPackage(PackageType.PRIMARY, "Plástico");
-            entityManager.persist(productPackage);
+            ProductPackage productPackagePrimary = new ProductPackage(PackageType.PRIMARY, productCatalog.getPrimaryPackageMaterial());
+            entityManager.persist(productPackagePrimary);
+            product.addProductPackage(productPackagePrimary);
+            productPackagePrimary.addProduct(product);
 
             return product;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
         }
+    }
+
+    private void checkAvailabilityPackage(PackageType packageType, Product product, ProductCatalog productCatalog) {
+
     }
 
     public Product find(long code) throws MyEntityNotFoundException {

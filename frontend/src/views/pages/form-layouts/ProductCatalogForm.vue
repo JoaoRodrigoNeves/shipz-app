@@ -6,6 +6,7 @@ const axios = inject('axios')
 
 const emit = defineEmits(['closeFormAndUpdate'])
 const isLoading = ref(false)
+
 const props = defineProps({
 
     productCatalogToUpdate: {
@@ -18,14 +19,20 @@ const props = defineProps({
     }
 })
 const productCatalogToUpdate = ref(Object.assign({}, props.productCatalogToUpdate))
-
+const isSecondaryPackageActive = ref(productCatalogToUpdate.value.maxSecondaryPackage != null)
+const isTertiaryPackageActive = ref(productCatalogToUpdate.value.maxTertiaryPackage != null)
 const productCatalogForm = ref({
     code: -1,
     name: '',
     catalogArea: '',
     category: '',
     description: '',
-    productManufacterUsername: JSON.parse(sessionStorage.getItem('user_info')).username
+    productManufacterUsername: JSON.parse(sessionStorage.getItem('user_info')).username,
+    maxSecondaryPackage: null,
+    maxTertiaryPackage: null,
+    primaryPackageMaterial: '',
+    secondaryPackageMaterial: '',
+    tertiaryPackageMaterial: ''
 })
 
 const save = (async () => {
@@ -78,6 +85,20 @@ const save = (async () => {
     }
 })
 
+
+const resetPackageNumber = (isSecondaryPackage) => {
+  if(isSecondaryPackage && !isSecondaryPackageActive.value){
+    productCatalogForm.value.maxSecondaryPackage = null;
+    productCatalogForm.value.secondaryPackageMaterial = '';
+  }
+
+  if(!isSecondaryPackage && !isTertiaryPackageActive.value){
+    productCatalogForm.value.maxTertiaryPackage = null;
+    productCatalogForm.value.tertiaryPackageMaterial = '';
+
+  }
+}
+
 watch(
     () => props,
     (newProps) => {
@@ -103,6 +124,37 @@ watch(
             <VCol cols="12">
                 <VTextField v-model="productCatalogForm.description" label="Descrição" />
             </VCol>
+            <VCol cols="12">
+                <div>Caixa Primária</div>
+            </VCol>
+            <VCol cols="12">
+                <div class="package-item" :class="{'package-item-disabled': isSecondaryPackageActive}">
+                    <VCheckbox :model-value="true" readonly></VCheckbox>
+                    <VTextField type="number" readonly model-value="1" class="product-quantity" />
+                    <VTextField v-model="productCatalogForm.primaryPackageMaterial" label="Material" class="product-quantity" />
+                </div>
+            </VCol>
+            <VCol cols="12">
+                <div>Caixa Secundária</div>
+            </VCol>
+            <VCol cols="12">
+                <div class="package-item" :class="{'package-item-disabled': isSecondaryPackageActive}">
+                    <VCheckbox v-model="isSecondaryPackageActive" @input="resetPackageNumber(true)"></VCheckbox>
+                    <VTextField type="number" :disabled="!isSecondaryPackageActive" v-model="productCatalogForm.maxSecondaryPackage" class="product-quantity" />
+                    <VTextField v-model="productCatalogForm.secondaryPackageMaterial" :disabled="!isSecondaryPackageActive" label="Material" class="product-quantity"/>
+                </div>
+            </VCol>
+            <VCol cols="12">
+                <div>Caixa Terciária</div>
+            </VCol>
+            <VCol cols="12">
+                <div class="package-item" :class="{'package-item-disabled': isTertiaryPackageActive}">
+                    <VCheckbox v-model="isTertiaryPackageActive" @input="resetPackageNumber(false)"></VCheckbox>
+                    <VTextField type="number" :disabled="!isTertiaryPackageActive" v-model="productCatalogForm.maxTertiaryPackage" class="product-quantity" />
+                    <VTextField v-model="productCatalogForm.tertiaryPackageMaterial" :disabled="!isTertiaryPackageActive" label="Material" class="product-quantity"/>
+                </div>
+                
+            </VCol>
             <VCol cols="12" class="d-flex gap-4">
                 <VBtn type="submit">
                     {{ props.isCreating ? 'Criar' : 'Editar' }}
@@ -115,3 +167,10 @@ watch(
         </VRow>
     </VForm>
 </template>
+<style scoped>
+.package-item{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+</style>

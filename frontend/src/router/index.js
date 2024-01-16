@@ -34,6 +34,11 @@ const router = createRouter({
           meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true }
         },
         {
+          path: 'product/:code',
+          component: () => import('../pages/product/product-details.vue'),
+          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true },
+        },
+        {
           path: 'product-packages',
           component: () => import('../pages/product-package/product-packages.vue'),
           meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true }

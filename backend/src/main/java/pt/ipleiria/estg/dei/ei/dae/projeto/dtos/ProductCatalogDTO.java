@@ -15,16 +15,26 @@ public class ProductCatalogDTO implements Serializable {
     String category;
     String description;
     String productManufacterUsername;
+    Integer maxSecondaryPackage;
+    Integer maxTertiaryPackage;
+    String primaryPackageMaterial;
+    String secondaryPackageMaterial;
+    String tertiaryPackageMaterial;
     public ProductCatalogDTO() {
     }
 
-    public ProductCatalogDTO(long code, String name, String catalogArea, String category, String description, String productManufacterUsername) {
+    public ProductCatalogDTO(long code, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial,String tertiaryPackageMaterial) {
         this.code = code;
         this.name = name;
         this.catalogArea = catalogArea;
         this.category = category;
         this.description = description;
         this.productManufacterUsername = productManufacterUsername;
+        this.maxSecondaryPackage = maxSecondaryPackage;
+        this.maxTertiaryPackage = maxTertiaryPackage;
+        this.primaryPackageMaterial = primaryPackageMaterial;
+        this.secondaryPackageMaterial = secondaryPackageMaterial;
+        this.tertiaryPackageMaterial = tertiaryPackageMaterial;
     }
 
     public long getCode() {
@@ -73,5 +83,45 @@ public class ProductCatalogDTO implements Serializable {
 
     public void setProductManufacterUsername(String productManufacterUsername) {
         this.productManufacterUsername = productManufacterUsername;
+    }
+
+    public Integer getMaxSecondaryPackage() {
+        return maxSecondaryPackage;
+    }
+
+    public void setMaxSecondaryPackage(Integer maxSecondaryPackage) {
+        this.maxSecondaryPackage = maxSecondaryPackage;
+    }
+
+    public Integer getMaxTertiaryPackage() {
+        return maxTertiaryPackage;
+    }
+
+    public void setMaxTertiaryPackage(Integer maxTertiaryPackage) {
+        this.maxTertiaryPackage = maxTertiaryPackage;
+    }
+
+    public String getPrimaryPackageMaterial() {
+        return primaryPackageMaterial;
+    }
+
+    public void setPrimaryPackageMaterial(String primaryPackageMaterial) {
+        this.primaryPackageMaterial = primaryPackageMaterial;
+    }
+
+    public String getSecondaryPackageMaterial() {
+        return secondaryPackageMaterial;
+    }
+
+    public void setSecondaryPackageMaterial(String secondaryPackageMaterial) {
+        this.secondaryPackageMaterial = secondaryPackageMaterial;
+    }
+
+    public String getTertiaryPackageMaterial() {
+        return tertiaryPackageMaterial;
+    }
+
+    public void setTertiaryPackageMaterial(String tertiaryPackageMaterial) {
+        this.tertiaryPackageMaterial = tertiaryPackageMaterial;
     }
 }
