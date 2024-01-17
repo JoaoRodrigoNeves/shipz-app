@@ -44,19 +44,6 @@ public class TransportPackageService {
                 .collect(Collectors.toList());
     }
 
-    //TODO create a transport-package
-    @POST
-    @Path("/")
-    public Response create(TransportPackageCreateDTO transportPackageCreateDTO) throws MyEntityExistsException {
-        for (int i = 0; i < transportPackageCreateDTO.getQuantity(); i++) {
-            TransportPackage transportPackage = transportPackageBean.create(
-                    transportPackageCreateDTO.getMaterial(),
-                    transportPackageCreateDTO.getVolume()
-            );
-        }
-        return Response.status(Response.Status.CREATED).build();
-    }
-
     //TODO get transport-package details
     @GET
     @Path("{code}")

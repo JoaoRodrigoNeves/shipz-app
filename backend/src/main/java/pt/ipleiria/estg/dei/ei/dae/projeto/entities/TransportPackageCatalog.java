@@ -3,6 +3,7 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,6 +34,7 @@ public class TransportPackageCatalog implements Serializable {
         this.name = name;
         this.material = material;
         this.volume = volume;
+        this.transportPackages = new ArrayList<TransportPackage>();
     }
 
     public long getCode() {

@@ -22,13 +22,6 @@ public class TransportPackageBean {
         return transportPackage != null;
     }
 
-    //TODO CRUD operations for TransportPackage entity
-    public TransportPackage create(String material, long volume) {
-        TransportPackage transportPackage = new TransportPackage(PackageType.PRIMARY, material, volume);
-        entityManager.persist(transportPackage);
-        return transportPackage;
-    }
-
     public TransportPackage find(long code) throws MyEntityNotFoundException {
         TransportPackage transportPackage = entityManager.find(TransportPackage.class, code);
         if (transportPackage == null)

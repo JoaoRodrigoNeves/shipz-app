@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackageCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
@@ -29,6 +30,8 @@ public class ConfigBean {
     @EJB
     private TransportPackageBean transportPackageBean;
     @EJB
+    private TransportPackageCatalogBean transportPackageCatalogBean;
+    @EJB
     private FinalCostumerBean finalCostumerBean;
     @EJB
     private ProductBean productBean;
@@ -52,6 +55,7 @@ public class ConfigBean {
             productCatalogBean.create("Sem catálogo", "Sem catálogo", "Sem catálogo", "Sem catálogo", "productManufacter1", null, null, 5, "Plástico", null, null);
             productCatalogBean.create("PC1", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1", null, null, 10, "Plástico", null, null);
             productCatalogBean.create("PC2", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1", null, null, 15, "Plástico", null, null);
+            productCatalogBean.create("TESTE", "TESTE", "TESTE", "TESTE", "productManufacter1", 2, 1, 50, "TESTE", "TESTE", "TESTE");
 
             productBean.create(100002);
             productBean.create(100002);
@@ -71,9 +75,9 @@ public class ConfigBean {
             productBean.create(100001);
             productBean.create(100001);
 
-            transportPackageBean.create("cartão", 100);
-            transportPackageBean.create("cartão", 200);
-            transportPackageBean.create("cartão", 300);
+            transportPackageCatalogBean.create("Embalagem S", "Cartão", 50);
+            transportPackageCatalogBean.create("Embalagem M", "Cartão", 100);
+            transportPackageCatalogBean.create("Embalagem L", "Cartão", 150);
 
             sensorBean.create("Temperatura");
             sensorBean.create("Temperatura");

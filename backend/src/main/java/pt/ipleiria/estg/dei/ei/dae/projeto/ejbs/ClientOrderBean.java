@@ -9,9 +9,8 @@ import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductOrderDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.OrderStatus;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.NoStockException;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
+import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ public class ClientOrderBean {
         return (Long) query.getSingleResult() > 0L;
     }
 
-    public void create(String finalCostumerUsername, String logisticOperatorUsername, List<ProductOrderDTO> products) throws MyEntityNotFoundException, NoStockException {
+    public void create(String finalCostumerUsername, String logisticOperatorUsername, List<ProductOrderDTO> products, List<TransportPackageCatalog> listTransportPackageCatalogs) throws MyEntityNotFoundException, NoStockException, MyConstraintViolationException {
         FinalCostumer finalCostumer = entityManager.find(FinalCostumer.class, finalCostumerUsername);
         if (finalCostumer == null) {
             throw new MyEntityNotFoundException("Final Costumer with username: " + finalCostumerUsername + " not found");
@@ -46,9 +45,7 @@ public class ClientOrderBean {
 
         try {
             ClientOrder clientOrder = new ClientOrder(finalCostumer, logisticOperator);
-            entityManager.persist(clientOrder);
-            entityManager.flush();
-            finalCostumer.addOrder(clientOrder);
+            
             long volumeTotal = 0;
             for (ProductOrderDTO product : products) {
                 ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, product.getCode());
@@ -66,10 +63,29 @@ public class ClientOrderBean {
                     throw new NoStockException("Não há quantidade suficiente do produto " + productCatalog.getName() + ". Stock: " + productsList.size() + (productsList.size() > 1 ? " unidades." : "unidade."));
                 }
             }
-        } catch (ConstraintViolationException | NoStockException e) {
+            entityManager.persist(clientOrder);
+
+
+
+            long finalVolumeTotal = volumeTotal;
+            for (int i = 0; i < listTransportPackageCatalogs.size(); i++) {
+                if (listTransportPackageCatalogs.get(i).getVolume() > finalVolumeTotal || i == listTransportPackageCatalogs.size() - 1) {
+                    TransportPackage transportPackage = new TransportPackage(PackageType.TRANSPORT, listTransportPackageCatalogs.get(i).getMaterial(), listTransportPackageCatalogs.get(i).getVolume(), listTransportPackageCatalogs.get(i));
+                    clientOrder.addTransportPackage(transportPackage);
+                    transportPackage.addClientOrder(clientOrder);
+                    finalVolumeTotal -= transportPackage.getVolume();
+                    i = 0;
+                    entityManager.persist(transportPackage);
+                }
+                if (finalVolumeTotal <= 0) break;
+            }
+
+            entityManager.flush();
+        } catch (ConstraintViolationException e){
+            throw new MyConstraintViolationException(e);
+        } catch (NoStockException e) {
             throw new NoStockException(e.getMessage());
         }
-
     }
 
     public List<ClientOrder> getAll() {
@@ -119,8 +135,8 @@ public class ClientOrderBean {
         if (orderStatus == OrderStatus.STATUS_3)
             clientOrder.setDeliveredAt(LocalDateTime.now());
     }
-    
-    
+
+
     public void changeLocation(long code, String location) throws MyEntityNotFoundException {
         ClientOrder clientOrder = this.find(code);
         clientOrder.setLocation(location);

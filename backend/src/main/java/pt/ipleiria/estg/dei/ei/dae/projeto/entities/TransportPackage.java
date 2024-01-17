@@ -21,9 +21,9 @@ public class TransportPackage extends Package implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "transport_package_association",
-            joinColumns = @JoinColumn(name = "package_code", referencedColumnName = "code"),
-            inverseJoinColumns = @JoinColumn(name = "transport_code", referencedColumnName = "code")
+            name = "transport_order_association",
+            joinColumns = @JoinColumn(name = "transport_code", referencedColumnName = "code"),
+            inverseJoinColumns = @JoinColumn(name = "order_code", referencedColumnName = "code")
     )
     List<ClientOrder> clientOrders;
     String location;
@@ -31,12 +31,14 @@ public class TransportPackage extends Package implements Serializable {
     @ManyToOne
     @JoinColumn(name = "transport_package_catalog_code")
     TransportPackageCatalog transportPackageCatalog;
+
     public TransportPackage() {
     }
 
-    public TransportPackage(PackageType type, String material, long volume) {
+    public TransportPackage(PackageType type, String material, long volume, TransportPackageCatalog transportPackageCatalog) {
         super(type, material, volume);
         this.clientOrders = new ArrayList<ClientOrder>();
+        this.transportPackageCatalog = transportPackageCatalog;
     }
 
     public List<ClientOrder> getClientOrders() {
@@ -61,6 +63,14 @@ public class TransportPackage extends Package implements Serializable {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public TransportPackageCatalog getTransportPackageCatalog() {
+        return transportPackageCatalog;
+    }
+
+    public void setTransportPackageCatalog(TransportPackageCatalog transportPackageCatalog) {
+        this.transportPackageCatalog = transportPackageCatalog;
     }
 
     @Override
