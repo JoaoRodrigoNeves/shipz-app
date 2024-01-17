@@ -10,6 +10,20 @@ const isUpdating = ref(false)
 const isUpdatingStatus = ref(null)
 const orderToUpdate = ref(null)
 
+const loadProducts = async () => {
+  isLoading.value = true
+  await axios.get('final-costumers/' + JSON.parse(sessionStorage.getItem('user_info')).username + '/products').then(response => {
+    isLoading.value = false
+    products.value = response.data
+
+  }).catch(
+    error => {
+      isLoading.value = false
+      console.error(error)
+    },
+  )
+}
+
 const loadOrders = async () => {
   isLoading.value = true
   if (JSON.parse(sessionStorage.getItem('user_info')).role == "ProductManufacter") {

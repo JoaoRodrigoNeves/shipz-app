@@ -10,7 +10,7 @@ public class FinalCostumerDTO implements Serializable {
     private String name;
     private String email;
     private String address;
-    private List<ClientOrderDTO> clientOrdersDTO;
+    private List<ClientOrderListDTO> clientOrdersListDTO;
     public FinalCostumerDTO() {
     }
 
@@ -69,11 +69,11 @@ public class FinalCostumerDTO implements Serializable {
         this.address = address;
     }
 
-    public void setClientOrdersDTO(List<ClientOrderDTO> clientOrdersDTO) {
-        this.clientOrdersDTO = clientOrdersDTO;
+    public void setClientOrdersDTO(List<ClientOrderListDTO> clientOrdersListDTO) {
+        this.clientOrdersListDTO = clientOrdersListDTO;
     }
 
-    public List<ClientOrderDTO> getClientOrdersDTO() {
-        return clientOrdersDTO;
+    public List<ClientOrderListDTO> getClientOrdersDTO() {
+        return clientOrdersListDTO;
     }
 }

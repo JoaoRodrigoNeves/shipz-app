@@ -4,16 +4,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
-import java.util.Date;
 
 @Startup
 @Singleton
