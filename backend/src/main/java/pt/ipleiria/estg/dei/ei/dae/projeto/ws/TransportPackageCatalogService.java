@@ -56,4 +56,10 @@ public class TransportPackageCatalogService {
         transportPackageCatalogBean.delete(code);
         return Response.status(Response.Status.OK).build();
     }
+    //TODO get all transport Package Catalog
+    @GET
+    @Path("/")
+    public Response getAll() {
+        return Response.status(Response.Status.OK).entity(toDTOs(transportPackageCatalogBean.getAll())).build();
+    }
 }
