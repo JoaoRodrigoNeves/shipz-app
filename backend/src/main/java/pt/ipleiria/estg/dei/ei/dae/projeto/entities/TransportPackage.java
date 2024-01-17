@@ -27,6 +27,7 @@ public class TransportPackage extends Package implements Serializable {
     )
     List<ClientOrder> clientOrders;
     String location;
+
     public TransportPackage() {
     }
 
@@ -52,17 +53,25 @@ public class TransportPackage extends Package implements Serializable {
         this.clientOrders.remove(clientOrder);
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TransportPackage)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         TransportPackage that = (TransportPackage) o;
-        return Objects.equals(clientOrders, that.clientOrders);
+        return Objects.equals(clientOrders, that.clientOrders) && Objects.equals(location, that.location);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), clientOrders);
+        return Objects.hash(super.hashCode(), clientOrders, location);
     }
 }

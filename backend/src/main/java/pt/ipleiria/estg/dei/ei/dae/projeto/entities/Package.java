@@ -38,6 +38,7 @@ public class Package extends Versionable implements Serializable {
 
     long volume;
 
+    @Column(name = "created_at")
     @NotNull
     LocalDateTime createdAt;
 
