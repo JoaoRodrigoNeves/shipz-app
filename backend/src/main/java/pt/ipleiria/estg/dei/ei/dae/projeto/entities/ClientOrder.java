@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.FinalCostumerDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.OrderStatus;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,11 +38,17 @@ public class ClientOrder {
     List<TransportPackage> transportPackages;
 
     private OrderStatus status;
+  
+    private String location;
     @Column(name = "created_at")
-    Date createdAt;
+    LocalDateTime createdAt;
 
-    public ClientOrder(FinalCostumer finalCostumer) {
+    @Column(name = "delivered_at")
+    LocalDateTime deliveredAt;
+
+    public ClientOrder(FinalCostumer finalCostumer, LogisticOperator logisticOperator) {
         this.finalCostumer = finalCostumer;
+        this.logisticOperator = logisticOperator;
         this.products = new ArrayList<>();
         this.status = OrderStatus.STATUS_0;
     }
@@ -64,6 +71,7 @@ public class ClientOrder {
     public LogisticOperator getLogisticOperator() {
         return logisticOperator;
     }
+
     public FinalCostumer getFinalCostumer() {
         return finalCostumer;
     }
@@ -92,6 +100,10 @@ public class ClientOrder {
         this.products = products;
     }
 
+    public List<TransportPackage> getTransportPackages() {
+        return transportPackages;
+    }
+
     public void setTransportPackages(List<TransportPackage> transportPackages) {
         this.transportPackages = transportPackages;
     }
@@ -104,13 +116,37 @@ public class ClientOrder {
         this.transportPackages.remove(transportPackage);
     }
 
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = new Date();
+    public OrderStatus getStatus() {
+        return status;
     }
 
-    public Date getCreatedAt() {
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+    
+    public LocalDateTime getDeliveredAt() {
+        return deliveredAt;
+    }
+
+    public void setDeliveredAt(LocalDateTime deliveredAt) {
+        this.deliveredAt = deliveredAt;
     }
 
     @Override
@@ -118,11 +154,11 @@ public class ClientOrder {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ClientOrder that = (ClientOrder) o;
-        return code == that.code && Objects.equals(logisticOperator, that.logisticOperator) && Objects.equals(products, that.products) && Objects.equals(createdAt, that.createdAt);
+        return code == that.code && Objects.equals(finalCostumer, that.finalCostumer) && Objects.equals(logisticOperator, that.logisticOperator) && Objects.equals(products, that.products) && Objects.equals(transportPackages, that.transportPackages) && status == that.status && Objects.equals(location, that.location) && Objects.equals(createdAt, that.createdAt) && Objects.equals(deliveredAt, that.deliveredAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, logisticOperator, products, createdAt);
+        return Objects.hash(code, finalCostumer, logisticOperator, products, transportPackages, status, location, createdAt, deliveredAt);
     }
 }

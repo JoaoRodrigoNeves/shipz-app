@@ -1,8 +1,10 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 
 import jakarta.persistence.*;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,8 +30,8 @@ public class TransportPackage extends Package implements Serializable {
     public TransportPackage() {
     }
 
-    public TransportPackage(String type, String material, String location, String manufacturingDate) {
-        super(type, material, manufacturingDate);
+    public TransportPackage(PackageType type, String material, String location, long volume) {
+        super(type, material, volume);
         this.location = location;
         this.clientOrders = new ArrayList<ClientOrder>();
     }

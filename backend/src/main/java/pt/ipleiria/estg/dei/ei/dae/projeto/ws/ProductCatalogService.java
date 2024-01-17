@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.Response;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductCatalogDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductCatalogBean;
+import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductPackageBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
@@ -35,7 +36,13 @@ public class ProductCatalogService {
                 productCatalog.getCatalogArea(),
                 productCatalog.getCategory(),
                 productCatalog.getDescription(),
-                productCatalog.getProductManufacter().getUsername()
+                productCatalog.getProductManufacter().getUsername(),
+                productCatalog.getMaxSecondaryPackage(),
+                productCatalog.getMaxTertiaryPackage(),
+                productCatalog.getPrimaryPackageVolume(),
+                productCatalog.getPrimaryPackageMaterial(),
+                productCatalog.getSecondaryPackageMaterial(),
+                productCatalog.getTertiaryPackageMaterial()
         );
     }
 
@@ -74,8 +81,15 @@ public class ProductCatalogService {
                 productCatalogDTO.getCatalogArea(),
                 productCatalogDTO.getCategory(),
                 productCatalogDTO.getDescription(),
-                productCatalogDTO.getProductManufacterUsername()
+                productCatalogDTO.getProductManufacterUsername(),
+                productCatalogDTO.getMaxSecondaryPackage(),
+                productCatalogDTO.getMaxTertiaryPackage(),
+                productCatalogDTO.getPrimaryPackageVolume(),
+                productCatalogDTO.getPrimaryPackageMaterial(),
+                productCatalogDTO.getSecondaryPackageMaterial(),
+                productCatalogDTO.getTertiaryPackageMaterial()
         );
+
         return Response.status(Response.Status.CREATED).entity(productCatalogToDTO(productCatalog)).build();
     }
 
@@ -99,7 +113,12 @@ public class ProductCatalogService {
                 productCatalogDTO.getCatalogArea(),
                 productCatalogDTO.getCategory(),
                 productCatalogDTO.getDescription(),
-                productCatalogDTO.getProductManufacterUsername()
+                productCatalogDTO.getProductManufacterUsername(),
+                productCatalogDTO.getMaxSecondaryPackage(),
+                productCatalogDTO.getMaxTertiaryPackage(),
+                productCatalogDTO.getPrimaryPackageMaterial(),
+                productCatalogDTO.getSecondaryPackageMaterial(),
+                productCatalogDTO.getTertiaryPackageMaterial()
         );
         return Response.status(Response.Status.OK).entity(productCatalogToDTO(productCatalog)).build();
     }

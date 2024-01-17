@@ -34,18 +34,23 @@ const router = createRouter({
           meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true }
         },
         {
+          path: 'product/:code',
+          component: () => import('../pages/product/product-details.vue'),
+          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true },
+        },
+        {
           path: 'product-packages',
           component: () => import('../pages/product-package/product-packages.vue'),
           meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true }
         },
         {
           path: 'orders',
-          component: () => import('../pages/client-orders/client-orders.vue'),
+          component: () => import('../pages/orders/orders.vue'),
           meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true }
         },
         {
           path: 'order/:code',
-          component: () => import('../pages/client-orders/client-orders-details.vue'),
+          component: () => import('../pages/orders/orders-details.vue'),
           meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true }
         },
         {
@@ -103,7 +108,7 @@ router.beforeEach(async (to, from, next) => {
     } else {
       return next({ path: '/login' })
     }
-  }else{
+  } else {
     if (authUser) {
       return next({ path: '/dashboard' })
     }

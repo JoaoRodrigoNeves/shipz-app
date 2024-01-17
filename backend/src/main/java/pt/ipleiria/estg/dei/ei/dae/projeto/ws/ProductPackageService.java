@@ -35,7 +35,6 @@ public class ProductPackageService {
     private SecurityContext securityContext;
     @EJB
     private ProductPackageBean productPackageBean;
-
     @EJB
     private ProductBean productBean;
 
@@ -43,8 +42,10 @@ public class ProductPackageService {
         ProductPackageDTO productPackageDTO = new ProductPackageDTO(
                 productPackage.getCode(),
                 productPackage.getType(),
+                productPackage.getType().getPackageType(),
                 productPackage.getMaterial(),
-                productPackage.getManufacturingDate()
+                productPackage.getVolume(),
+                productPackage.getCreatedAt().toString()
         );
         productPackageDTO.setProducts(productToDTOs(productPackage.getProducts()));
 
@@ -61,8 +62,10 @@ public class ProductPackageService {
         return new ProductPackageDTO(
                 productPackage.getCode(),
                 productPackage.getType(),
+                productPackage.getType().getPackageType(),
                 productPackage.getMaterial(),
-                productPackage.getManufacturingDate()
+                productPackage.getVolume(),
+                productPackage.getCreatedAt().toString()
         );
     }
 
@@ -108,7 +111,7 @@ public class ProductPackageService {
         ProductPackage productPackage = productPackageBean.create(
                 productPackageDTO.getType(),
                 productPackageDTO.getMaterial(),
-                productPackageDTO.getManufacturingDate()
+                productPackageDTO.getVolume()
         );
         return Response.status(Response.Status.OK).entity(productPackage).build();
     }
@@ -125,7 +128,7 @@ public class ProductPackageService {
     @PUT
     @Path("/")
     public Response update(ProductPackageDTO productPackageDTO) throws MyEntityNotFoundException {
-        productPackageBean.update(productPackageDTO.getCode(), productPackageDTO.getType(), productPackageDTO.getMaterial(), productPackageDTO.getManufacturingDate());
+        productPackageBean.update(productPackageDTO.getCode(), productPackageDTO.getType(), productPackageDTO.getMaterial());
         ProductPackage productPackage = productPackageBean.find(productPackageDTO.getCode());
         return Response.status(Response.Status.OK).entity(productPackageToDTONoProducts(productPackage)).build();
     }
@@ -155,20 +158,20 @@ public class ProductPackageService {
     }
 
     //TODO add product to package
-    @POST
+    /*@POST
     @Path("{code}/products/{productCode}")
     public Response addProduct(@PathParam("code") long code, @PathParam("productCode") long productCode) throws MyEntityNotFoundException, MyEntityExistsException {
         productBean.addProductToPackage(productCode, code);
         return Response.status(Response.Status.OK).build();
-    }
+    }*/
 
     //TODO remove product from package
-    @DELETE
+    /*@DELETE
     @Path("{code}/products/{productCode}")
     public Response removeProduct(@PathParam("code") long code, @PathParam("productCode") long productCode) throws MyEntityNotFoundException, MyEntityExistsException {
         productBean.removeProductFromPackage(productCode, code);
         return Response.status(Response.Status.OK).build();
-    }
+    }*/
 
     //TODO get sensors from package
     @GET

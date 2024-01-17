@@ -1,9 +1,11 @@
 <script setup>
 import { ref, inject } from 'vue'
 import { useConfirm } from "primevue/useconfirm";
+import { useRouter } from 'vue-router';
 
 const emit = defineEmits(['loadProducts', 'updateProduct',])
 const axios = inject('axios')
+const router = useRouter()
 
 const confirm = useConfirm();
 const props = defineProps({
@@ -49,6 +51,9 @@ const removeProduct = (product) => {
   emit('removeProduct', product)
 }
 
+const navigateTo = (path) => {
+    router.push({ path: path })
+}
 watch(
   () => props,
   (newProps) => {
@@ -101,6 +106,12 @@ watch(
           {{ item.clientOrderCode ? item.clientOrderCode : "Sem encomenda" }}
         </td>
         <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
+          <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('/product/' + item.code)">
+            <VIcon size="20" icon="bx-show" />
+            <VTooltip activator="parent" location="top">
+              <span>Ver Detalhes</span>
+            </VTooltip>
+          </VBtn>
           <VBtn rel="noopener noreferrer" color="primary" v-if="!props.productPackageView" @click="updateProduct(item)">
             <VIcon size="20" icon="bx-pencil" />
             <VTooltip activator="parent" location="top">

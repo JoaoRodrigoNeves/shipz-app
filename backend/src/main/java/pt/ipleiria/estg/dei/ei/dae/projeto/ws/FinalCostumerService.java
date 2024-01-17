@@ -74,23 +74,14 @@ public class FinalCostumerService {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
 
-    /*private ClientOrderDTO clientOrderToDTO(ClientOrder clientOrder) {
-        ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
-                clientOrder.getCode()
-        );
-        clientOrderDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
-        clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
-        return clientOrderDTO;
-    }*/
-
     private ClientOrderListDTO clientOrderToDTO(ClientOrder clientOrder) {
         ClientOrderListDTO clientOrderListDTO = new ClientOrderListDTO(
                 clientOrder.getCode(),
-                clientOrder.getProductQuantity()
+                clientOrder.getProductQuantity(),
+                clientOrder.getStatus().getOrderStatus()
         );
         clientOrderListDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
         clientOrderListDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
-        clientOrderListDTO.setProductsDTO(productToDTOs(clientOrder.getProducts()));
         return clientOrderListDTO;
     }
 

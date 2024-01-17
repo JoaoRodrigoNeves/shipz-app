@@ -7,6 +7,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductBean;
+import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductCatalogBean;
+import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductPackageBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
@@ -25,6 +27,10 @@ public class ProductService {
 
     @EJB
     private ProductBean productBean;
+    @EJB
+    private ProductPackageBean productPackageBean;
+    @EJB
+    private ProductCatalogBean productCatalogBean;
 
     private ProductDTO productToDTO(Product product) {
         ProductDTO productDTO = new ProductDTO(
@@ -34,7 +40,7 @@ public class ProductService {
                 product.getProductManufacter().getName()
         );
 
-        if(product.getClientOrder() != null){
+        if (product.getClientOrder() != null) {
             productDTO.setClientOrderCode(product.getClientOrder().getCode());
         }
         return productDTO;
@@ -48,8 +54,10 @@ public class ProductService {
         return new ProductPackageDTO(
                 productPackage.getCode(),
                 productPackage.getType(),
+                productPackage.getType().getPackageType(),
                 productPackage.getMaterial(),
-                productPackage.getManufacturingDate()
+                productPackage.getVolume(),
+                productPackage.getCreatedAt().toString()
         );
     }
 
@@ -61,14 +69,20 @@ public class ProductService {
 
     private ClientOrderDTO clientOrderToDTONoProducts(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
-                clientOrder.getCode()
+                clientOrder.getCode(),
+                clientOrder.getLocation(),
+                clientOrder.getStatus().getOrderStatus(),
+                clientOrder.getCreatedAt().toString()
         );
-        if(clientOrder.getLogisticOperator() != null){
+        if (clientOrder.getLogisticOperator() != null) {
             clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
         }
+        if (clientOrder.getDeliveredAt() != null)
+            clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
 
         return clientOrderDTO;
     }
+
     private List<ClientOrderDTO> clientOrderToDTOsNoProducts(List<ClientOrder> clientOrders) {
         return clientOrders.stream().map(this::clientOrderToDTONoProducts).collect(Collectors.toList());
     }
@@ -80,7 +94,13 @@ public class ProductService {
                 productCatalog.getCatalogArea(),
                 productCatalog.getCategory(),
                 productCatalog.getDescription(),
-                productCatalog.getProductManufacter().getUsername()
+                productCatalog.getProductManufacter().getUsername(),
+                productCatalog.getMaxSecondaryPackage(),
+                productCatalog.getMaxTertiaryPackage(),
+                productCatalog.getPrimaryPackageVolume(),
+                productCatalog.getPrimaryPackageMaterial(),
+                productCatalog.getSecondaryPackageMaterial(),
+                productCatalog.getTertiaryPackageMaterial()
         );
     }
 
@@ -95,11 +115,14 @@ public class ProductService {
     //TODO create a new product
     @POST
     @Path("/")
-    public Response create(ProductDTO productDTO) throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
-        Product product = productBean.create(
-                productDTO.getProductCatalogCode()
-        );
-        return Response.status(Response.Status.CREATED).entity(productToDTO(product)).build();
+    public Response create(ProductCreateDTO productCreateDTO) throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+        for (int i = 0; i < productCreateDTO.getQuantity(); i++) {
+            Product product = productBean.create(
+                    productCreateDTO.getProductCatalogCode()
+            );
+            productPackageBean.addProductToAllPackages(product);
+        }
+        return Response.status(Response.Status.CREATED).build();
     }
 
     //TODO find product by code
@@ -140,27 +163,36 @@ public class ProductService {
 
     //TODO get product-package
     @GET
-    @Path("{code}/product-package/")
+    @Path("{code}/product-package")
     public Response getProductPackage(@PathParam("code") long code) throws MyEntityNotFoundException {
         Product product = productBean.getProductPackages(code);
         return Response.status(Response.Status.OK).entity(productPackageToDTOsNoProducts(product.getProductPackages())).build();
     }
 
+    @GET
+    @Path("{code}/product-catalog")
+    @RolesAllowed({"ProductManufacter"})
+    public Response getProductCatalog(@PathParam("code") long code) throws MyEntityNotFoundException {
+        Product product = productBean.find(code);
+        ProductCatalog productCatalog = productCatalogBean.find(product.getProductCatalog().getCode());
+        return Response.status(Response.Status.OK).entity(productCatalogToDTO(productCatalog)).build();
+    }
+
     //TODO add product to product-package
-    @POST
+    /*@POST
     @Path("{code}/product-package/{packageCode}")
     public Response addToProductPackage(@PathParam("code") long code, @PathParam("packageCode") long packageCode) throws MyEntityNotFoundException, MyEntityExistsException {
         productBean.addProductToPackage(code, packageCode);
         return Response.status(Response.Status.OK).build();
-    }
+    }*/
 
     //TODO remove product from product-package
-    @DELETE
+    /*@DELETE
     @Path("{code}/product-package/{packageCode}")
     public Response removeFromProductPackage(@PathParam("code") long code, @PathParam("packageCode") long packageCode) throws MyEntityNotFoundException, MyEntityExistsException {
         productBean.removeProductFromPackage(code, packageCode);
         return Response.status(Response.Status.OK).build();
-    }
+    }*/
 
     //TODO get order
     @GET
@@ -184,14 +216,6 @@ public class ProductService {
     public Response removeFromOrder(@PathParam("code") long code, @PathParam("orderCode") long orderCode) throws MyEntityNotFoundException, MyEntityExistsException {
         productBean.removeProductFromOrder(code, orderCode);
         return Response.status(Response.Status.OK).build();
-    }
-
-    //TODO get product-catalog from product
-    @GET
-    @Path("{code}/product-catalog")
-    public Response getProductCatalog(@PathParam("code") long code) throws MyEntityNotFoundException {
-        ProductCatalog productCatalog = productBean.getProductCatalog(code);
-        return Response.status(Response.Status.OK).entity(productCatalogToDTO(productCatalog)).build();
     }
 
     //TODO get product-manufacter from product

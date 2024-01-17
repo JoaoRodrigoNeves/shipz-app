@@ -10,11 +10,13 @@ public class ClientOrderListDTO implements Serializable {
     private String finalCostumer;
     private List<ProductDTO> productsDTO;
     private long productQuantity;
+    private String orderStatus;
 
-    public ClientOrderListDTO(long code, long productQuantity) {
+    public ClientOrderListDTO(long code, long productQuantity, String orderStatus) {
         this.code = code;
         this.productsDTO = new ArrayList<>();
         this.productQuantity = productQuantity;
+        this.orderStatus = orderStatus;
     }
 
     public ClientOrderListDTO() {
@@ -22,6 +24,14 @@ public class ClientOrderListDTO implements Serializable {
 
     public long getCode() {
         return code;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public void setCode(long code) {

@@ -70,11 +70,8 @@ public class LogisticOperatorBean {
         return em.find(LogisticOperator.class, username);
     }
 
-    public LogisticOperator findLogisticOperatorWithClientOrder(String username) throws MyEntityNotFoundException {
-        if (!exists(username)) {
-            throw new MyEntityNotFoundException("Logistic Operator with username '" + username + "' not found");
-        }
-        LogisticOperator logisticOperator = em.find(LogisticOperator.class, username);
+    public LogisticOperator getOrders(String username) throws MyEntityNotFoundException {
+        LogisticOperator logisticOperator = this.find(username);
         Hibernate.initialize(logisticOperator.getClientorders());
         return logisticOperator;
     }

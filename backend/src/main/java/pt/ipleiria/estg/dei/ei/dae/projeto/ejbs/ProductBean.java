@@ -6,6 +6,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.validation.ConstraintViolationException;
 import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.*;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
@@ -21,7 +22,8 @@ public class ProductBean {
     /**
      * TODO CRUD operations for Product entity
      */
-    public Product create(long productCatalogCode) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {;
+    public Product create(long productCatalogCode) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
+        ;
         ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, productCatalogCode);
 
         if (productCatalog == null)
@@ -34,10 +36,19 @@ public class ProductBean {
             productCatalog.addProduct(product);
             productCatalog.getProductManufacter().addProduct(product);
 
+            ProductPackage productPackagePrimary = new ProductPackage(PackageType.PRIMARY, productCatalog.getPrimaryPackageMaterial(), productCatalog.getPrimaryPackageVolume());
+            entityManager.persist(productPackagePrimary);
+            product.addProductPackage(productPackagePrimary);
+            productPackagePrimary.addProduct(product);
+
             return product;
         } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
         }
+    }
+
+    private void checkAvailabilityPackage(PackageType packageType, Product product, ProductCatalog productCatalog) {
+
     }
 
     public Product find(long code) throws MyEntityNotFoundException {
@@ -73,7 +84,7 @@ public class ProductBean {
     public void delete(long code) throws MyEntityNotFoundException {
         Product product = this.find(code);
         ProductCatalog productCatalog = product.getProductCatalog();
-        ProductManufacter  productManufacter = product.getProductManufacter();
+        ProductManufacter productManufacter = product.getProductManufacter();
 
         // remove mandatory associations
         productCatalog.removeProduct(product);
@@ -95,7 +106,7 @@ public class ProductBean {
         return product;
     }
 
-    public void addProductToPackage(long code, long productPackageCode) throws MyEntityNotFoundException, MyEntityExistsException {
+    /*public void addProductToPackage(long code, long productPackageCode) throws MyEntityNotFoundException, MyEntityExistsException {
         ProductPackage productPackage = entityManager.find(ProductPackage.class, productPackageCode);
         if (productPackage == null)
             throw new MyEntityNotFoundException("Package with code: " + productPackageCode + " not found");
@@ -106,9 +117,9 @@ public class ProductBean {
 
         product.addProductPackage(productPackage);
         productPackage.addProduct(product);
-    }
+    }*/
 
-    public void removeProductFromPackage(long code, long productPackageCode) throws MyEntityNotFoundException, MyEntityExistsException {
+    /*public void removeProductFromPackage(long code, long productPackageCode) throws MyEntityNotFoundException, MyEntityExistsException {
         ProductPackage productPackage = entityManager.find(ProductPackage.class, productPackageCode);
         if (productPackage == null)
             throw new MyEntityNotFoundException("Package with code: " + productPackageCode + " not found");
@@ -120,7 +131,7 @@ public class ProductBean {
 
         product.removeProductPackage(productPackage);
         productPackage.removeProduct(product);
-    }
+    }*/
 
     //TODO get / associate / disassociate product with client order
     public ClientOrder getOrder(long code) throws MyEntityNotFoundException {
