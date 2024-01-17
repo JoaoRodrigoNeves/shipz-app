@@ -5,7 +5,6 @@ import { useToast } from "primevue/usetoast";
 import { useConfirm } from "primevue/useconfirm";
 
 import ProductTable from '@/views/pages/tables/ProductTable.vue'
-import ProductPackageForm from '@/views/pages/form-layouts/ProductPackageForm.vue';
 
 const axios = inject('axios')
 const router = useRouter()
@@ -87,14 +86,6 @@ const deleteProductPackageConfirm = async () => {
     })
 }
 
-const closeFormAndUpdate = async () => {
-    isUpdating.value = false
-    isAddingProduct.value = false
-
-    await loadProductPackage()
-    await loadProducts()
-}
-
 onMounted(async () => {
     await loadProductPackage()
     await loadProducts()
@@ -174,32 +165,6 @@ onMounted(async () => {
                 <div v-else class="no-products">
                     Não tem produtos associados a esta embalagem
                 </div>
-            </VCard>
-        </VCol>
-    </VRow>
-    <VRow v-if="isUpdating">
-        <VCol cols="12">
-            <VCard>
-                <div class="product-packages-header">
-                    <h2>Editar Embalagem de Produto</h2>
-                </div>
-                <VCardText>
-                    <ProductPackageForm @closeFormAndUpdate="closeFormAndUpdate" :productPackage="productPackage"
-                        :is-adding-product="false" :is-creating="!isUpdating" :is-updating="isUpdating" />
-                </VCardText>
-            </VCard>
-        </VCol>
-    </VRow>
-    <VRow v-if="isAddingProduct">
-        <VCol cols="12">
-            <VCard>
-                <div class="product-packages-header">
-                    <h2>Adicionar Produto</h2>
-                </div>
-                <VCardText>
-                    <ProductPackageForm @add-product="closeFormAndUpdate" :product-package="productPackage"
-                        :is-adding-product="true" :is-creating="false" :is-updating="false" />
-                </VCardText>
             </VCard>
         </VCol>
     </VRow>

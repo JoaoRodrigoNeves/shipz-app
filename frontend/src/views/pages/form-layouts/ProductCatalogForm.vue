@@ -33,7 +33,7 @@ const productCatalogForm = ref({
     primaryPackageVolume: null,
     primaryPackageMaterial: '',
     secondaryPackageMaterial: '',
-    tertiaryPackageMaterial: ''
+    tertiaryPackageMaterial: '',
     primaryPackageMaterial: null,
     secondaryPackageMaterial: null,
     tertiaryPackageMaterial: null
