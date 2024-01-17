@@ -12,6 +12,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.FinalCostumerBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.FinalCostumer;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.LogisticOperator;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
@@ -120,5 +121,21 @@ public class FinalCostumerService {
     public List<FinalCostumerDTO> getAll() {
         var finalCostumers = finalCostumerBean.getAll();
         return toDTOsNoClientOrders(finalCostumers);
+    }
+
+    //TODO update a logistic-operator
+    @PUT
+    @Path("/")
+    public Response update(FinalCostumerDTO finalCostumerDTO)
+            throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+        finalCostumerBean.update(
+                finalCostumerDTO.getUsername(),
+                finalCostumerDTO.getPassword(),
+                finalCostumerDTO.getName(),
+                finalCostumerDTO.getEmail(),
+                finalCostumerDTO.getAddress()
+        );
+        FinalCostumer finalCostumer = finalCostumerBean.find(finalCostumerDTO.getUsername());
+        return Response.status(Response.Status.CREATED).entity(toDTONoClientOrders(finalCostumer)).build();
     }
 }

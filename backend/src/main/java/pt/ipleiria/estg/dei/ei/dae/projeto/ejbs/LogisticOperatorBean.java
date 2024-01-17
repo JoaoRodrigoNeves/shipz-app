@@ -48,7 +48,9 @@ public class LogisticOperatorBean {
             throw new MyEntityNotFoundException("LogisticOperator with username: " + username + " doesn't exist");
         }
         em.lock(logisticOperator, LockModeType.OPTIMISTIC);
-        logisticOperator.setPassword(password);
+        if(password != null){
+            logisticOperator.setPassword(hasher.hash(password));
+        }
         logisticOperator.setName(name);
         logisticOperator.setEmail(email);
         em.merge(logisticOperator);
