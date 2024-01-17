@@ -70,8 +70,7 @@ public class ConfigBean {
             productBean.create(100001);
             productBean.create(100001);
             productBean.create(100001);
-            
-            //transportPackageBean.create("primário", "papel", "leiria", "01/01/2024");
+
             //clientOrderBean.create("finalCostumer1", List.of(100001L, 100002L));
 
             sensorBean.create("Temperatura");

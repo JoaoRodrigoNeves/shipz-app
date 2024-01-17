@@ -150,7 +150,7 @@ onMounted(async () => {
           </div>
         </div>
         <div style="margin-top: 12px;">
-          <VAutocomplete v-model="logisticOperatorSelected" label="Operadores Logisticos"
+          <VAutocomplete v-model="logisticOperatorSelected" label="Operador Logistico"
               placeholder="Selecionar Operador Logistico" :items="logisticOperators" item-title="name"
               item-value="username" />
         </div>

@@ -33,10 +33,7 @@ const productCatalogForm = ref({
     primaryPackageVolume: null,
     primaryPackageMaterial: '',
     secondaryPackageMaterial: '',
-    tertiaryPackageMaterial: ''
-    primaryPackageMaterial: null,
-    secondaryPackageMaterial: null,
-    tertiaryPackageMaterial: null
+    tertiaryPackageMaterial: '' 
 })
 
 const validateForm = ()=>{

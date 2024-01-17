@@ -49,14 +49,12 @@ public class ClientOrderBean {
             entityManager.persist(clientOrder);
             entityManager.flush();
             finalCostumer.addOrder(clientOrder);
-
             for (ProductOrderDTO product : products) {
                 ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, product.getCode());
                 List<Product> productsList = productCatalog.getProducts()
                         .stream()
                         .filter(prod -> prod.getClientOrder() == null)
                         .collect(Collectors.toList());
-
                 if (productsList.size() >= product.getQuantity()) {
                     for (int i = 0; i < product.getQuantity(); i++) {
                         productsList.get(i).setClientOrder(clientOrder);
