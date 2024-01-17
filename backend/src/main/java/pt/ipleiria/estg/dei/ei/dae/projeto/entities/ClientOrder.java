@@ -57,6 +57,10 @@ public class ClientOrder {
         this.code = code;
     }
 
+    public long getProductQuantity() {
+        return products.size();
+    }
+
     public LogisticOperator getLogisticOperator() {
         return logisticOperator;
     }

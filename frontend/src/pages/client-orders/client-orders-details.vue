@@ -18,9 +18,9 @@ const loadOrderDetails = async () => {
     isLoading.value = false
   }).catch(
     error => {
-      isLoading.value = false;
+      isLoading.value = false
       console.error(error)
-    }
+    },
   )
 }
 
@@ -40,9 +40,15 @@ onMounted(async () => {
           <h3>Produtos</h3>
         </div>
         <div v-if="products && products.length > 0 && !isLoading">
-          <ProductTable v-if="!isLoading" :products="products" />
+          <ProductTable
+            v-if="!isLoading"
+            :products="products"
+          />
         </div>
-        <div v-else class="no-products">
+        <div
+          v-else
+          class="no-products"
+        >
           Não tem produtos associados a esta encomenda
         </div>
       </VCard>

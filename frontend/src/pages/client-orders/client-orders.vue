@@ -2,12 +2,27 @@
 import { ref, onMounted, inject } from 'vue'
 import OrdersTable from '@/views/pages/tables/OrdersTable.vue'
 import ClientOrderLogisticOperatorForm from '@/views/pages/form-layouts/ClientOrderLogisticOperatorForm.vue'
+import products from "@/pages/client/products.vue"
 
 const axios = inject('axios')
 const isLoading = ref(false)
 const orders = ref([])
 const isUpdating = ref(false)
 const clientOrderToUpdate = ref(null)
+
+const loadProducts = async () => {
+  isLoading.value = true
+  await axios.get('final-costumers/' + JSON.parse(sessionStorage.getItem('user_info')).username + '/products').then(response => {
+    isLoading.value = false
+    products.value = response.data
+
+  }).catch(
+    error => {
+      isLoading.value = false
+      console.error(error)
+    },
+  )
+}
 
 const loadOrders = async () => {
   isLoading.value = true
@@ -53,7 +68,6 @@ const updateLogisticOperator = product => {
 const addLogisticOperator = async () => {
   isUpdating.value = false
   await loadOrders()
-
 }
 
 onMounted(async () => {
@@ -69,12 +83,21 @@ onMounted(async () => {
           <h2>Encomendas</h2>
         </div>
         <div v-if="!isUpdating">
-          <OrdersTable v-if="!isLoading" :orders="orders" @updateLogisticOperator="updateLogisticOperator"
-            @loadOrders="loadOrders" />
+          <OrdersTable
+            v-if="!isLoading"
+            :orders="orders"
+            @updateLogisticOperator="updateLogisticOperator"
+            @loadOrders="loadOrders"
+          />
         </div>
-        <div v-else class="client-orders-form">
-          <ClientOrderLogisticOperatorForm :client-order="clientOrderToUpdate"
-            @addLogisticOperator="addLogisticOperator" />
+        <div
+          v-else
+          class="client-orders-form"
+        >
+          <ClientOrderLogisticOperatorForm
+            :client-order="clientOrderToUpdate"
+            @addLogisticOperator="addLogisticOperator"
+          />
         </div>
       </VCard>
     </VCol>

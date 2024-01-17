@@ -8,14 +8,10 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ClientOrderDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.FinalCostumerDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.LogisticOperatorDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.FinalCostumerBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.FinalCostumer;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.LogisticOperator;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
@@ -78,19 +74,31 @@ public class FinalCostumerService {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
 
-    private ClientOrderDTO clientOrderToDTO(ClientOrder clientOrder) {
+    /*private ClientOrderDTO clientOrderToDTO(ClientOrder clientOrder) {
         ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
                 clientOrder.getCode()
         );
         clientOrderDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
+        clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
         return clientOrderDTO;
+    }*/
+
+    private ClientOrderListDTO clientOrderToDTO(ClientOrder clientOrder) {
+        ClientOrderListDTO clientOrderListDTO = new ClientOrderListDTO(
+                clientOrder.getCode(),
+                clientOrder.getProductQuantity()
+        );
+        clientOrderListDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
+        clientOrderListDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
+        clientOrderListDTO.setProductsDTO(productToDTOs(clientOrder.getProducts()));
+        return clientOrderListDTO;
     }
 
     private List<FinalCostumerDTO> toDTOs(List<FinalCostumer> finalCostumers) {
         return finalCostumers.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    private List<ClientOrderDTO> clientOrderToDTOs(List<ClientOrder> clientOrders) {
+    private List<ClientOrderListDTO> clientOrderToDTOs(List<ClientOrder> clientOrders) {
         return clientOrders.stream().map(this::clientOrderToDTO).collect(Collectors.toList());
     }
 
