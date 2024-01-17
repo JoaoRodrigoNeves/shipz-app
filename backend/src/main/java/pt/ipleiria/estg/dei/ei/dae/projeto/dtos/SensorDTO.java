@@ -10,8 +10,6 @@ public class SensorDTO implements Serializable {
 
     long code;
     String type;
-    String sensorTypeName;
-    List<Observation> observations;
 
     public SensorDTO() {
 
@@ -36,13 +34,5 @@ public class SensorDTO implements Serializable {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public List<Observation> getObservations() {
-        return observations;
-    }
-
-    public void setObservations(List<Observation> observations) {
-        this.observations = observations;
     }
 }

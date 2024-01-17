@@ -101,6 +101,13 @@ public class SensorBean {
         return sensor;
     }
 
+    //TODO get observations
+    public Sensor getObservations(long code) throws MyEntityNotFoundException {
+        Sensor sensor = this.find(code);
+        Hibernate.initialize(sensor.getObservations());
+        return sensor;
+    }
+
     public List<Observation> getFilteredObservations(long code, LocalDateTime startDate, LocalDateTime endDate) throws MyEntityNotFoundException {
         Sensor sensor = this.find(code);
 

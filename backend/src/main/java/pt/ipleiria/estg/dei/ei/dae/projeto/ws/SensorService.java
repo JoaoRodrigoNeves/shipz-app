@@ -4,10 +4,12 @@ import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ObservationDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.PackageDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductPackageDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.SensorDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.SensorBean;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Observation;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductPackage;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
@@ -48,6 +50,18 @@ public class SensorService {
 
     public List<PackageDTO> packageDTOs(List<Package> packages) {
         return packages.stream().map(this::packageDTO).collect(Collectors.toList());
+    }
+
+    public ObservationDTO observationDTO(Observation observation) {
+        return new ObservationDTO(
+                observation.getValue(),
+                observation.getSensor().getCode(),
+                observation.getCreatedAt().toString()
+        );
+    }
+
+    public List<ObservationDTO> observationDTOs(List<Observation> observations) {
+        return observations.stream().map(this::observationDTO).collect(Collectors.toList());
     }
 
     //TODO create sensor
@@ -115,5 +129,13 @@ public class SensorService {
         Sensor sensor = sensorBean.getPackages(code);
         List<PackageDTO> packageDTOs = packageDTOs(sensor.getPackages());
         return Response.status(Response.Status.OK).entity(packageDTOs).build();
+    }
+
+    @GET
+    @Path("{code}/observations")
+    public Response getOberservations(@PathParam("code") long code) throws MyEntityNotFoundException {
+        Sensor sensor = sensorBean.getObservations(code);
+        List<ObservationDTO> observationDTOs = observationDTOs(sensor.getObservations());
+        return Response.status(Response.Status.OK).entity(observationDTOs).build();
     }
 }
