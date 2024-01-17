@@ -18,17 +18,18 @@ import java.util.Objects;
                 query = "SELECT o FROM ClientOrder o ORDER BY o.code" // JPQL
         )
 })
+@Table(name = "orders")
 public class ClientOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "client_order_id_seq")
     @SequenceGenerator(name = "client_order_id_seq", sequenceName = "client_order_id_seq", initialValue = 100000)
     private long code;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "finalcostumer_username")
+    @JoinColumn(name = "final_costumer_username")
     private FinalCostumer finalCostumer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "logisticoperator_username")
+    @JoinColumn(name = "logistic_operator_username")
     private LogisticOperator logisticOperator;
 
     @OneToMany(mappedBy = "clientOrder", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
@@ -49,7 +50,8 @@ public class ClientOrder {
     public ClientOrder(FinalCostumer finalCostumer, LogisticOperator logisticOperator) {
         this.finalCostumer = finalCostumer;
         this.logisticOperator = logisticOperator;
-        this.products = new ArrayList<>();
+        this.products = new ArrayList<Product>();
+        this.transportPackages = new ArrayList<TransportPackage>();
         this.status = OrderStatus.STATUS_0;
     }
 

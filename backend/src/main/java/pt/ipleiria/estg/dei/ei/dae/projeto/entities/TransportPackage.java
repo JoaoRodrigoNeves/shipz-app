@@ -21,9 +21,9 @@ public class TransportPackage extends Package implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "transport_package_association",
-            joinColumns = @JoinColumn(name = "package_code", referencedColumnName = "code"),
-            inverseJoinColumns = @JoinColumn(name = "transport_code", referencedColumnName = "code")
+            name = "transport_order_association",
+            joinColumns = @JoinColumn(name = "transport_code", referencedColumnName = "code"),
+            inverseJoinColumns = @JoinColumn(name = "order_code", referencedColumnName = "code")
     )
     List<ClientOrder> clientOrders;
     String location;
@@ -33,10 +33,10 @@ public class TransportPackage extends Package implements Serializable {
     public TransportPackage() {
     }
 
-    public TransportPackage(PackageType type, String material, String location, long volume) {
+    public TransportPackage(PackageType type, String material, long volume, TransportPackageCatalog transportPackageCatalog) {
         super(type, material, volume);
-        this.location = location;
         this.clientOrders = new ArrayList<ClientOrder>();
+        this.transportPackageCatalog = transportPackageCatalog;
     }
 
     public List<ClientOrder> getClientOrders() {
@@ -55,17 +55,33 @@ public class TransportPackage extends Package implements Serializable {
         this.clientOrders.remove(clientOrder);
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public TransportPackageCatalog getTransportPackageCatalog() {
+        return transportPackageCatalog;
+    }
+
+    public void setTransportPackageCatalog(TransportPackageCatalog transportPackageCatalog) {
+        this.transportPackageCatalog = transportPackageCatalog;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TransportPackage)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         TransportPackage that = (TransportPackage) o;
-        return Objects.equals(clientOrders, that.clientOrders);
+        return Objects.equals(clientOrders, that.clientOrders) && Objects.equals(location, that.location);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), clientOrders);
+        return Objects.hash(super.hashCode(), clientOrders, location);
     }
 }
