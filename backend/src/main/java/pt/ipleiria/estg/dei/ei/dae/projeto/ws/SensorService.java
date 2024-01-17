@@ -6,17 +6,17 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ObservationDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.PackageDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductPackageDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.SensorDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.SensorBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Observation;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductPackage;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +30,8 @@ public class SensorService {
     private SensorDTO toDTONoObservations(Sensor sensor) {
         return new SensorDTO(
                 sensor.getCode(),
-                sensor.getType().getSensorType()
+                sensor.getType().getSensorType(),
+                sensor.isInUse()
         );
     }
 
@@ -135,7 +136,17 @@ public class SensorService {
     @Path("{code}/observations")
     public Response getOberservations(@PathParam("code") long code) throws MyEntityNotFoundException {
         Sensor sensor = sensorBean.getObservations(code);
-        List<ObservationDTO> observationDTOs = observationDTOs(sensor.getObservations());
+        List<Observation> observations = sensor.getObservations();
+        // Ordenar as observações pelo campo createdAt (mais recentes primeiro)
+        Collections.sort(observations, Comparator.comparing(Observation::getCreatedAt).reversed());
+        List<ObservationDTO> observationDTOs = observationDTOs(observations);
         return Response.status(Response.Status.OK).entity(observationDTOs).build();
+    }
+
+    @PATCH
+    @Path("{code}/status")
+    public Response updateStatus(@PathParam("code") long code) throws MyEntityNotFoundException {
+        Sensor sensor = sensorBean.changeStatus(code);
+        return Response.status(Response.Status.OK).entity(toDTONoObservations(sensor)).build();
     }
 }

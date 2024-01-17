@@ -58,16 +58,17 @@ onMounted(async () => {
                 <div class="sensor-details">
                     <div class="sensor-item">
                         <label>
-                            Tipo de sensor
+                            Tipo de sensor:
+                        
+                            <span class="bold">
+                                {{ sensor.type }}
+                            </span>
                         </label>
-                        <span>
-                            {{ sensor.type }}
-                        </span>
                     </div>
                 </div>
                 <br>
                 <div v-if="observations && observations.length > 0 && !isLoading">
-                    <ObservationsTable  />
+                    <ObservationsTable :observations="observations" />
                 </div>
                 <div v-else class="no-obervations">
                     Não existem observações para este sensor.

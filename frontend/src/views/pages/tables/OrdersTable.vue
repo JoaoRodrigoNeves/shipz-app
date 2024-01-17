@@ -68,10 +68,10 @@ watch(
           {{ item.logisticOperator }}
         </td>
         <td style="width: 30%; text-align: center;">
-          {{ item.productQuantity }}
+          {{ item.productsDTO.length > 0 ? item.productsDTO.length : "Sem produtos" }}
         </td>
         <td style="width: 20%; text-align: center;">
-          {{ item.orderStatus }}
+          {{ item.status }}
         </td>
         <td
           class="d-flex align-center justify-end gap-x-2"
