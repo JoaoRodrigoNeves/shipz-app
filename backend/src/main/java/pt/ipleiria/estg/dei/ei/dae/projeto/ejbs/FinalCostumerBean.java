@@ -60,7 +60,9 @@ public class FinalCostumerBean {
         entityManager.lock(finalCostumer, LockModeType.OPTIMISTIC);
 
         try {
-            finalCostumer.setPassword(hasher.hash(password));
+            if(password != null){
+                finalCostumer.setPassword(hasher.hash(password));
+            }
             finalCostumer.setName(name);
             finalCostumer.setEmail(email);
         } catch (ConstraintViolationException e) {

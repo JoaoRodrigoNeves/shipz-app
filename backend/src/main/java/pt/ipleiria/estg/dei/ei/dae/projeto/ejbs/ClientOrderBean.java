@@ -47,6 +47,7 @@ public class ClientOrderBean {
             ClientOrder clientOrder = new ClientOrder(finalCostumer, logisticOperator);
             
             long volumeTotal = 0;
+            
             for (ProductOrderDTO product : products) {
                 ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, product.getCode());
                 List<Product> productsList = productCatalog.getProducts()
@@ -63,6 +64,7 @@ public class ClientOrderBean {
                     throw new NoStockException("Não há quantidade suficiente do produto " + productCatalog.getName() + ". Stock: " + productsList.size() + (productsList.size() > 1 ? " unidades." : "unidade."));
                 }
             }
+            finalCostumer.addOrder(clientOrder);
             entityManager.persist(clientOrder);
 
 

@@ -8,10 +8,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ClientOrderDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.FinalCostumerDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.LogisticOperatorDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.FinalCostumerBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.FinalCostumer;
@@ -78,24 +75,22 @@ public class FinalCostumerService {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
 
-    private ClientOrderDTO clientOrderToDTO(ClientOrder clientOrder) {
-        ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
+    private ClientOrderListDTO clientOrderToDTO(ClientOrder clientOrder) {
+        ClientOrderListDTO clientOrderListDTO = new ClientOrderListDTO(
                 clientOrder.getCode(),
-                clientOrder.getLocation(),
-                clientOrder.getStatus().getOrderStatus(),
-                clientOrder.getCreatedAt().toString()
+                clientOrder.getProductQuantity(),
+                clientOrder.getStatus().getOrderStatus()
         );
-        clientOrderDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
-        if (clientOrder.getDeliveredAt() != null)
-            clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
-        return clientOrderDTO;
+        clientOrderListDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
+        clientOrderListDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
+        return clientOrderListDTO;
     }
 
     private List<FinalCostumerDTO> toDTOs(List<FinalCostumer> finalCostumers) {
         return finalCostumers.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    private List<ClientOrderDTO> clientOrderToDTOs(List<ClientOrder> clientOrders) {
+    private List<ClientOrderListDTO> clientOrderToDTOs(List<ClientOrder> clientOrders) {
         return clientOrders.stream().map(this::clientOrderToDTO).collect(Collectors.toList());
     }
 
@@ -126,5 +121,21 @@ public class FinalCostumerService {
     public List<FinalCostumerDTO> getAll() {
         var finalCostumers = finalCostumerBean.getAll();
         return toDTOsNoClientOrders(finalCostumers);
+    }
+
+    //TODO update a logistic-operator
+    @PUT
+    @Path("/")
+    public Response update(FinalCostumerDTO finalCostumerDTO)
+            throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+        finalCostumerBean.update(
+                finalCostumerDTO.getUsername(),
+                finalCostumerDTO.getPassword(),
+                finalCostumerDTO.getName(),
+                finalCostumerDTO.getEmail(),
+                finalCostumerDTO.getAddress()
+        );
+        FinalCostumer finalCostumer = finalCostumerBean.find(finalCostumerDTO.getUsername());
+        return Response.status(Response.Status.CREATED).entity(toDTONoClientOrders(finalCostumer)).build();
     }
 }

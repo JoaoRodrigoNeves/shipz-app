@@ -1,16 +1,23 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
+import java.util.List;
+
 public class TransportPackageCatalogDTO {
     long code;
     String name;
     String material;
     long volume;
+    String logisticOperatorUsername;
+    List<TransportPackageDTO> transportPackageDTOList;
+    public TransportPackageCatalogDTO(){
 
-    public TransportPackageCatalogDTO(long code, String name, String material, long volume) {
+    }
+    public TransportPackageCatalogDTO(long code, String name, String material, long volume, String logisticOperatorUsername) {
         this.code = code;
         this.name = name;
         this.material = material;
         this.volume = volume;
+        this.logisticOperatorUsername = logisticOperatorUsername;
     }
 
     public long getCode() {
@@ -39,5 +46,25 @@ public class TransportPackageCatalogDTO {
 
     public void setVolume(long volume) {
         this.volume = volume;
+    }
+
+    public void setCode(long code) {
+        this.code = code;
+    }
+
+    public String getLogisticOperatorUsername() {
+        return logisticOperatorUsername;
+    }
+
+    public void setLogisticOperatorUsername(String logisticOperatorUsername) {
+        this.logisticOperatorUsername = logisticOperatorUsername;
+    }
+
+    public List<TransportPackageDTO> getTransportPackageDTOList() {
+        return transportPackageDTOList;
+    }
+
+    public void setTransportPackageDTOList(List<TransportPackageDTO> transportPackageDTOList) {
+        this.transportPackageDTOList = transportPackageDTOList;
     }
 }

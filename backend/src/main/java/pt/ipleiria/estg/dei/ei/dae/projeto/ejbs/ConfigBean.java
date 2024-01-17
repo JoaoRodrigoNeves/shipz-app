@@ -11,10 +11,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationExcep
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
-import java.util.Date;
 
 @Startup
 @Singleton

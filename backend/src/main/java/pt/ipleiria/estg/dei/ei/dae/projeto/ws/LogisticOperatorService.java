@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.SecurityContext;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.LogisticOperatorBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.*;
+import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.security.Authenticated;
@@ -122,5 +123,20 @@ public class LogisticOperatorService {
     public List<LogisticOperatorDTO> getAll() {
         var logisticOperators = logisticOperatorBean.getAll();
         return toDTOsNoClientOrders(logisticOperators);
+    }
+
+    //TODO update a logistic-operator
+    @PUT
+    @Path("/")
+    public Response update(LogisticOperatorDTO logisticOperatorDTO)
+            throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+        logisticOperatorBean.update(
+                logisticOperatorDTO.getUsername(),
+                logisticOperatorDTO.getPassword(),
+                logisticOperatorDTO.getName(),
+                logisticOperatorDTO.getEmail()
+        );
+        LogisticOperator logisticOperator = logisticOperatorBean.find(logisticOperatorDTO.getUsername());
+        return Response.status(Response.Status.CREATED).entity(toDTONoClientOrders(logisticOperator)).build();
     }
 }

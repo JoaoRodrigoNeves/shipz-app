@@ -25,7 +25,10 @@ const upgradeBanner = computed(() => {
     <template #navbar="{ toggleVerticalOverlayNavActive }">
       <div class="d-flex h-100 align-center">
         <!-- 👉 Vertical nav toggle in overlay mode -->
-        <IconBtn class="ms-n3 d-lg-none" @click="toggleVerticalOverlayNavActive(true)">
+        <IconBtn
+          class="ms-n3 d-lg-none"
+          @click="toggleVerticalOverlayNavActive(true)"
+        >
           <VIcon icon="bx-menu" />
         </IconBtn>
         <VSpacer />
@@ -54,6 +57,11 @@ const upgradeBanner = computed(() => {
         to: '/products-list',
       }" v-if="user && user.role === 'FinalCostumer'" />
       <VerticalNavLink :item="{
+        title: 'Transporte',
+        icon: 'bi-box-seam',
+        to: '/transport-packages',
+      }" v-if="user && user.role === 'LogisticOperator'" />
+      <VerticalNavLink :item="{
         title: 'Catálogo',
         icon: 'mdi-list-box',
         to: '/product-catalogs',
@@ -76,20 +84,29 @@ const upgradeBanner = computed(() => {
 
 
       <!-- 👉 Pages -->
-      <VerticalNavSectionTitle :item="{
-        heading: 'Pages',
-      }" v-if="!user" />
-      <VerticalNavLink :item="{
-        title: 'Login',
-        icon: 'bx-log-in',
-        to: '/login',
-      }" v-if="!user" />
+      <VerticalNavSectionTitle
+        v-if="!user"
+        :item="{
+          heading: 'Pages',
+        }"
+      />
+      <VerticalNavLink
+        v-if="!user"
+        :item="{
+          title: 'Login',
+          icon: 'bx-log-in',
+          to: '/login',
+        }"
+      />
 
-      <VerticalNavLink :item="{
-        title: 'Sensores',
-        icon: 'mdi-thermometer-low',
-        to: '/sensor-observation',
-      }" v-if="!user" />
+      <VerticalNavLink
+        v-if="!user"
+        :item="{
+          title: 'Sensores',
+          icon: 'mdi-thermometer-low',
+          to: '/sensor-observation',
+        }"
+      />
     </template>
     <slot />
   </VerticalNavLayout>

@@ -67,6 +67,16 @@ const router = createRouter({
           path: 'sensor-observation',
           component: () => import('../pages/sensor-register.vue'),
           meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: false }
+        },
+        {
+          path: 'transport-packages',
+          component: () => import('../pages/transport-package-catalog/transport-package-catalog.vue'),
+          meta: { manufacterAuth: false, logisticAuth: true, clientAuth: false, requiredAuth: true }
+        },
+        {
+          path: 'transport-packages/:code',
+          component: () => import('../pages/transport-package-catalog/transport-package-catalog-details.vue'),
+          meta: { manufacterAuth: false, logisticAuth: true, clientAuth: false, requiredAuth: true }
         }
       ],
     },
