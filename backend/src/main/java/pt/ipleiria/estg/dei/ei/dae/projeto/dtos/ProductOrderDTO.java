@@ -17,7 +17,6 @@ public class ProductOrderDTO implements Serializable {
     String primaryPackageMaterial;
     String secondaryPackageMaterial;
     String tertiaryPackageMaterial;
-    long primaryPackageVolume;
 
     public ProductOrderDTO() {
     }

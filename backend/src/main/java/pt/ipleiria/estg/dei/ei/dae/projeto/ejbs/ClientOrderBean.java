@@ -49,11 +49,7 @@ public class ClientOrderBean {
             entityManager.persist(clientOrder);
             entityManager.flush();
             finalCostumer.addOrder(clientOrder);
-<<<<<<< HEAD
             long volumeTotal = 0;
-
-=======
->>>>>>> origin/main
             for (ProductOrderDTO product : products) {
                 ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, product.getCode());
                 List<Product> productsList = productCatalog.getProducts()

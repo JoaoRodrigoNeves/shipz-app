@@ -27,13 +27,10 @@ public class TransportPackage extends Package implements Serializable {
     )
     List<ClientOrder> clientOrders;
     String location;
-<<<<<<< HEAD
 
-=======
     @ManyToOne
     @JoinColumn(name = "transport_package_catalog_code")
     TransportPackageCatalog transportPackageCatalog;
->>>>>>> origin/main
     public TransportPackage() {
     }
 

@@ -71,13 +71,9 @@ public class ConfigBean {
             productBean.create(100001);
             productBean.create(100001);
 
-<<<<<<< HEAD
             transportPackageBean.create("cartão", 100);
             transportPackageBean.create("cartão", 200);
             transportPackageBean.create("cartão", 300);
-=======
-            //clientOrderBean.create("finalCostumer1", List.of(100001L, 100002L));
->>>>>>> origin/main
 
             sensorBean.create("Temperatura");
             sensorBean.create("Temperatura");
