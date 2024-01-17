@@ -72,9 +72,9 @@ public class ConfigBean {
             productBean.create(100001);
             productBean.create(100001);
 
-            transportPackageCatalogBean.create("Embalagem S", "Cartão", 50);
-            transportPackageCatalogBean.create("Embalagem M", "Cartão", 100);
-            transportPackageCatalogBean.create("Embalagem L", "Cartão", 150);
+            transportPackageCatalogBean.create("Embalagem S", "Cartão", 50, "logisticOperator1");
+            transportPackageCatalogBean.create("Embalagem M", "Cartão", 100, "logisticOperator1");
+            transportPackageCatalogBean.create("Embalagem L", "Cartão", 150, "logisticOperator1");
 
             sensorBean.create("Temperatura");
             sensorBean.create("Temperatura");
