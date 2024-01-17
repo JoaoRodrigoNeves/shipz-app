@@ -6,32 +6,25 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransportPackageCreateDTO extends PackageDTO implements Serializable {
+public class TransportPackageCreateDTO extends TransportPackageDTO implements Serializable {
 
-    String location;
-    List<ClientOrderDTO> clientOrders;
+
+    long quantity;
 
     public TransportPackageCreateDTO() {
     }
 
-    public TransportPackageCreateDTO(long code, PackageType type, String material, long volume, String createdAt) {
+    public TransportPackageCreateDTO(long code, PackageType type, String material, long volume, String createdAt, long quantity) {
         super(code, type, material, volume, createdAt);
         this.clientOrders = new ArrayList<ClientOrderDTO>();
+        this.quantity = quantity;
     }
 
-    public String getLocation() {
-        return location;
+    public long getQuantity() {
+        return quantity;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public List<ClientOrderDTO> getClientOrders() {
-        return clientOrders;
-    }
-
-    public void setClientOrders(List<ClientOrderDTO> clientOrders) {
-        this.clientOrders = clientOrders;
+    public void setQuantity(long quantity) {
+        this.quantity = quantity;
     }
 }

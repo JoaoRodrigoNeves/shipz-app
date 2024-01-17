@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.TransportPackageCreateDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.TransportPackageDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.TransportPackageBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackage;
@@ -25,14 +26,16 @@ public class TransportPackageService {
     private TransportPackageBean transportPackageBean;
 
     private TransportPackageDTO transportPackageToDTO(TransportPackage transportPackage) {
-        return new TransportPackageDTO(
+        TransportPackageDTO transportPackageDTO = new TransportPackageDTO(
                 transportPackage.getCode(),
                 transportPackage.getType(),
                 transportPackage.getMaterial(),
                 transportPackage.getVolume(),
-                transportPackage.getLocation(),
                 transportPackage.getCreatedAt().toString()
         );
+        if (transportPackage.getLocation() != null)
+            transportPackageDTO.setLocation(transportPackageDTO.getLocation());
+        return transportPackageDTO;
     }
 
     private List<TransportPackageDTO> transportPackageToDTOs(List<TransportPackage> transportPackages) {
@@ -44,13 +47,14 @@ public class TransportPackageService {
     //TODO create a transport-package
     @POST
     @Path("/")
-    public Response create(TransportPackageDTO transportPackageDTO) throws MyEntityExistsException {
-        TransportPackage transportPackage = transportPackageBean.create(
-                transportPackageDTO.getMaterial(),
-                transportPackageDTO.getVolume(),
-                transportPackageDTO.getLocation()
-        );
-        return Response.status(Response.Status.OK).entity(transportPackageToDTO(transportPackage)).build();
+    public Response create(TransportPackageCreateDTO transportPackageCreateDTO) throws MyEntityExistsException {
+        for (int i = 0; i < transportPackageCreateDTO.getQuantity(); i++) {
+            TransportPackage transportPackage = transportPackageBean.create(
+                    transportPackageCreateDTO.getMaterial(),
+                    transportPackageCreateDTO.getVolume()
+            );
+        }
+        return Response.status(Response.Status.CREATED).build();
     }
 
     //TODO get transport-package details

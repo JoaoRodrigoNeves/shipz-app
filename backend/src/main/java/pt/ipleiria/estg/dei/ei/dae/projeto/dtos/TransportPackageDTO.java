@@ -17,9 +17,8 @@ public class TransportPackageDTO extends PackageDTO implements Serializable {
     public TransportPackageDTO() {
     }
 
-    public TransportPackageDTO(long code, PackageType type, String material, long volume, String location, String createdAt) {
+    public TransportPackageDTO(long code, PackageType type, String material, long volume, String createdAt) {
         super(code, type, material, volume, createdAt);
-        this.location = location;
         this.clientOrders = new ArrayList<ClientOrderDTO>();
     }
 

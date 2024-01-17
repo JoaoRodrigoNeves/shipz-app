@@ -49,6 +49,7 @@ public class ClientOrderBean {
             entityManager.persist(clientOrder);
             entityManager.flush();
             finalCostumer.addOrder(clientOrder);
+            long volumeTotal = 0;
 
             for (ProductOrderDTO product : products) {
                 ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, product.getCode());
@@ -58,6 +59,7 @@ public class ClientOrderBean {
                         .collect(Collectors.toList());
 
                 if (productsList.size() >= product.getQuantity()) {
+                    volumeTotal += productCatalog.getPrimaryPackageVolume() * product.getQuantity();
                     for (int i = 0; i < product.getQuantity(); i++) {
                         productsList.get(i).setClientOrder(clientOrder);
                         clientOrder.addProduct(productsList.get(i));
