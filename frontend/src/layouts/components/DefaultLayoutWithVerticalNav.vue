@@ -54,6 +54,11 @@ const upgradeBanner = computed(() => {
         to: '/products-list',
       }" v-if="user && user.role === 'FinalCostumer'" />
       <VerticalNavLink :item="{
+        title: 'Transporte',
+        icon: 'bi-box-seam',
+        to: '/transport-packages',
+      }" v-if="user && user.role === 'LogisticOperator'" />
+      <VerticalNavLink :item="{
         title: 'Catálogo',
         icon: 'mdi-list-box',
         to: '/product-catalogs',

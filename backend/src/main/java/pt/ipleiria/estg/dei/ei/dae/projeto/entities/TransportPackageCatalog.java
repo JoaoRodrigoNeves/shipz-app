@@ -3,6 +3,7 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,13 +27,19 @@ public class TransportPackageCatalog implements Serializable {
     @OrderBy("createdAt DESC")
     List<TransportPackage> transportPackages;
 
+    @ManyToOne
+    @JoinColumn(name = "logistic-operator_code")
+    LogisticOperator logisticOperator;
+
     public TransportPackageCatalog() {
 
     }
-    public TransportPackageCatalog(String name, String material, long volume) {
+    public TransportPackageCatalog(String name, String material, long volume, LogisticOperator logisticOperator) {
         this.name = name;
         this.material = material;
         this.volume = volume;
+        this.logisticOperator = logisticOperator;
+        this.transportPackages = new ArrayList<>();
     }
 
     public long getCode() {
@@ -81,6 +88,14 @@ public class TransportPackageCatalog implements Serializable {
 
     public void removeTransportPackage(TransportPackage transportPackage){
         this.transportPackages.remove(transportPackage);
+    }
+
+    public LogisticOperator getLogisticOperator() {
+        return logisticOperator;
+    }
+
+    public void setLogisticOperator(LogisticOperator logisticOperator) {
+        this.logisticOperator = logisticOperator;
     }
 
     @Override

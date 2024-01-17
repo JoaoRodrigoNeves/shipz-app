@@ -3,6 +3,8 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.ejbs;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.hibernate.Hibernate;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.LogisticOperator;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackageCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.ListNotEmptyException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
@@ -14,8 +16,11 @@ public class TransportPackageCatalogBean {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public TransportPackageCatalog create(String name, String material, long volume) throws MyEntityExistsException {
-        TransportPackageCatalog transportPackageCatalog = new TransportPackageCatalog(name, material, volume);
+    public TransportPackageCatalog create(String name, String material, long volume, String logisticOperatorUsername) throws MyEntityExistsException, MyEntityNotFoundException {
+        LogisticOperator logisticOperator = entityManager.find(LogisticOperator.class, logisticOperatorUsername);
+        if (logisticOperator == null)
+            throw new MyEntityNotFoundException("Logistic Operator with username: " + logisticOperatorUsername + " not found");
+        TransportPackageCatalog transportPackageCatalog = new TransportPackageCatalog(name, material, volume, logisticOperator);
         entityManager.persist(transportPackageCatalog);
         return transportPackageCatalog;
     }
@@ -24,6 +29,7 @@ public class TransportPackageCatalogBean {
         TransportPackageCatalog transportPackageCatalog = entityManager.find(TransportPackageCatalog.class, code);
         if (transportPackageCatalog == null)
             throw new MyEntityNotFoundException("Transport Package Catalog with code: " + code + " not found");
+        Hibernate.initialize(transportPackageCatalog.getTransportPackages());
         return transportPackageCatalog;
     }
 

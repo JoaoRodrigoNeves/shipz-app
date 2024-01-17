@@ -5,7 +5,9 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.TransportPackageCatalogDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.TransportPackageDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.TransportPackageCatalogBean;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackage;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackageCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.ListNotEmptyException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
@@ -22,22 +24,54 @@ public class TransportPackageCatalogService {
     private TransportPackageCatalogBean transportPackageCatalogBean;
 
     private TransportPackageCatalogDTO toDTO(TransportPackageCatalog transportPackageCatalog) {
-        return new TransportPackageCatalogDTO(
+        TransportPackageCatalogDTO transportPackageCatalogDTO = new TransportPackageCatalogDTO(
                 transportPackageCatalog.getCode(),
                 transportPackageCatalog.getName(),
                 transportPackageCatalog.getMaterial(),
-                transportPackageCatalog.getVolume());
+                transportPackageCatalog.getVolume(),
+                transportPackageCatalog.getLogisticOperator().getUsername());
+
+        transportPackageCatalogDTO.setTransportPackageDTOList(transportPackagesToDTOs(transportPackageCatalog.getTransportPackages()));
+
+        return transportPackageCatalogDTO;
     }
 
     private List<TransportPackageCatalogDTO> toDTOs(List<TransportPackageCatalog> transportPackageCatalog) {
         return transportPackageCatalog.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    private TransportPackageCatalogDTO toNoPackageDTO(TransportPackageCatalog transportPackageCatalog) {
+        return new TransportPackageCatalogDTO(
+                transportPackageCatalog.getCode(),
+                transportPackageCatalog.getName(),
+                transportPackageCatalog.getMaterial(),
+                transportPackageCatalog.getVolume(),
+                transportPackageCatalog.getLogisticOperator().getUsername());
+    }
+
+    private List<TransportPackageCatalogDTO> toNoPackageDTOs(List<TransportPackageCatalog> transportPackageCatalog) {
+        return transportPackageCatalog.stream().map(this::toNoPackageDTO).collect(Collectors.toList());
+    }
+
+    private TransportPackageDTO transportPackagesToDTO(TransportPackage transportPackage) {
+        return new TransportPackageDTO(
+                transportPackage.getCode(),
+                transportPackage.getType(),
+                transportPackage.getMaterial(),
+                transportPackage.getVolume(),
+                transportPackage.getCreatedAt().toString()
+        );
+
+    }
+    private List<TransportPackageDTO> transportPackagesToDTOs(List<TransportPackage> transportPackages) {
+        return transportPackages.stream().map(this::transportPackagesToDTO).collect(Collectors.toList());
+    }
+
     //TODO create transport Package Catalog
     @POST
     @Path("/")
-    public Response create(TransportPackageCatalogDTO transportPackageCatalogDTO) throws MyEntityExistsException {
-        TransportPackageCatalog transportPackageCatalog = transportPackageCatalogBean.create(transportPackageCatalogDTO.getName(), transportPackageCatalogDTO.getMaterial(), transportPackageCatalogDTO.getVolume());
+    public Response create(TransportPackageCatalogDTO transportPackageCatalogDTO) throws MyEntityExistsException, MyEntityNotFoundException {
+        TransportPackageCatalog transportPackageCatalog = transportPackageCatalogBean.create(transportPackageCatalogDTO.getName(), transportPackageCatalogDTO.getMaterial(), transportPackageCatalogDTO.getVolume(), transportPackageCatalogDTO.getLogisticOperatorUsername());
         return Response.status(Response.Status.CREATED).entity(toDTO(transportPackageCatalog)).build();
     }
 
@@ -60,6 +94,6 @@ public class TransportPackageCatalogService {
     @GET
     @Path("/")
     public Response getAll() {
-        return Response.status(Response.Status.OK).entity(toDTOs(transportPackageCatalogBean.getAll())).build();
+        return Response.status(Response.Status.OK).entity(toNoPackageDTOs(transportPackageCatalogBean.getAll())).build();
     }
 }
