@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useToast } from "primevue/usetoast";
+import { ref, onMounted } from 'vue'
+import { useToast } from "primevue/usetoast"
 
 const axios = inject('axios')
 const toast = useToast();
@@ -11,16 +11,16 @@ const logisticOperatorSelected = ref(null);
 const logisticOperators = ref([]);
 
 const loadProductCatalogs = async () => {
-  isLoading.value = true;
+  isLoading.value = true
 
   await axios.get('product-catalogs/available').then(response => {
-    isLoading.value = false;
+    isLoading.value = false
     productCatalogs.value = response.data
   }).catch(
     error => {
-      isLoading.value = false;
+      isLoading.value = false
       console.error(error)
-    }
+    },
   )
 }
 
@@ -49,7 +49,7 @@ const createOrder = async () => {
   }
   await axios.post('orders', payload).then(response => {
     if (response.status == 201) {
-      toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Encomenda criado com sucesso', life: 3000, });
+      toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Encomenda criado com sucesso', life: 3000 })
       resetProducts()
       loadProductCatalogs()
     }
@@ -57,20 +57,20 @@ const createOrder = async () => {
   }).catch(
     error => {
       console.log(error)
-      toast.add({ severity: 'error', summary: 'Erro', detail: error.response.data, life: 3000 });
+      toast.add({ severity: 'error', summary: 'Erro', detail: error.response.data, life: 3000 })
       isLoading.value = false
-    }
+    },
   )
 }
 
-const checkIfProductAreSelected = (catalogCode) => {
+const checkIfProductAreSelected = catalogCode => {
   return productCatalogsSelected.value.find(e => e.code == catalogCode) != null
 }
 
 
-const addProduct = (catalog) => {
+const addProduct = catalog => {
   if (productCatalogsSelected.value.find(e => e.code == catalog.code) == null) {
-    catalog.quantity = 1;
+    catalog.quantity = 1
     productCatalogsSelected.value.push(catalog)
   } else {
     productCatalogsSelected.value.splice(productCatalogsSelected.value.findIndex(e => e.code == catalog.code), 1)
@@ -87,6 +87,7 @@ onMounted(async () => {
   await loadLogisticOperators();
 })
 </script>
+
 <template>
   <div class="product-page-container">
     <div class="products-container">
@@ -94,13 +95,23 @@ onMounted(async () => {
         <div class="title">
           Produtos
         </div>
-
       </div>
-      <div class="products-list" v-if="productCatalogs.length > 0">
-        <div class="product-item" v-for="productCatalog in productCatalogs" @click="addProduct(productCatalog)"
-          :class="{ 'checked': checkIfProductAreSelected(productCatalog.code) }">
-          <VIcon icon="mdi-check-circle" color="rgba(0, 128, 11, 1)" class="icon-check"
-            v-if="checkIfProductAreSelected(productCatalog.code)"></VIcon>
+      <div
+        v-if="productCatalogs.length > 0"
+        class="products-list"
+      >
+        <div
+          v-for="productCatalog in productCatalogs"
+          class="product-item"
+          :class="{ 'checked': checkIfProductAreSelected(productCatalog.code) }"
+          @click="addProduct(productCatalog)"
+        >
+          <VIcon
+            v-if="checkIfProductAreSelected(productCatalog.code)"
+            icon="mdi-check-circle"
+            color="rgba(0, 128, 11, 1)"
+            class="icon-check"
+          />
           <div class="product-header">
             <span>{{ productCatalog.category }}</span>
             <span>{{ productCatalog.code }}</span>
@@ -116,12 +127,12 @@ onMounted(async () => {
             </span>
           </div>
         </div>
-        <div class="product-item-hidden"></div>
-        <div class="product-item-hidden"></div>
-        <div class="product-item-hidden"></div>
-        <div class="product-item-hidden"></div>
-        <div class="product-item-hidden"></div>
-        <div class="product-item-hidden"></div>
+        <div class="product-item-hidden" />
+        <div class="product-item-hidden" />
+        <div class="product-item-hidden" />
+        <div class="product-item-hidden" />
+        <div class="product-item-hidden" />
+        <div class="product-item-hidden" />
       </div>
       <div v-else>
         <div class="no-products-container">
@@ -129,18 +140,28 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="selected-prodcuts-container" v-if="productCatalogsSelected.length > 0">
+    <div
+      v-if="productCatalogsSelected.length > 0"
+      class="selected-prodcuts-container"
+    >
       <div class="selected-product-list">
         <div class="selected-product-item selected-product-item-header">
           <span>Produto</span>
           <span>Quantidade</span>
         </div>
-        <div class="selected-product-item" v-for="productCatalog in productCatalogsSelected">
+        <div
+          v-for="productCatalog in productCatalogsSelected"
+          class="selected-product-item"
+        >
           <span>{{ productCatalog.name }}</span>
 
           <div class="selected-product-quantity-action">
             <div style="width: 100px;">
-              <VTextField type="number" v-model="productCatalog.quantity" class="product-quantity" />
+              <VTextField
+                v-model="productCatalog.quantity"
+                type="number"
+                class="product-quantity"
+              />
             </div>
             <span class="product-action">
               <VIcon @click="addProduct(productCatalog)">
@@ -150,12 +171,17 @@ onMounted(async () => {
           </div>
         </div>
         <div style="margin-top: 12px;">
-          <VAutocomplete v-model="logisticOperatorSelected" label="Operadores Logisticos"
+          <VAutocomplete v-model="logisticOperatorSelected" label="Operador Logistico"
               placeholder="Selecionar Operador Logistico" :items="logisticOperators" item-title="name"
               item-value="username" />
         </div>
         <div class="product-submit">
-          <VBtn color="secondary" variant="tonal" type="reset" @click.prevent="resetProducts">
+          <VBtn
+            color="secondary"
+            variant="tonal"
+            type="reset"
+            @click.prevent="resetProducts"
+          >
             Repor
           </VBtn>
           <VBtn rel="noopener noreferrer" color="primary" :disabled="!logisticOperatorSelected || productCatalogsSelected && productCatalogsSelected.length == 0" @click="createOrder">

@@ -100,7 +100,7 @@ public class ProductPackageService {
         );
     }
 
-    private List<SensorDTO> sensorToDTOs(List<Sensor> sensors){
+    private List<SensorDTO> sensorToDTOs(List<Sensor> sensors) {
         return sensors.stream().map(this::sensorToDTO).collect(Collectors.toList());
     }
 
@@ -125,21 +125,21 @@ public class ProductPackageService {
     }
 
     //TODO update product-package
-    @PUT
+    /*@PUT
     @Path("/")
     public Response update(ProductPackageDTO productPackageDTO) throws MyEntityNotFoundException {
         productPackageBean.update(productPackageDTO.getCode(), productPackageDTO.getType(), productPackageDTO.getMaterial());
         ProductPackage productPackage = productPackageBean.find(productPackageDTO.getCode());
         return Response.status(Response.Status.OK).entity(productPackageToDTONoProducts(productPackage)).build();
-    }
+    }*/
 
     //TODO delete product-package
-    @DELETE
+    /*@DELETE
     @Path("{code}")
     public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException {
         ProductPackage productPackage = productPackageBean.delete(code);
         return Response.status(Response.Status.OK).entity(productPackageToDTONoProducts(productPackage)).build();
-    }
+    }*/
 
     //TODO get all product-packages
     @GET

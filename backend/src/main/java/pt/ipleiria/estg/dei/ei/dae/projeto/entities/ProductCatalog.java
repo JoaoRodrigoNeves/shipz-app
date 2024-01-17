@@ -24,16 +24,25 @@ public class ProductCatalog extends Versionable implements Serializable {
     long code;
     @NotNull
     String name;
+    @Column(name = "catalog_area")
     String catalogArea;
     String category;
     String description;
+    @Column(name = "max_secundary_package")
     Integer maxSecondaryPackage;
+    @Column(name = "max_tertiary_package")
     Integer maxTertiaryPackage;
+    @Column(name = "primary_package_volume")
     long primaryPackageVolume;
+    @Column(name = "primary_package_material")
     String primaryPackageMaterial;
+    @Column(name = "secondary_package_material")
     String secondaryPackageMaterial;
+    @Column(name = "tertiary_package_material")
     String tertiaryPackageMaterial;
+    @Column(name = "active_product_package_secondary_code")
     Long activeProductPackageSecondaryCode;
+    @Column(name = "active_product_package_primary_code")
     Long activeProductPackageTertiaryCode;
 
     @OneToMany(mappedBy = "productCatalog", cascade = CascadeType.REMOVE)

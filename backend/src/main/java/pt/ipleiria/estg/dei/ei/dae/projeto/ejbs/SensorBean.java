@@ -25,7 +25,7 @@ public class SensorBean {
     private EntityManager entityManager;
 
     //TODO CRUD operations for Sensor entity
-    public Sensor create(String type) throws MyEntityExistsException {
+    public Sensor create(String type) {
         SensorType sensorType = SensorType.fromString(type);
         Sensor sensor = new Sensor(sensorType);
         entityManager.persist(sensor);
