@@ -49,6 +49,10 @@ const loadProductCatalogProducts = async () => {
 }
 
 const createProduct = (async () => {
+    if(createQuantity.value <= 0 || createQuantity.value > 100){
+        toast.add({ severity: 'error', summary: 'Erro', detail: 'A quantidade de produtos a serem criados tem de ser entre 1 e 100 unidades', life: 3000 });
+        return;
+    }
     isLoading.value = true;
     var payload = {
         productCatalogCode: productCatalog.value.code,

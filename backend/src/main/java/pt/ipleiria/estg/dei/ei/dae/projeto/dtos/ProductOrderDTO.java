@@ -17,10 +17,12 @@ public class ProductOrderDTO implements Serializable {
     String primaryPackageMaterial;
     String secondaryPackageMaterial;
     String tertiaryPackageMaterial;
+    long primaryPackageVolume;
+
     public ProductOrderDTO() {
     }
 
-    public ProductOrderDTO(long code, long quantity, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial) {
+    public ProductOrderDTO(long code, long quantity, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial, long primaryPackageVolume) {
         this.code = code;
         this.quantity = quantity;
         this.name = name;
@@ -33,6 +35,7 @@ public class ProductOrderDTO implements Serializable {
         this.primaryPackageMaterial = primaryPackageMaterial;
         this.secondaryPackageMaterial = secondaryPackageMaterial;
         this.tertiaryPackageMaterial = tertiaryPackageMaterial;
+        this.primaryPackageVolume = primaryPackageVolume;
     }
 
     public long getCode() {
@@ -129,5 +132,13 @@ public class ProductOrderDTO implements Serializable {
 
     public void setTertiaryPackageMaterial(String tertiaryPackageMaterial) {
         this.tertiaryPackageMaterial = tertiaryPackageMaterial;
+    }
+
+    public long getPrimaryPackageVolume() {
+        return primaryPackageVolume;
+    }
+
+    public void setPrimaryPackageVolume(long primaryPackageVolume) {
+        this.primaryPackageVolume = primaryPackageVolume;
     }
 }
