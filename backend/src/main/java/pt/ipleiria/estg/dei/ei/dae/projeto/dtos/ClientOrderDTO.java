@@ -9,7 +9,9 @@ import java.util.List;
 public class ClientOrderDTO implements Serializable {
     private long code;
     private String logisticOperator;
+    private String logisticOperatorName;
     private String finalCostumer;
+    private String finalCostumerName;
     private String location;
     private List<ProductDTO> productsDTO;
     private String status;
@@ -43,12 +45,28 @@ public class ClientOrderDTO implements Serializable {
         this.logisticOperator = logisticOperator;
     }
 
+    public String getLogisticOperatorName() {
+        return logisticOperatorName;
+    }
+
+    public void setLogisticOperatorName(String logisticOperatorName) {
+        this.logisticOperatorName = logisticOperatorName;
+    }
+
     public String getFinalCostumer() {
         return finalCostumer;
     }
 
     public void setFinalCostumer(String finalCostumer) {
         this.finalCostumer = finalCostumer;
+    }
+
+    public String getFinalCostumerName() {
+        return finalCostumerName;
+    }
+
+    public void setFinalCostumerName(String finalCostumerName) {
+        this.finalCostumerName = finalCostumerName;
     }
 
     public List<ProductDTO> getProductsDTO() {

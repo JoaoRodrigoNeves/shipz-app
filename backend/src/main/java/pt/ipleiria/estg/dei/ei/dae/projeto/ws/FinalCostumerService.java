@@ -81,8 +81,11 @@ public class FinalCostumerService {
                 clientOrder.getProductQuantity(),
                 clientOrder.getStatus().getOrderStatus()
         );
-        clientOrderListDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
-        clientOrderListDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
+        if (clientOrder.getFinalCostumer() != null)
+            clientOrderListDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
+        if (clientOrder.getLogisticOperator() != null) {
+            clientOrderListDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
+        }
         return clientOrderListDTO;
     }
 

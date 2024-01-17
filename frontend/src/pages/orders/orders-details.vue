@@ -83,7 +83,7 @@ onMounted(async () => {
               Cliente
             </label>
             <span>
-              {{ order.finalCostumer }}
+              {{ order.finalCostumerName }}
             </span>
           </div>
           <div class="catalog-item">
@@ -91,7 +91,7 @@ onMounted(async () => {
               Operador Logístico
             </label>
             <span>
-              {{ order.logisticOperator }}
+              {{ order.logisticOperatorName }}
             </span>
           </div>
           <div class="catalog-item">
@@ -135,31 +135,17 @@ onMounted(async () => {
             </span>
           </div>
         </div>
-        <div
-          v-if="dropdown"
-          class="w-50 my-5"
-        >
-          <VAutocomplete
-            v-model="order.location"
-            label="Localização"
-            placeholder="Selecionar Localização"
-            :items="cities"
-            @update:model-value="changeLocation"
-          />
+        <div v-if="dropdown" class="w-50 my-5">
+          <VAutocomplete v-model="order.location" label="Localização" placeholder="Selecionar Localização" :items="cities"
+            @update:model-value="changeLocation" />
         </div>
         <div class="products-actions">
           <h3>Produtos</h3>
         </div>
         <div v-if="products && products.length > 0 && !isLoading">
-          <ProductTable
-            v-if="!isLoading"
-            :products="products"
-          />
+          <ProductTable v-if="!isLoading" :products="products" />
         </div>
-        <div
-          v-else
-          class="no-products"
-        >
+        <div v-else class="no-products">
           Não tem produtos associados a esta encomenda
         </div>
       </VCard>

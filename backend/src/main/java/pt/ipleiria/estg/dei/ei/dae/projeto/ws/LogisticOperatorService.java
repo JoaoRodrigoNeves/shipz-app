@@ -59,6 +59,7 @@ public class LogisticOperatorService {
             clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
         if(clientOrder.getLogisticOperator() != null){
             clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
+            clientOrderDTO.setLogisticOperatorName(clientOrder.getLogisticOperator().getName());
         }
         return clientOrderDTO;
     }

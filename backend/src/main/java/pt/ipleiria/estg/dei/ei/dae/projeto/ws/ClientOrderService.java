@@ -46,10 +46,14 @@ public class ClientOrderService {
         clientOrderDTO.setProductsDTO(productToDTOs(clientOrder.getProducts()));
         if (clientOrder.getDeliveredAt() != null)
             clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
-        if (clientOrder.getLogisticOperator() != null)
+        if (clientOrder.getLogisticOperator() != null) {
             clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
-        if (clientOrder.getFinalCostumer() != null)
+            clientOrderDTO.setLogisticOperatorName(clientOrder.getLogisticOperator().getName());
+        }
+        if (clientOrder.getFinalCostumer() != null) {
             clientOrderDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
+            clientOrderDTO.setFinalCostumerName(clientOrder.getFinalCostumer().getName());
+        }
         return clientOrderDTO;
     }
 
@@ -90,6 +94,7 @@ public class ClientOrderService {
     private List<ProductDTO> productToDTOs(List<Product> products) {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
+
     private ObservationPackageDTO observationPackageDTO(long packageCode, String packageType, List<ObservationDetailDTO> observationDetailDTO) {
         return new ObservationPackageDTO(
                 packageCode,
@@ -110,7 +115,6 @@ public class ClientOrderService {
     private List<ObservationDetailDTO> observationDTOs(List<Observation> observations) {
         return observations.stream().map(this::observationDTO).collect(Collectors.toList());
     }
-
 
 
     @POST
@@ -163,29 +167,29 @@ public class ClientOrderService {
 
         List<ObservationPackageDTO> observationPackageDTO = new ArrayList<>();
 
-        for (Product product: clientOrder.getProducts()) {
-            for (ProductPackage productPackage: product.getProductPackages()) {
-                if(!productPackage.getSensors().isEmpty()){
+        for (Product product : clientOrder.getProducts()) {
+            for (ProductPackage productPackage : product.getProductPackages()) {
+                if (!productPackage.getSensors().isEmpty()) {
                     List<ObservationDetailDTO> observationSensorDetailDTOS = new ArrayList<>();
-                    for (Sensor sensor: productPackage.getSensors()) {
+                    for (Sensor sensor : productPackage.getSensors()) {
                         observationSensorDetailDTOS.addAll(observationDTOs(sensorBean.getFilteredObservations(sensor.getCode(), clientOrder.getCreatedAt(), clientOrder.getDeliveredAt())));
                     }
-                    observationPackageDTO.add(observationPackageDTO(productPackage.getCode(),productPackage.getType().getPackageType(), observationSensorDetailDTOS));
+                    observationPackageDTO.add(observationPackageDTO(productPackage.getCode(), productPackage.getType().getPackageType(), observationSensorDetailDTOS));
                 }
             }
         }
 
-        for (TransportPackage transportPackage: clientOrder.getTransportPackages()) {
-            if(!transportPackage.getSensors().isEmpty()){
+        for (TransportPackage transportPackage : clientOrder.getTransportPackages()) {
+            if (!transportPackage.getSensors().isEmpty()) {
                 List<ObservationDetailDTO> observationSensorDetailDTOS = new ArrayList<>();
-                for (Sensor sensor: transportPackage.getSensors()) {
+                for (Sensor sensor : transportPackage.getSensors()) {
                     observationSensorDetailDTOS.addAll(observationDTOs(sensorBean.getFilteredObservations(sensor.getCode(), clientOrder.getCreatedAt(), clientOrder.getDeliveredAt())));
                 }
-                observationPackageDTO.add(observationPackageDTO(transportPackage.getCode(),transportPackage.getType().getPackageType(), observationSensorDetailDTOS));
+                observationPackageDTO.add(observationPackageDTO(transportPackage.getCode(), transportPackage.getType().getPackageType(), observationSensorDetailDTOS));
             }
         }
 
-        if(observationPackageDTO.isEmpty()){
+        if (observationPackageDTO.isEmpty()) {
             throw new MyEntityNotFoundException("Sem observações");
         }
 

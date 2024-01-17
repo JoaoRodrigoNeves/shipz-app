@@ -24,15 +24,15 @@ public class ClientOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "client_order_id_seq")
     @SequenceGenerator(name = "client_order_id_seq", sequenceName = "client_order_id_seq", initialValue = 100000)
     private long code;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "final_costumer_username")
     private FinalCostumer finalCostumer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "logistic_operator_username")
     private LogisticOperator logisticOperator;
 
-    @OneToMany(mappedBy = "clientOrder", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "clientOrder", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Product> products;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "clientOrders")
