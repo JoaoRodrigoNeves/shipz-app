@@ -11,8 +11,7 @@ const axios = inject('axios')
 const router = useRouter()
 const isLoading = ref(false)
 const order = ref([])
-const sensors = ref([])
-const selectedSensor = ref(null)
+
 const products = ref([])
 const transportPackages = ref([])
 const cities = ref([])
@@ -77,42 +76,6 @@ const loadCities = async () => {
   }
 }
 
-const loadSensors = async () => {
-  isLoading.value = true
-  try {
-    await axios.get('sensors').then(response => {
-      
-      const allSensors = response.data;
-
-      const filteredSensors = allSensors.filter(sensor => !sensor.inUse);
-
-      sensors.value = filteredSensors;
-      isLoading.value = false;
-    })
-
-  } catch (error) {
-    isLoading.value = false
-    console.log(error)
-  }
-}
-
-const addSensorToPackage = async (selectedSensor) => {
-  isLoading.value = true
-  let payload = {
-    code: 100017,
-  }
-  try {
-    await axios.post('sensors/' + selectedSensor + '/packages', payload).then(response => {
-      toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Sensor adicionado com sucesso', life: 3000 })
-    })
-    await axios.patch('sensors/' + selectedSensor + '/status')
-    isLoading.value = false
-    await loadSensors()
-  } catch (error) {
-    isLoading.value = false
-    console.log(error)
-  }
-}
 
 const changeLocation = async () => {
   isLoading.value = true
@@ -136,7 +99,6 @@ onMounted(async () => {
   await loadTransportPackages()
   await loadProducts()
   await loadCities()
-  await loadSensors()
 })
 </script>
 
@@ -146,31 +108,6 @@ onMounted(async () => {
       <VCard style="padding: 20px;">
         <div class="product-catalog-details-header">
           <h2>Encomenda nº{{ order.code }}</h2>
-          <VDialog width="500">
-            <template v-slot:activator="{ props }">
-              <v-btn v-bind="props" text="Adicionar Sensores">
-                <VIcon size="20" icon="bx-plus" />
-                <VTooltip activator="parent" location="top">
-                  <span>Adicionar sensores</span>
-                </VTooltip>
-              </v-btn>
-            </template>
-
-            <template v-slot:default="{ isActive }">
-              <v-card title="Adicionar Sensores">
-                <v-card-text>
-                  <VAutocomplete v-model="selectedSensor" label="Tipo de sensor" placeholder="Selecionar Sensor"
-                    :items="sensors" item-title="type" item-value="code"/>
-                </v-card-text>
-
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-
-                  <v-btn text="Adicionar" @click="addSensorToPackage(selectedSensor); isActive.value = false;" ></v-btn>
-                </v-card-actions>
-              </v-card>
-            </template>
-          </VDialog>
         </div>
 
         <div class="product-catalog-details">
@@ -244,7 +181,7 @@ onMounted(async () => {
             </VExpansionPanelTitle>
             <VExpansionPanelText>
               <div v-if="transportPackages && transportPackages.length > 0 && !isLoading">
-                <TransportPackageTable v-if="!isLoading" :transport-packages="transportPackages" />
+                <TransportPackageTable v-if="!isLoading" :transport-packages="transportPackages" :order="order"/>
               </div>
               <div v-else class="no-data">
                 Não tem embalagens de transporte associados a esta encomenda

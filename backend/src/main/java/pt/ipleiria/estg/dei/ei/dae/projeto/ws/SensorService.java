@@ -117,9 +117,9 @@ public class SensorService {
 
     //TODO remove sensor from package
     @DELETE
-    @Path("{code}/packages")
-    public Response removePackage(@PathParam("code") long code, PackageDTO packageDTO) throws MyEntityNotFoundException, MyEntityExistsException {
-        sensorBean.removeFromPackage(code, packageDTO.getCode());
+    @Path("{code}/packages/{packageCode}")
+    public Response removePackage(@PathParam("code") long code, @PathParam("packageCode") long packageCode) throws MyEntityNotFoundException, MyEntityExistsException {
+        sensorBean.removeFromPackage(code, packageCode);
         return Response.status(Response.Status.OK).build();
     }
 

@@ -226,6 +226,14 @@ public class OrderService {
         return Response.status(Response.Status.OK).entity(productToDTOs(clientOrder.getProducts())).build();
     }
 
+    //TODO get order sensors
+    @GET
+    @Path("/{code}/sensors")
+    public Response getSensors(@PathParam("code") long code) throws MyEntityNotFoundException {
+        Order clientOrder = orderBean.getProducts(code);
+        return Response.status(Response.Status.OK).entity(productToDTOs(clientOrder.getProducts())).build();
+    }
+
     /*@GET
     @Path("/test")
     public Response getCurrentWeather() {
