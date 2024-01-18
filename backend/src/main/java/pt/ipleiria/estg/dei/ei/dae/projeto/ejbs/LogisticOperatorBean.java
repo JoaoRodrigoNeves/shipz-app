@@ -56,14 +56,6 @@ public class LogisticOperatorBean {
         entityManager.merge(logisticOperator);
     }
 
-    public void delete(String username) throws MyEntityNotFoundException{
-        LogisticOperator logisticOperator = entityManager.find(LogisticOperator.class, username);
-        if (logisticOperator == null) {
-            throw new MyEntityNotFoundException("LogisticOperator with username: " + username + " doesn't exist");
-        }
-        entityManager.remove(logisticOperator);
-    }
-
     public List<LogisticOperator> getAll() {
         return entityManager.createNamedQuery("getAllLogisticOperators", LogisticOperator.class).getResultList();
     }

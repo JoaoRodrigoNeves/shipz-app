@@ -70,18 +70,6 @@ public class FinalCostumerBean {
         entityManager.merge(finalCostumer);
     }
 
-    public boolean delete(String username) throws MyEntityNotFoundException {
-        FinalCostumer finalCostumer = entityManager.find(FinalCostumer.class, username);
-
-        if (finalCostumer != null) {
-            throw new MyEntityNotFoundException("FinalCostumer with username '" + username + "' not found");
-        }
-        entityManager.remove(finalCostumer);
-
-        FinalCostumer finalCostumerFind = entityManager.find(FinalCostumer.class, username);
-        return finalCostumerFind != null;
-    }
-
     //TODO: get all
     public List<FinalCostumer> getAll() {
         return entityManager.createNamedQuery("getAllFinalCostumers", FinalCostumer.class).getResultList();
