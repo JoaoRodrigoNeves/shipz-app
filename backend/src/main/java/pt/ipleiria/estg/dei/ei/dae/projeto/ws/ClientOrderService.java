@@ -14,11 +14,9 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ClientOrderBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ObservationBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.SensorBean;
+import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.TransportPackageCatalogBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.*;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.NoStockException;
+import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +29,10 @@ import java.util.stream.Collectors;
 public class ClientOrderService {
     @EJB
     private ClientOrderBean clientOrderBean;
-
     @EJB
     private ObservationBean observationBean;
+    @EJB
+    private TransportPackageCatalogBean transportPackageCatalogBean;
     @EJB
     private SensorBean sensorBean;
 
@@ -120,11 +119,13 @@ public class ClientOrderService {
         clientOrderBean.create(
                 clientOrderDTO.getFinalCostumer(),
                 clientOrderDTO.getLogisticOperator(),
-                clientOrderDTO.getProducts());
+                clientOrderDTO.getProducts(),
+                transportPackageCatalogBean.getAll()
+        );
         return Response.status(Response.Status.CREATED).build();
     }
 
-    @GET // means: to call this endpoint, we need to use the HTTP GET method
+    @GET
     @Path("/{code}") // means: the relative url path is “/api/orders/{code}”
     public Response getDetails(@PathParam("code") long code) throws MyEntityExistsException, MyEntityNotFoundException {
         var clientOrder = clientOrderBean.getProducts(code);

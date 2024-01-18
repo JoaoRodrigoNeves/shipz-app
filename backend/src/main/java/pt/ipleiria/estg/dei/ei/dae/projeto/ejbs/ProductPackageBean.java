@@ -22,11 +22,6 @@ public class ProductPackageBean {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public boolean exists(long code) {
-        ProductPackage productPackage = entityManager.find(ProductPackage.class, code);
-        return productPackage != null;
-    }
-
     //TODO CRUD operations for ProductPackage entity
 
     public ProductPackage create(PackageType type, String material, Long volume) {
@@ -42,19 +37,19 @@ public class ProductPackageBean {
         return productPackage;
     }
 
-    public void update(long code, PackageType type, String material) throws MyEntityNotFoundException {
+    /*public void update(long code, PackageType type, String material) throws MyEntityNotFoundException {
         ProductPackage productPackage = this.find(code);
         productPackage.setType(type);
         productPackage.setMaterial(material);
         entityManager.merge(productPackage);
-    }
+    }*/
 
-    public ProductPackage delete(long code) throws MyEntityNotFoundException {
+    /*public ProductPackage delete(long code) throws MyEntityNotFoundException {
         ProductPackage productPackage = this.find(code);
         entityManager.remove(productPackage);
         productPackage.getProducts().forEach(product -> product.removeProductPackage(productPackage));
         return productPackage;
-    }
+    }*/
 
     //TODO get all productPackages
     public List<ProductPackage> getAll() {

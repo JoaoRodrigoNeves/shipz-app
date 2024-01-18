@@ -17,8 +17,8 @@ import java.util.Objects;
 @Table(name = "transport_package_catalogs", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class TransportPackageCatalog implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "package_id_seq")
-    @SequenceGenerator(name = "package_id_seq", sequenceName = "package_id_seq", initialValue = 100000)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "transport_package_catalog_id_seq")
+    @SequenceGenerator(name = "transport_package_catalog_id_seq", sequenceName = "transport_package_catalog_id_seq", initialValue = 100000)
     long code;
     String name;
     String material;
@@ -28,7 +28,7 @@ public class TransportPackageCatalog implements Serializable {
     List<TransportPackage> transportPackages;
 
     @ManyToOne
-    @JoinColumn(name = "logistic-operator_code")
+    @JoinColumn(name = "logistic_operator_code")
     LogisticOperator logisticOperator;
 
     public TransportPackageCatalog() {
