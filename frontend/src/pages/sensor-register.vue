@@ -2,11 +2,14 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue';
 import { useToast } from "primevue/usetoast";
+import FileUpload from 'primevue/fileupload';
 
 const axios = inject('axios')
 const toast = useToast();
 const isLoading = ref(false);
 const sensors = ref([]);
+const inputFile = ref(null)
+
 const sensorForm = ref({
     sensorCode: null,
     value: null
@@ -51,7 +54,36 @@ const reset = () => {
         value: null
     }
 }
+const uploadFile = () => {
+    inputFile.value.click();
+};
 
+const handleFileChange = (event) => {
+    const files = event.target.files;
+    if (files.length > 0) {
+        const file = files[0];
+        onUpload(file);
+        inputFile.value.value = ''
+    }
+
+};
+
+const onUpload = async (file) => {
+    isLoading.value = true
+    const formData = new FormData();
+    formData.append('file', file);
+    await axios.post('observations/upload-csv', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    }).then(response => {
+        toast.add({ severity: 'success', summary: 'Sucesso', detail: response.data, life: 3000 });
+        isLoading.value = false
+    }).catch(error => {
+        isLoading.value = false
+        console.error(error)
+    })
+};
 
 onMounted(async () => {
     await loadSensors();
@@ -76,9 +108,9 @@ onMounted(async () => {
             <div>
                 <VForm class="input-form">
                     <VAutocomplete v-model="sensorForm.sensorCode" :items="sensors" label="Sensor"
-                        placeholder="Selecionar Sensor" item-title="sensorTypeName" item-value="code">
+                        placeholder="Selecionar Sensor" item-title="type" item-value="code">
                         <template v-slot:item="{ props, item }">
-                            <VListItem v-bind="props" :title="item.raw.sensorTypeName" :subtitle="item.raw.code">
+                            <VListItem v-bind="props" :title="item.raw.type" :subtitle="item.raw.code">
                             </VListItem>
                         </template>
                     </VAutocomplete>
@@ -93,7 +125,15 @@ onMounted(async () => {
                             === "PRESSURE" ? 'bar' : '%' }}</span>
                 </VForm>
             </div>
-
+            <div>
+                <div class="file-upload-header">
+                    Leitura através de ficheiro CSV
+                </div>
+                <input type="file" ref="inputFile" accept=".csv" style="display: none" @change="handleFileChange" />
+                <VBtn rel="noopener noreferrer" color="primary" @click="uploadFile">
+                    Submeter
+                </VBtn>
+            </div>
         </div>
     </VCard>
 </template>
@@ -179,6 +219,10 @@ onMounted(async () => {
 
 .sensors-container .sensors-list .sensor-item .sensor-footer {
     text-align: center;
+}
+
+.sensors-container .file-upload-header {
+    margin: 16px 0px 16px 0px;
 }
 </style>
   
