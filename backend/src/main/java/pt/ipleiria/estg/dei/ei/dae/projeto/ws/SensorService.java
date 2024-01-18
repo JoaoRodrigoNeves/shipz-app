@@ -1,5 +1,6 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.ws;
 
+import com.opencsv.CSVReader;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -15,6 +16,10 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationExcep
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -149,4 +154,6 @@ public class SensorService {
         Sensor sensor = sensorBean.changeStatus(code);
         return Response.status(Response.Status.OK).entity(toDTONoObservations(sensor)).build();
     }
+
+
 }
