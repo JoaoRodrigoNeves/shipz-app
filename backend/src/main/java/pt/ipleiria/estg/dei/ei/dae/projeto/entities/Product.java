@@ -1,12 +1,10 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -34,9 +32,9 @@ public class Product extends Versionable implements Serializable {
     @JoinColumn(name = "product_manufacter_code")
     ProductManufacter productManufacter;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "client_order_code")
-    ClientOrder clientOrder;
+    @ManyToOne
+    @JoinColumn(name = "order_code")
+    Order order;
 
     @Column(name = "created_at")
     LocalDateTime createdAt;
@@ -91,12 +89,12 @@ public class Product extends Versionable implements Serializable {
         this.productManufacter = productManufacter;
     }
 
-    public ClientOrder getClientOrder() {
-        return clientOrder;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setClientOrder(ClientOrder clientOrder) {
-        this.clientOrder = clientOrder;
+    public void setOrder(Order clientOrder) {
+        this.order = clientOrder;
     }
 
     @PrePersist

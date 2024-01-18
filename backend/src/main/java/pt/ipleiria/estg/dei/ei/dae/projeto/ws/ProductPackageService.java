@@ -8,17 +8,13 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductManufacterDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductPackageDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.SensorDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductBean;
-import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductManufacterBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductPackageBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductPackage;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.security.Authenticated;
 
@@ -83,8 +79,8 @@ public class ProductPackageService {
                 product.getProductManufacter().getName()
         );
 
-        if (product.getClientOrder() != null) {
-            productDTO.setClientOrderCode(product.getClientOrder().getCode());
+        if (product.getOrder() != null) {
+            productDTO.setClientOrderCode(product.getOrder().getCode());
         }
         return productDTO;
     }

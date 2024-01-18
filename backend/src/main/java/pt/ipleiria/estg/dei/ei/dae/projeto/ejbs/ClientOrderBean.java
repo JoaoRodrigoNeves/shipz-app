@@ -13,8 +13,6 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +24,7 @@ public class ClientOrderBean {
 
     public boolean exists(long code) {
         Query query = entityManager.createQuery(
-                "SELECT COUNT(co.code) FROM ClientOrder co WHERE co.code = :code",
+                "SELECT COUNT(co.code) FROM Order co WHERE co.code = :code",
                 Long.class
         );
         query.setParameter("code", code);
@@ -44,7 +42,7 @@ public class ClientOrderBean {
             throw new MyEntityNotFoundException("Logistic Operator with username: " + logisticOperatorUsername + " not found");
 
         try {
-            ClientOrder clientOrder = new ClientOrder(finalCostumer, logisticOperator);
+            Order clientOrder = new Order(finalCostumer, logisticOperator);
             
             long volumeTotal = 0;
             
@@ -52,12 +50,12 @@ public class ClientOrderBean {
                 ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, product.getCode());
                 List<Product> productsList = productCatalog.getProducts()
                         .stream()
-                        .filter(prod -> prod.getClientOrder() == null)
+                        .filter(prod -> prod.getOrder() == null)
                         .collect(Collectors.toList());
                 if (productsList.size() >= product.getQuantity()) {
                     volumeTotal += productCatalog.getPrimaryPackageVolume() * product.getQuantity();
                     for (int i = 0; i < product.getQuantity(); i++) {
-                        productsList.get(i).setClientOrder(clientOrder);
+                        productsList.get(i).setOrder(clientOrder);
                         clientOrder.addProduct(productsList.get(i));
                     }
                 } else {
@@ -90,57 +88,63 @@ public class ClientOrderBean {
         }
     }
 
-    public List<ClientOrder> getAll() {
-        return entityManager.createNamedQuery("getAllOrders", ClientOrder.class).getResultList();
+    public List<Order> getAll() {
+        return entityManager.createNamedQuery("getAllOrders", Order.class).getResultList();
     }
 
-    public ClientOrder find(long code) throws MyEntityNotFoundException {
+    public Order find(long code) throws MyEntityNotFoundException {
         if (!exists(code)) {
             throw new MyEntityNotFoundException("ClientOrder with code: " + code + " not found");
         }
-        return entityManager.find(ClientOrder.class, code);
+        return entityManager.find(Order.class, code);
     }
 
-    public ClientOrder getProducts(long code) throws MyEntityNotFoundException {
+    public Order getProducts(long code) throws MyEntityNotFoundException {
         if (!exists(code)) {
             throw new MyEntityNotFoundException("ClientOrder with code: " + code + " not found");
         }
-        ClientOrder clientOrder = entityManager.find(ClientOrder.class, code);
+        Order clientOrder = entityManager.find(Order.class, code);
         Hibernate.initialize(clientOrder.getProducts());
         return clientOrder;
     }
 
     public void addProduct(long code, long productCode) throws MyEntityNotFoundException {
-        ClientOrder clientOrder = find(code);
+        Order clientOrder = find(code);
         Product product = entityManager.find(Product.class, productCode);
         if (product == null) {
             throw new MyEntityNotFoundException("Product with code: " + productCode + " not found");
         }
         clientOrder.addProduct(product);
-        product.setClientOrder(clientOrder);
+        product.setOrder(clientOrder);
     }
 
     public void removeProduct(long code, long productCode) throws MyEntityNotFoundException {
-        ClientOrder clientOrder = find(code);
+        Order order = find(code);
         Product product = entityManager.find(Product.class, productCode);
         if (product == null) {
             throw new MyEntityNotFoundException("Product with code: " + productCode + " not found");
         }
-        clientOrder.removeProduct(product);
-        product.setClientOrder(null);
+        order.removeProduct(product);
+        product.setOrder(null);
+    }
+
+    public Order getTransportPackages(long code) throws MyEntityNotFoundException {
+        Order order = this.find(code);
+        Hibernate.initialize(order.getTransportPackages());
+        return order;
     }
 
     public void changeStatus(long code, String status) throws MyEntityNotFoundException {
-        ClientOrder clientOrder = this.find(code);
+        Order order = this.find(code);
         OrderStatus orderStatus = OrderStatus.fromString(status);
-        clientOrder.setStatus(orderStatus);
+        order.setStatus(orderStatus);
         if (orderStatus == OrderStatus.STATUS_3)
-            clientOrder.setDeliveredAt(LocalDateTime.now());
+            order.setDeliveredAt(LocalDateTime.now());
     }
 
 
     public void changeLocation(long code, String location) throws MyEntityNotFoundException {
-        ClientOrder clientOrder = this.find(code);
-        clientOrder.setLocation(location);
+        Order order = this.find(code);
+        order.setLocation(location);
     }
 }

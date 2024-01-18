@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,7 +23,7 @@ public class TransportPackage extends Package implements Serializable {
             joinColumns = @JoinColumn(name = "transport_code", referencedColumnName = "code"),
             inverseJoinColumns = @JoinColumn(name = "order_code", referencedColumnName = "code")
     )
-    List<ClientOrder> clientOrders;
+    List<Order> orders;
     String location;
     @ManyToOne
     @JoinColumn(name = "transport_package_catalog_code")
@@ -35,24 +33,24 @@ public class TransportPackage extends Package implements Serializable {
 
     public TransportPackage(PackageType type, String material, long volume, TransportPackageCatalog transportPackageCatalog) {
         super(type, material, volume);
-        this.clientOrders = new ArrayList<ClientOrder>();
+        this.orders = new ArrayList<Order>();
         this.transportPackageCatalog = transportPackageCatalog;
     }
 
-    public List<ClientOrder> getClientOrders() {
-        return clientOrders;
+    public List<Order> getOrders() {
+        return orders;
     }
 
-    public void setClientOrders(List<ClientOrder> clientOrders) {
-        this.clientOrders = clientOrders;
+    public void setOrders(List<Order> clientOrders) {
+        this.orders = clientOrders;
     }
 
-    public void addClientOrder(ClientOrder clientOrder) {
-        this.clientOrders.add(clientOrder);
+    public void addClientOrder(Order clientOrder) {
+        this.orders.add(clientOrder);
     }
 
-    public void removeClientOrder(ClientOrder clientOrder) {
-        this.clientOrders.remove(clientOrder);
+    public void removeClientOrder(Order clientOrder) {
+        this.orders.remove(clientOrder);
     }
 
     public String getLocation() {
@@ -77,11 +75,11 @@ public class TransportPackage extends Package implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         TransportPackage that = (TransportPackage) o;
-        return Objects.equals(clientOrders, that.clientOrders) && Objects.equals(location, that.location);
+        return Objects.equals(orders, that.orders) && Objects.equals(location, that.location);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), clientOrders, location);
+        return Objects.hash(super.hashCode(), orders, location);
     }
 }

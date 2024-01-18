@@ -45,9 +45,6 @@ watch(
           Operador Logistico
         </th>
         <th>
-          Número de produtos
-        </th>
-        <th>
           Estado
         </th>
         <th>
@@ -57,57 +54,29 @@ watch(
     </thead>
 
     <tbody>
-      <tr
-        v-for="item in orders"
-        :key="item.code"
-      >
-        <td style="width: 30%;">
+      <tr v-for="item in orders" :key="item.code">
+        <td style="width: 20%;">
           {{ item.code }}
         </td>
-        <td style="width: 20%; text-align: center;">
-          {{ item.logisticOperator }}
+        <td style="width: 40%; text-align: center;">
+          {{ item.logisticOperatorName }}
         </td>
-        <td style="width: 30%; text-align: center;">
-          {{ item.productQuantity }}
+
+        <td style="width: 40%; text-align: center;">
+          {{ item.status }}
         </td>
-        <td style="width: 20%; text-align: center;">
-          {{ item.orderStatus }}
-        </td>
-        <td
-          class="d-flex align-center justify-end gap-x-2"
-          style="width: fit-content"
-        >
-          <VBtn
-            v-if="userRole == 'LogisticOperator'"
-            rel="noopener noreferrer"
-            color="primary"
-            @click="updateOrder(item, true)"
-          >
-            <VIcon
-              size="20"
-              icon="mdi-package"
-            />
-            <VTooltip
-              activator="parent"
-              location="top"
-            >
+        <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
+          <VBtn v-if="userRole == 'LogisticOperator'" rel="noopener noreferrer" color="primary"
+            @click="updateOrder(item, true)">
+            <VIcon size="20" icon="mdi-package" />
+            <VTooltip activator="parent" location="top">
               <span>Atualizar Estado</span>
             </VTooltip>
           </VBtn>
-          <VBtn
-            rel="noopener noreferrer"
-            color="primary"
-            @click="navigateTo('order/' + item.code)"
-          >
-            <VIcon
-              size="20"
-              icon="bx-show"
-            />
-            <VTooltip
-              activator="parent"
-              location="top"
-            >
-              <span>Ver Produtos</span>
+          <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('order/' + item.code)">
+            <VIcon size="20" icon="bx-show" />
+            <VTooltip activator="parent" location="top">
+              <span>Ver Detalhes</span>
             </VTooltip>
           </VBtn>
         </td>

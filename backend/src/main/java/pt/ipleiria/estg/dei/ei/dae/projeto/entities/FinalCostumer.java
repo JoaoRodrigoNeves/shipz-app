@@ -16,24 +16,24 @@ import java.util.List;
 public class FinalCostumer extends User implements Serializable {
 
     @OneToMany(mappedBy = "finalCostumer", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<ClientOrder> clientOrders;
+    private List<Order> orders;
     String address;
     public FinalCostumer() {
-        clientOrders = new ArrayList<>();
+        orders = new ArrayList<>();
     }
 
     public FinalCostumer(String username, String password, String name, String email, String address) {
         super(username, password, name, email);
         this.address = address;
-        clientOrders = new ArrayList<>();
+        orders = new ArrayList<>();
     }
 
-    public void addOrder(ClientOrder clientOrder){
-        clientOrders.add(clientOrder);
+    public void addOrder(Order clientOrder){
+        orders.add(clientOrder);
     }
 
-    public void removeOrder(ClientOrder clientOrder){
-        clientOrders.remove(clientOrder);
+    public void removeOrder(Order clientOrder){
+        orders.remove(clientOrder);
     }
 
     public String getAddress() {
@@ -44,12 +44,12 @@ public class FinalCostumer extends User implements Serializable {
         this.address = address;
     }
 
-    public List<ClientOrder> getClientOrders() {
-        return clientOrders;
+    public List<Order> getOrders() {
+        return orders;
     }
 
-    public void setClientOrders(List<ClientOrder> clientOrders) {
-        this.clientOrders = clientOrders;
+    public void setOrders(List<Order> clientOrders) {
+        this.orders = clientOrders;
     }
 
 }

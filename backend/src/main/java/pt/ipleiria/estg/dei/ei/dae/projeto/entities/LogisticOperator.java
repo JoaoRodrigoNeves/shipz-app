@@ -15,23 +15,24 @@ import java.util.List;
 })
 public class LogisticOperator extends User implements Serializable {
     @OneToMany(mappedBy = "logisticOperator", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    List<ClientOrder> clientorders;
-    @OneToMany(mappedBy = "logisticOperator", cascade = CascadeType.REMOVE)
+    List<Order> orders;
+    @OneToMany(mappedBy = "logisticOperator", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @OrderBy("volume DESC")
     List<TransportPackageCatalog> transportPackageCatalogs;
+
     public LogisticOperator(String username, String password, String name, String email) {
         super(username, password, name, email);
-        this.clientorders = new ArrayList<>();
+        this.orders = new ArrayList<>();
     }
 
     public LogisticOperator() {
     }
 
-    public void addTransportPackageCatalog(TransportPackageCatalog transportPackageCatalog){
+    public void addTransportPackageCatalog(TransportPackageCatalog transportPackageCatalog) {
         transportPackageCatalogs.add(transportPackageCatalog);
     }
 
-    public void removeTransportPackageCatalog(TransportPackageCatalog transportPackageCatalog){
+    public void removeTransportPackageCatalog(TransportPackageCatalog transportPackageCatalog) {
         transportPackageCatalogs.remove(transportPackageCatalog);
     }
 
@@ -43,19 +44,19 @@ public class LogisticOperator extends User implements Serializable {
         this.transportPackageCatalogs = transportPackageCatalogs;
     }
 
-    public void addOrder(ClientOrder clientOrder){
-        clientorders.add(clientOrder);
+    public void addOrder(Order order) {
+        orders.add(order);
     }
 
-    public void removeOrder(ClientOrder clientOrder){
-        clientorders.remove(clientOrder);
+    public void removeOrder(Order order) {
+        orders.remove(order);
     }
 
-    public List<ClientOrder> getClientorders() {
-        return clientorders;
+    public List<Order> getOrders() {
+        return orders;
     }
 
-    public void setClientorders(List<ClientOrder> clientorders) {
-        this.clientorders = clientorders;
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 }
