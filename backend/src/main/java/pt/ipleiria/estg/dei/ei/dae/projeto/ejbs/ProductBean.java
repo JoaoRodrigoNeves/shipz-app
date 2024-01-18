@@ -47,10 +47,6 @@ public class ProductBean {
         }
     }
 
-    private void checkAvailabilityPackage(PackageType packageType, Product product, ProductCatalog productCatalog) {
-
-    }
-
     public Product find(long code) throws MyEntityNotFoundException {
         Product product = entityManager.find(Product.class, code);
         if (product == null)
@@ -70,7 +66,7 @@ public class ProductBean {
             // add new catalog and old manufacter
             ProductCatalog newProductCatalog = entityManager.find(ProductCatalog.class, productCatalogCode);
             if (newProductCatalog == null)
-                throw new MyEntityNotFoundException("ProductCatalog with code: " + productCatalogCode + " not found");
+                throw new MyEntityNotFoundException("Product Catalog with code: " + productCatalogCode + " not found");
             newProductCatalog.addProduct(product);
             newProductCatalog.getProductManufacter().addProduct(product);
 
@@ -83,6 +79,10 @@ public class ProductBean {
 
     public void delete(long code) throws MyEntityNotFoundException {
         Product product = this.find(code);
+
+        if(product.getClientOrder() != null){
+            throw new MyEntityNotFoundException("Product cannot be deleted");
+        }
         ProductCatalog productCatalog = product.getProductCatalog();
         ProductManufacter productManufacter = product.getProductManufacter();
 

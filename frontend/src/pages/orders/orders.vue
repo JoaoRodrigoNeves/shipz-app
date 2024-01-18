@@ -12,17 +12,7 @@ const orderToUpdate = ref(null)
 
 const loadOrders = async () => {
   isLoading.value = true
-  if (JSON.parse(sessionStorage.getItem('user_info')).role == "ProductManufacter") {
-    await axios.get('orders').then(response => {
-      orders.value = response.data
-      isLoading.value = false
-    }).catch(
-      error => {
-        isLoading.value = false
-        console.error(error)
-      },
-    )
-  } else if (JSON.parse(sessionStorage.getItem('user_info')).role == "LogisticOperator") {
+  if (JSON.parse(sessionStorage.getItem('user_info')).role == "LogisticOperator") {
     await axios.get('logistic-operators/' + JSON.parse(sessionStorage.getItem('user_info')).username + '/orders').then(response => {
       orders.value = response.data
       isLoading.value = false
@@ -44,7 +34,6 @@ const loadOrders = async () => {
     )
   }
 }
-
 
 const updateOrder = async (order, flagStatus) => {
   orderToUpdate.value = order
@@ -72,7 +61,10 @@ onMounted(async () => {
           <h2>Encomendas</h2>
         </div>
         <div v-if="!isUpdating">
-          <OrdersTable v-if="!isLoading" :orders="orders" @updateOrder="updateOrder" @loadOrders="loadOrders" />
+          <OrdersTable v-if="orders && orders.length > 0 &&!isLoading" :orders="orders" @updateOrder="updateOrder" @loadOrders="loadOrders" />
+            <div v-else class="no-orders">
+              Não há encomendas registadas
+            </div>
         </div>
         <div v-else class="orders-form">
           <OrderForm @closeFormAndUpdate="closeFormAndUpdate" :order="orderToUpdate"
@@ -93,5 +85,9 @@ onMounted(async () => {
 
 .orders-form {
   padding: 20px;
+}
+
+.no-orders {
+    padding: 0 24px 24px 24px;
 }
 </style>

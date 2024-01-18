@@ -68,10 +68,10 @@ const navigateToSensorObservation = () => {
         <VForm @submit.prevent="submit">
           <VRow>
             <VCol cols="12">
-              <VTextField v-model="form.username" autofocus placeholder="johndoe" label="Username" type="text" />
+              <VTextField v-model="form.username" autofocus label="Nome de Utilizador" type="text" />
             </VCol>
             <VCol cols="12">
-              <VTextField v-model="form.password" label="Password" placeholder="············"
+              <VTextField v-model="form.password" label="Palavra Passe"
                 :type="isPasswordVisible ? 'text' : 'password'"
                 :append-inner-icon="isPasswordVisible ? 'bx-hide' : 'bx-show'"
                 @click:append-inner="isPasswordVisible = !isPasswordVisible" />

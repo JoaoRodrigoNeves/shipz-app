@@ -35,6 +35,9 @@ const loadProductPackages = async () => {
         }
     )
 }
+const goBack = () => {
+    router.back()
+}
 
 onMounted(async () => {
     await loadProductCatalogDetails();
@@ -46,11 +49,20 @@ onMounted(async () => {
     <VRow>
         <VCol cols="12">
             <VCard v-if="productCatalog">
-                <div class="product-catalog-details-header">
-                    <h2>{{  router.currentRoute.value.params.code + " - " + productCatalog.name }}</h2>
+                <div class="product-details-header">
+                    <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="goBack" />
+                    <h2>{{ "Produto - P" + router.currentRoute.value.params.code }}</h2>
                 </div>
 
-                <div class="product-catalog-details">
+                <div class="product-details">
+                    <div class="catalog-item">
+                        <label>
+                            Código
+                        </label>
+                        <span>
+                            {{ "P" + productCatalog.code }}
+                        </span>
+                    </div>
                     <div class="catalog-item">
                         <label>
                             Nome
@@ -107,33 +119,34 @@ onMounted(async () => {
     </VRow>
 </template>
 <style scoped>
-.product-catalog-details-header {
+.product-details-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: start;
+    gap: 12px;
     align-items: center;
     padding: 24px;
 }
 
-.product-catalog-details-actions {
+.product-details-actions {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.product-catalog-details {
+.product-details {
     display: flex;
     padding: 0 24px;
     gap: 16px 0px;
     flex-wrap: wrap;
 }
 
-.product-catalog-details .catalog-item {
+.product-details .catalog-item {
     display: flex;
     flex-direction: column;
     width: 50%;
 }
 
-.product-catalog-details .catalog-item label {
+.product-details .catalog-item label {
     opacity: 0.7;
     font-size: 14px;
 }

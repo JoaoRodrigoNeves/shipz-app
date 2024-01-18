@@ -57,7 +57,7 @@ watch(
         <tbody>
             <tr v-for="item in productPackages" :key="item.code">
                 <td style="width: 20%;">
-                    {{ item.code }}
+                    {{ "PP" +item.code }}
                 </td>
                 <td style="width: 20%; text-align: center;">
                     {{ item.typeName }}

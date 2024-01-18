@@ -10,6 +10,7 @@ import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
+import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.ListNotEmptyException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
@@ -91,14 +92,12 @@ public class ProductCatalogBean {
         return productCatalog;
     }
 
-    public void remove(long code) throws MyEntityNotFoundException {
+    public void remove(long code) throws MyEntityNotFoundException, ListNotEmptyException {
         ProductCatalog productCatalog = this.find(code);
         ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, productCatalog.getProductManufacter().getUsername());
 
-        if (productCatalog.getProducts().toArray().length > 0) {
-            ProductCatalog defaultCatalog = this.find(1);
-            productCatalog.getProducts().forEach(product -> product.setProductCatalog(defaultCatalog));
-            productCatalog.getProducts().addAll(productCatalog.getProducts());
+        if (!productCatalog.getProducts().isEmpty()) {
+            throw new ListNotEmptyException("Product Catalog cannot be deleted");
         }
 
         productManufacter.removeProductCatalog(productCatalog);

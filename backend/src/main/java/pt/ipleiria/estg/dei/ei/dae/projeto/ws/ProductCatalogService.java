@@ -11,6 +11,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductCatalogBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductPackageBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
+import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.ListNotEmptyException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
@@ -36,7 +37,7 @@ public class ProductCatalogService {
                 productCatalog.getCatalogArea(),
                 productCatalog.getCategory(),
                 productCatalog.getDescription(),
-                productCatalog.getProductManufacter().getUsername(),
+                productCatalog.getProductManufacter().getName(),
                 productCatalog.getMaxSecondaryPackage(),
                 productCatalog.getMaxTertiaryPackage(),
                 productCatalog.getPrimaryPackageVolume(),
@@ -126,7 +127,7 @@ public class ProductCatalogService {
     //TODO delete a product-catalog
     @DELETE
     @Path("{code}")
-    public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException {
+    public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException, ListNotEmptyException {
         productCatalogBean.remove(code);
         return Response.status(Response.Status.OK).entity("Success").build();
     }

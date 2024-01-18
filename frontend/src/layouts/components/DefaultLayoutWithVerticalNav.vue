@@ -69,15 +69,10 @@ const upgradeBanner = computed(() => {
         to: '/products',
       }" v-if="user && user.role === 'ProductManufacter'" />
       <VerticalNavLink :item="{
-        title: 'Embalagens de Produto',
-        icon: 'mdi-package-variant-closed',
-        to: '/product-packages'
-      }" v-if="user && user.role == 'ProductManufacter'" />
-      <VerticalNavLink :item="{
         title: 'Encomendas',
         icon: 'bi-box-seam',
         to: '/orders',
-      }" v-if="user && user.role != 'FinalCostumer'" />
+      }" v-if="user && user.role != 'ProductManufacter'" />
 
 
       <!-- 👉 Pages -->

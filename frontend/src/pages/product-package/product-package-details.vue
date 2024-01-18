@@ -3,9 +3,8 @@ import { ref, onMounted, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from "primevue/usetoast";
 import { useConfirm } from "primevue/useconfirm";
-
+import moment from 'moment'
 import ProductTable from '@/views/pages/tables/ProductTable.vue'
-import ProductPackageForm from '@/views/pages/form-layouts/ProductPackageForm.vue';
 
 const axios = inject('axios')
 const router = useRouter()
@@ -44,56 +43,14 @@ const loadProducts = async () => {
         })
 }
 
-const removeProduct = async (product) => {
-    isLoading.value = true
-    await axios.delete('product-packages/' + router.currentRoute.value.params.code + '/products/' + product.code)
-        .then(async () => {
-            isLoading.value = false
-            await loadProducts()
-            toast.add({ severity: 'info', summary: 'Produto Removido', life: 3000 });
-        }).catch(error => {
-            isLoading.value = false
-            console.error(error)
-            toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema!', life: 3000 });
-        })
+const formatDate = (value) => {
+    return moment(String(value)).format('DD/MM/YYYY hh:mm:ss')
 }
 
-const updateProductPackage = async () => {
-    isUpdating.value = true
-    isAddingProduct.value = false
+const goBack = (value) => {
+    router.back();
 }
 
-const deleteProductPackageConfirm = async () => {
-    confirm.require({
-        message: 'Tem a certeza que pretende apagar a embalagem #' + productPackage.value.code + ' ?',
-        header: 'Apagar Embalagem',
-        rejectLabel: 'Não',
-        acceptLabel: 'Sim',
-        accept: async () => {
-            isLoading.value = true
-
-            await axios.delete('product-packages/' + productPackage.value.code).then(() => {
-                toast.add({ severity: 'info', summary: 'Embalagem Apagada', life: 3000 });
-                isLoading.value = false
-
-                router.back()
-            }).catch(error => {
-                console.error(error)
-                isLoading.value = false
-
-                toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema!', life: 3000 });
-            })
-        }
-    })
-}
-
-const closeFormAndUpdate = async () => {
-    isUpdating.value = false
-    isAddingProduct.value = false
-
-    await loadProductPackage()
-    await loadProducts()
-}
 
 onMounted(async () => {
     await loadProductPackage()
@@ -107,21 +64,8 @@ onMounted(async () => {
         <VCol cols="12">
             <VCard v-if="productPackage">
                 <div class="product-package-details-header">
-                    <h2>Embalagem de Produto #{{ productPackage.code }}</h2>
-                    <div class="product-package-details-actions">
-                        <VBtn rel="noopener noreferrer" color="primary" @click="updateProductPackage">
-                            <VIcon size="20" icon="bx-pencil" />
-                            <VTooltip activator="parent" location="top">
-                                <span>Editar Embalagem</span>
-                            </VTooltip>
-                        </VBtn>
-                        <VBtn rel="noopener noreferrer" color="primary" @click="deleteProductPackageConfirm">
-                            <VIcon size="20" icon="bx-trash" />
-                            <VTooltip activator="parent" location="top">
-                                <span>Apagar Embalagem</span>
-                            </VTooltip>
-                        </VBtn>
-                    </div>
+                    <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="goBack" />
+                    <h2>Embalagem de Produto - {{ "PP" +productPackage.code }}</h2>
                 </div>
                 <div class="product-package-details">
                     <div class="product-package-item">
@@ -129,7 +73,7 @@ onMounted(async () => {
                             Código
                         </label>
                         <span>
-                            {{ productPackage.code }}
+                            {{ "PP" + productPackage.code }}
                         </span>
                     </div>
                     <div class="product-package-item">
@@ -137,7 +81,7 @@ onMounted(async () => {
                             Tipo
                         </label>
                         <span>
-                            {{ productPackage.type }}
+                            {{ productPackage.typeName }}
                         </span>
                     </div>
                     <div class="product-package-item">
@@ -153,22 +97,16 @@ onMounted(async () => {
                             Data de Fabrico
                         </label>
                         <span>
-                            {{ productPackage.manufacturingDate }}
+                            {{ formatDate(productPackage.createdAt) }}
                         </span>
                     </div>
 
                 </div>
                 <div class="products-actions">
                     <h2>Produtos</h2>
-                    <VBtn rel="noopener noreferrer" color="primary" @click="isAddingProduct = true; isUpdating = false">
-                        <VIcon size="20" icon="bx-plus" />
-                        <VTooltip activator="parent" location="top">
-                            <span>Adicionar Produto</span>
-                        </VTooltip>
-                    </VBtn>
                 </div>
                 <div v-if="products && products.length > 0 && !isLoading">
-                    <ProductTable v-if="!isLoading" @loadProducts="loadProducts" @removeProduct="removeProduct"
+                    <ProductTable v-if="!isLoading" @loadProducts="loadProducts"
                         :product-package-view="true" :products="products" />
                 </div>
                 <div v-else class="no-products">
@@ -177,38 +115,13 @@ onMounted(async () => {
             </VCard>
         </VCol>
     </VRow>
-    <VRow v-if="isUpdating">
-        <VCol cols="12">
-            <VCard>
-                <div class="product-packages-header">
-                    <h2>Editar Embalagem de Produto</h2>
-                </div>
-                <VCardText>
-                    <ProductPackageForm @closeFormAndUpdate="closeFormAndUpdate" :productPackage="productPackage"
-                        :is-adding-product="false" :is-creating="!isUpdating" :is-updating="isUpdating" />
-                </VCardText>
-            </VCard>
-        </VCol>
-    </VRow>
-    <VRow v-if="isAddingProduct">
-        <VCol cols="12">
-            <VCard>
-                <div class="product-packages-header">
-                    <h2>Adicionar Produto</h2>
-                </div>
-                <VCardText>
-                    <ProductPackageForm @add-product="closeFormAndUpdate" :product-package="productPackage"
-                        :is-adding-product="true" :is-creating="false" :is-updating="false" />
-                </VCardText>
-            </VCard>
-        </VCol>
-    </VRow>
 </template>
 
 <style scoped>
 .product-package-details-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: start;
+    gap: 12px;
     align-items: center;
     padding: 24px;
 }
@@ -235,6 +148,10 @@ onMounted(async () => {
 .product-package-details .product-package-item label {
     opacity: 0.7;
     font-size: 14px;
+}
+
+.product-package-details .product-package-item span {
+    text-transform: capitalize;
 }
 
 .products-actions {
