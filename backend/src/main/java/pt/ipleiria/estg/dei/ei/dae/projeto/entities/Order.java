@@ -3,6 +3,7 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 import jakarta.persistence.*;
 import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.OrderStatus;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -34,6 +35,7 @@ public class Order implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "orders")
     List<TransportPackage> transportPackages;
     OrderStatus status;
+    SensorType sensors;
     String location;
     @Column(name = "created_at")
     LocalDateTime createdAt;
@@ -117,6 +119,18 @@ public class Order implements Serializable {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public List<Sensor> getSensors() {
+        List<Sensor> sensors = new ArrayList<>();
+        for (TransportPackage transportPackage : transportPackages) {
+            sensors.addAll(transportPackage.getSensors());
+        }
+        return sensors;
+    }
+
+    public void setSensors(SensorType sensors) {
+        this.sensors = sensors;
     }
 
     @PrePersist

@@ -5,7 +5,6 @@ import { useToast } from "primevue/usetoast"
 import { useConfirm } from "primevue/useconfirm"
 
 import ProductTable from '@/views/pages/tables/ProductTable.vue'
-import ProductPackageForm from '@/views/pages/form-layouts/ProductPackageForm.vue'
 
 const axios = inject('axios')
 const router = useRouter()

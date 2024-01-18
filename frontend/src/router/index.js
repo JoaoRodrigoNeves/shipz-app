@@ -11,27 +11,27 @@ const router = createRouter({
         {
           path: 'dashboard',
           component: () => import('../pages/dashboard.vue'),
-          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true }
+          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true },
         },
         {
           path: 'products-list',
           component: () => import('../pages/client/products.vue'),
-          meta: { manufacterAuth: false, logisticAuth: false, clientAuth: true, requiredAuth: true }
+          meta: { manufacterAuth: false, logisticAuth: false, clientAuth: true, requiredAuth: true },
         },
         {
           path: 'product-catalogs',
           component: () => import('../pages/product-catalog/product-catalogs.vue'),
-          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true }
+          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true },
         },
         {
           path: 'product-catalog/:code',
           component: () => import('../pages/product-catalog/product-catalog-details.vue'),
-          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true }
+          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true },
         },
         {
           path: 'products',
           component: () => import('../pages/product/products.vue'),
-          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true }
+          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true },
         },
         {
           path: 'product/:code',
@@ -41,53 +41,58 @@ const router = createRouter({
         {
           path: 'product-packages',
           component: () => import('../pages/product-package/product-packages.vue'),
-          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true }
+          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true },
         },
         {
           path: 'orders',
           component: () => import('../pages/orders/orders.vue'),
-          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true }
+          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true },
         },
         {
           path: 'order/:code',
           component: () => import('../pages/orders/orders-details.vue'),
-          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true }
+          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true },
         },
         {
           path: 'account-settings',
           component: () => import('../pages/account-settings.vue'),
-          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true }
+          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true },
         },
         {
           path: 'product-package/:code',
           component: () => import('../pages/product-package/product-package-details.vue'),
-          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true }
+          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true },
         },
         {
           path: 'sensor-observation',
           component: () => import('../pages/sensor-register.vue'),
-          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: false }
+          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: false },
         },
         {
           path: 'transport-packages',
           component: () => import('../pages/transport-package-catalog/transport-package-catalog.vue'),
-          meta: { manufacterAuth: false, logisticAuth: true, clientAuth: false, requiredAuth: true }
+          meta: { manufacterAuth: false, logisticAuth: true, clientAuth: false, requiredAuth: true },
         },
         {
           path: 'transport-packages/:code',
           component: () => import('../pages/transport-package-catalog/transport-package-catalog-details.vue'),
-          meta: { manufacterAuth: false, logisticAuth: true, clientAuth: false, requiredAuth: true }
+          meta: { manufacterAuth: false, logisticAuth: true, clientAuth: false, requiredAuth: true },
         },
         {
           path: 'sensors',
           component: () => import('../pages/sensor/sensors.vue'),
-          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true }
+          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true },
         },
         {
           path: 'sensor/:code',
           component: () => import('../pages/sensor/sensor-details.vue'),
-          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true }
-        }  
+          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true },
+        },
+        {
+          path: 'order-sensor/:code',
+          component: () => import('../pages/orders/order-sensor-details.vue'),
+          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true },
+        },
       ],
     },
     {
@@ -97,13 +102,13 @@ const router = createRouter({
         {
           path: 'login',
           component: () => import('../pages/login.vue'),
-          meta: { manufacterAuth: false, logisticAuth: false, clientAuth: false, requiredAuth: false }
+          meta: { manufacterAuth: false, logisticAuth: false, clientAuth: false, requiredAuth: false },
         },
         {
           path: '/:pathMatch(.*)*',
           name: 'noRouteMatch',
           component: () => import('../pages/[...all].vue'),
-          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: false }
+          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: false },
         },
       ],
     },

@@ -134,11 +134,9 @@ public class SensorService {
 
     @GET
     @Path("{code}/observations")
-    public Response getOberservations(@PathParam("code") long code) throws MyEntityNotFoundException {
+    public Response getObservations(@PathParam("code") long code) throws MyEntityNotFoundException {
         Sensor sensor = sensorBean.getObservations(code);
         List<Observation> observations = sensor.getObservations();
-        // Ordenar as observações pelo campo createdAt (mais recentes primeiro)
-        Collections.sort(observations, Comparator.comparing(Observation::getCreatedAt).reversed());
         List<ObservationDTO> observationDTOs = observationDTOs(observations);
         return Response.status(Response.Status.OK).entity(observationDTOs).build();
     }

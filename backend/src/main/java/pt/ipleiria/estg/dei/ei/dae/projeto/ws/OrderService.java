@@ -45,6 +45,7 @@ public class OrderService {
         if (clientOrder.getFinalCostumer() != null) {
             orderDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
             orderDTO.setFinalCostumerName(clientOrder.getFinalCostumer().getName());
+
         }
         return orderDTO;
     }
@@ -119,10 +120,22 @@ public class OrderService {
         return transportPackageDTO;
     }
 
+    private SensorDTO sensorToDTO(Sensor sensor) {
+        return new SensorDTO(
+                sensor.getCode(),
+                sensor.getType().getSensorType(),
+                sensor.isInUse()
+        );
+    }
+
     private List<TransportPackageDTO> transportPackageToDTOs(List<TransportPackage> transportPackages) {
         return transportPackages.stream()
                 .map(this::transportPackageToDTO)
                 .collect(Collectors.toList());
+    }
+
+    private List<SensorDTO> sensorToDTOs(List<Sensor> sensors) {
+        return sensors.stream().map(this::sensorToDTO).collect(Collectors.toList());
     }
 
     //TODO create order
@@ -179,6 +192,35 @@ public class OrderService {
     public Response changeStatus(@PathParam("code") long code, OrderDTO orderDTO) throws MyEntityNotFoundException {
         orderBean.changeStatus(code, orderDTO.getStatus());
         return Response.status(Response.Status.OK).build();
+    }
+
+    //TODO get order sensors with observations
+    @GET
+    @Path("/{code}/sensors")
+    public Response getAllSensors(@PathParam("code") long code) throws MyEntityNotFoundException {
+        var clientOrder = orderBean.getProducts(code);
+
+        List<SensorDTO> sensorDTOs = new ArrayList<>();
+
+        for (Product product : clientOrder.getProducts()) {
+            for (ProductPackage productPackage : product.getProductPackages()) {
+                if (!productPackage.getSensors().isEmpty()) {
+                    sensorDTOs.addAll(sensorToDTOs(productPackage.getSensors()));
+                }
+            }
+        }
+
+        for (TransportPackage transportPackage : clientOrder.getTransportPackages()) {
+            if (!transportPackage.getSensors().isEmpty()) {
+                sensorDTOs.addAll(sensorToDTOs(transportPackage.getSensors()));
+            }
+        }
+
+        if (sensorDTOs.isEmpty()) {
+            throw new MyEntityNotFoundException("Sem sensores");
+        }
+
+        return Response.status(Response.Status.OK).entity(sensorDTOs).build();
     }
 
     //TODO get observations

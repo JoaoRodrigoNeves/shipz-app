@@ -5,6 +5,7 @@ import ProductTable from '@/views/pages/tables/ProductTableOrders.vue'
 import { useToast } from "primevue/usetoast"
 import moment from "moment/moment"
 import TransportPackageTable from '@/views/pages/tables/TransportPackageTable.vue'
+import SensorTable from '@/views/pages/tables/SensorsTable.vue'
 
 const toast = useToast()
 const axios = inject('axios')
@@ -39,7 +40,7 @@ const loadOrderDetails = async () => {
 const loadTransportPackages = async () => {
   isLoading.value = true
 
-  await axios.get('orders/' + router.currentRoute.value.params.code + '/transport-packages'
+  await axios.get('orders/' + router.currentRoute.value.params.code + '/transport-packages',
   ).then(response => {
     transportPackages.value = response.data
     isLoading.value = false
@@ -53,7 +54,7 @@ const loadTransportPackages = async () => {
 
 const loadProducts = async () => {
   isLoading.value = true
-  await axios.get('orders/' + router.currentRoute.value.params.code + '/products'
+  await axios.get('orders/' + router.currentRoute.value.params.code + '/products',
   ).then(response => {
     isLoading.value = false
     products.value = response.data
@@ -82,12 +83,12 @@ const loadSensors = async () => {
   try {
     await axios.get('sensors').then(response => {
       
-      const allSensors = response.data;
+      const allSensors = response.data
 
-      const filteredSensors = allSensors.filter(sensor => !sensor.inUse);
+      const filteredSensors = allSensors.filter(sensor => !sensor.inUse)
 
-      sensors.value = filteredSensors;
-      isLoading.value = false;
+      sensors.value = filteredSensors
+      isLoading.value = false
     })
 
   } catch (error) {
@@ -96,7 +97,7 @@ const loadSensors = async () => {
   }
 }
 
-const addSensorToPackage = async (selectedSensor) => {
+const addSensorToPackage = async selectedSensor => {
   isLoading.value = true
   let payload = {
     code: 100017,
@@ -147,28 +148,46 @@ onMounted(async () => {
         <div class="product-catalog-details-header">
           <h2>Encomenda nº{{ order.code }}</h2>
           <VDialog width="500">
-            <template v-slot:activator="{ props }">
-              <v-btn v-bind="props" text="Adicionar Sensores">
-                <VIcon size="20" icon="bx-plus" />
-                <VTooltip activator="parent" location="top">
+            <template #activator="{ props }">
+              <VBtn
+                v-bind="props"
+                text="Adicionar Sensores"
+              >
+                <VIcon
+                  size="20"
+                  icon="bx-plus"
+                />
+                <VTooltip
+                  activator="parent"
+                  location="top"
+                >
                   <span>Adicionar sensores</span>
                 </VTooltip>
-              </v-btn>
+              </VBtn>
             </template>
 
-            <template v-slot:default="{ isActive }">
-              <v-card title="Adicionar Sensores">
-                <v-card-text>
-                  <VAutocomplete v-model="selectedSensor" label="Tipo de sensor" placeholder="Selecionar Sensor"
-                    :items="sensors" item-title="type" item-value="code"/>
-                </v-card-text>
+            <template #default="{ isActive }">
+              <VCard title="Adicionar Sensores">
+                <VCardText>
+                  <VAutocomplete
+                    v-model="selectedSensor"
+                    label="Tipo de sensor"
+                    placeholder="Selecionar Sensor"
+                    :items="sensors"
+                    item-title="type"
+                    item-value="code"
+                  />
+                </VCardText>
 
-                <v-card-actions>
-                  <v-spacer></v-spacer>
+                <VCardActions>
+                  <VSpacer />
 
-                  <v-btn text="Adicionar" @click="addSensorToPackage(selectedSensor); isActive.value = false;" ></v-btn>
-                </v-card-actions>
-              </v-card>
+                  <VBtn
+                    text="Adicionar"
+                    @click="addSensorToPackage(selectedSensor); isActive.value = false;"
+                  />
+                </VCardActions>
+              </VCard>
             </template>
           </VDialog>
         </div>
@@ -231,9 +250,17 @@ onMounted(async () => {
             </span>
           </div>
         </div>
-        <div v-if="dropdown" class="pl-5 w-50 my-5">
-          <VAutocomplete v-model="order.location" label="Localização" placeholder="Selecionar Localização" :items="cities"
-            @update:model-value="changeLocation" />
+        <div
+          v-if="dropdown"
+          class="pl-5 w-50 my-5"
+        >
+          <VAutocomplete
+            v-model="order.location"
+            label="Localização"
+            placeholder="Selecionar Localização"
+            :items="cities"
+            @update:model-value="changeLocation"
+          />
         </div>
         <VExpansionPanels>
           <VExpansionPanel>
@@ -244,9 +271,15 @@ onMounted(async () => {
             </VExpansionPanelTitle>
             <VExpansionPanelText>
               <div v-if="transportPackages && transportPackages.length > 0 && !isLoading">
-                <TransportPackageTable v-if="!isLoading" :transport-packages="transportPackages" />
+                <TransportPackageTable
+                  v-if="!isLoading"
+                  :transport-packages="transportPackages"
+                />
               </div>
-              <div v-else class="no-data">
+              <div
+                v-else
+                class="no-data"
+              >
                 Não tem embalagens de transporte associados a esta encomenda
               </div>
             </VExpansionPanelText>
@@ -259,10 +292,37 @@ onMounted(async () => {
             </VExpansionPanelTitle>
             <VExpansionPanelText>
               <div v-if="products && products.length > 0 && !isLoading">
-                <ProductTable v-if="!isLoading" :products="products" />
+                <ProductTable
+                  v-if="!isLoading"
+                  :products="products"
+                />
               </div>
-              <div v-else class="no-data">
+              <div
+                v-else
+                class="no-data"
+              >
                 Não tem produtos associados a esta encomenda
+              </div>
+            </VExpansionPanelText>
+          </VExpansionPanel>
+          <VExpansionPanel>
+            <VExpansionPanelTitle>
+              <div class="table-actions">
+                <h3>Sensores</h3>
+              </div>
+            </VExpansionPanelTitle>
+            <VExpansionPanelText>
+              <div v-if="sensors && sensors.length > 0 && !isLoading">
+                <SensorTable
+                  v-if="!isLoading"
+                  :sensors="sensors"
+                />
+              </div>
+              <div
+                v-else
+                class="no-data"
+              >
+                Não tem sensores associados a esta encomenda
               </div>
             </VExpansionPanelText>
           </VExpansionPanel>
