@@ -83,6 +83,7 @@ const save = (async () => {
       }
     }).catch(
       error => {
+        toast.add({ severity: 'error', summary: 'Erro', detail: error.response.data, life: 3000 })
         isLoading.value = false
         console.error(error)
       },

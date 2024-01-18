@@ -58,10 +58,7 @@ public class OrderBean {
                     for (int i = 0; i < product.getQuantity(); i++) {
                         productsList.get(i).setOrder(clientOrder);
                         List<ProductPackage> productPackages = productsList.get(i).getProductPackages().stream().filter(productPackage -> productPackage.getType() == PackageType.PRIMARY).collect(Collectors.toList());
-                        productPackages.get(0).getSensors().forEach(sensor -> {
-                            System.out.println("Sensor: " + sensor.getCode());
-                            sensor.setInUse(true);
-                        });
+                        productPackages.get(0).getSensors().forEach(sensor -> sensor.setInUse(true));
                         clientOrder.addProduct(productsList.get(i));
                     }
                 } else {

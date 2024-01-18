@@ -8,12 +8,11 @@ import jakarta.ws.rs.core.Response;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductCatalogDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductCatalogBean;
+import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.TransportPackageCatalogBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.ListNotEmptyException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackageCatalog;
+import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.security.Authenticated;
 
 import java.util.List;
@@ -28,6 +27,8 @@ public class ProductCatalogService {
 
     @EJB
     private ProductCatalogBean productCatalogBean;
+    @EJB
+    private TransportPackageCatalogBean transportPackageCatalogBean;
 
     private ProductCatalogDTO productCatalogToDTO(ProductCatalog productCatalog) {
         return new ProductCatalogDTO(
@@ -75,7 +76,11 @@ public class ProductCatalogService {
     @POST
     @Path("/")
     public Response create(ProductCatalogDTO productCatalogDTO)
-            throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+            throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException, NoVolumeException {
+        List<TransportPackageCatalog> transportPackageCatalogs = transportPackageCatalogBean.getAll();
+        if (transportPackageCatalogs.get(0).getVolume() < productCatalogDTO.getPrimaryPackageVolume())
+            throw new NoVolumeException("ProductCatalog primary volume not acceptable, max acceptable: " + transportPackageCatalogs.get(0).getVolume());
+
         productCatalogBean.create(
                 productCatalogDTO.getName(),
                 productCatalogDTO.getCatalogArea(),

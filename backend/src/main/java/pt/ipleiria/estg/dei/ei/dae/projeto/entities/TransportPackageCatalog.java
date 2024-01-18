@@ -11,7 +11,7 @@ import java.util.Objects;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllTransportPackageCatalogs",
-                query = "SELECT t FROM TransportPackageCatalog t" // JPQL
+                query = "SELECT t FROM TransportPackageCatalog t ORDER BY volume DESC " // JPQL
         )
 })
 @Table(name = "transport_package_catalogs", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
