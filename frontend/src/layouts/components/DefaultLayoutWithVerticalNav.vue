@@ -69,6 +69,11 @@ const upgradeBanner = computed(() => {
         to: '/products',
       }" v-if="user && user.role === 'ProductManufacter'" />
       <VerticalNavLink :item="{
+        title: 'Sensores',
+        icon: 'mdi-leak',
+        to: '/sensors'
+      }" v-if="user && user.role == 'ProductManufacter'" />
+      <VerticalNavLink :item="{
         title: 'Encomendas',
         icon: 'bi-box-seam',
         to: '/orders',
@@ -76,20 +81,20 @@ const upgradeBanner = computed(() => {
 
 
       <!-- 👉 Pages -->
-      <VerticalNavSectionTitle :item="{
+      <VerticalNavSectionTitle v-if="!user" :item="{
         heading: 'Pages',
-      }" v-if="!user" />
-      <VerticalNavLink :item="{
+      }" />
+      <VerticalNavLink v-if="!user" :item="{
         title: 'Login',
         icon: 'bx-log-in',
         to: '/login',
-      }" v-if="!user" />
+      }" />
 
-      <VerticalNavLink :item="{
+      <VerticalNavLink v-if="!user" :item="{
         title: 'Sensores',
         icon: 'mdi-thermometer-low',
         to: '/sensor-observation',
-      }" v-if="!user" />
+      }" />
     </template>
     <slot />
   </VerticalNavLayout>

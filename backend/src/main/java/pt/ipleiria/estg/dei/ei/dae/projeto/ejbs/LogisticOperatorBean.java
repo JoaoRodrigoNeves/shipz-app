@@ -18,7 +18,7 @@ import java.util.List;
 public class LogisticOperatorBean {
 
     @PersistenceContext
-    private EntityManager em;
+    private EntityManager entityManager;
 
     @Inject
     private Hasher hasher;
@@ -29,11 +29,11 @@ public class LogisticOperatorBean {
             throw new MyEntityExistsException("LogisticOperator with username: " + username + " already exists");
         }
         LogisticOperator logisticOperator = new LogisticOperator(username, hasher.hash(password), name, email);
-        em.persist(logisticOperator);
+        entityManager.persist(logisticOperator);
     }
 
     public boolean exists(String username){
-        Query query = em.createQuery(
+        Query query = entityManager.createQuery(
                 "SELECT COUNT(s.username) FROM LogisticOperator s WHERE s.username = :username",
                 Long.class
         );
@@ -43,36 +43,33 @@ public class LogisticOperatorBean {
     }
 
     public void update(String username, String password, String name, String email) throws MyEntityNotFoundException{
-        var logisticOperator = em.find(LogisticOperator.class, username);
+        var logisticOperator = entityManager.find(LogisticOperator.class, username);
         if (logisticOperator == null) {
             throw new MyEntityNotFoundException("LogisticOperator with username: " + username + " doesn't exist");
         }
-        em.lock(logisticOperator, LockModeType.OPTIMISTIC);
-        logisticOperator.setPassword(password);
+        entityManager.lock(logisticOperator, LockModeType.OPTIMISTIC);
+        if(password != null){
+            logisticOperator.setPassword(hasher.hash(password));
+        }
         logisticOperator.setName(name);
         logisticOperator.setEmail(email);
-        em.merge(logisticOperator);
-    }
-
-    public void delete(String username) throws MyEntityNotFoundException{
-        LogisticOperator logisticOperator = em.find(LogisticOperator.class, username);
-        if (logisticOperator == null) {
-            throw new MyEntityNotFoundException("LogisticOperator with username: " + username + " doesn't exist");
-        }
-        em.remove(logisticOperator);
+        entityManager.merge(logisticOperator);
     }
 
     public List<LogisticOperator> getAll() {
-        return em.createNamedQuery("getAllLogisticOperators", LogisticOperator.class).getResultList();
+        return entityManager.createNamedQuery("getAllLogisticOperators", LogisticOperator.class).getResultList();
     }
 
-    public LogisticOperator find(String username) {
-        return em.find(LogisticOperator.class, username);
+    public LogisticOperator find(String username) throws MyEntityNotFoundException {
+        LogisticOperator logisticOperator = entityManager.find(LogisticOperator.class, username);
+        if (logisticOperator == null)
+            throw new MyEntityNotFoundException("Logistic Operator with username: '" + username +  "' not found");
+        return logisticOperator;
     }
 
     public LogisticOperator getOrders(String username) throws MyEntityNotFoundException {
         LogisticOperator logisticOperator = this.find(username);
-        Hibernate.initialize(logisticOperator.getClientorders());
+        Hibernate.initialize(logisticOperator.getOrders());
         return logisticOperator;
     }
 }

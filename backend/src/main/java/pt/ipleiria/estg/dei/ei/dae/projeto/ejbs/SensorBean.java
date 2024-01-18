@@ -27,7 +27,7 @@ public class SensorBean {
     //TODO CRUD operations for Sensor entity
     public Sensor create(String type) {
         SensorType sensorType = SensorType.fromString(type);
-        Sensor sensor = new Sensor(sensorType);
+        Sensor sensor = new Sensor(sensorType, false);
         entityManager.persist(sensor);
         return sensor;
     }
@@ -101,6 +101,13 @@ public class SensorBean {
         return sensor;
     }
 
+    //TODO get observations
+    public Sensor getObservations(long code) throws MyEntityNotFoundException {
+        Sensor sensor = this.find(code);
+        Hibernate.initialize(sensor.getObservations());
+        return sensor;
+    }
+
     public List<Observation> getFilteredObservations(long code, LocalDateTime startDate, LocalDateTime endDate) throws MyEntityNotFoundException {
         Sensor sensor = this.find(code);
 
@@ -117,5 +124,12 @@ public class SensorBean {
 
     private boolean isWithinDateRange(LocalDateTime date, LocalDateTime startDate, LocalDateTime endDate) {
         return date != null && (!date.isBefore(startDate) && !date.isAfter(endDate) || date.isEqual(startDate) || date.isEqual(endDate));
+    }
+
+    public Sensor changeStatus(long code) throws MyEntityNotFoundException {
+        Sensor sensor = this.find(code);
+        sensor.setInUse(!sensor.isInUse());
+        entityManager.persist(sensor);
+        return sensor;
     }
 }

@@ -20,6 +20,7 @@ public class Sensor implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "sensor_id_seq")
+    @SequenceGenerator(name = "sensor_id_seq", sequenceName = "sensor_id_seq", initialValue = 100000)
     long code;
     SensorType type;
     @OneToMany(mappedBy = "sensor", cascade = CascadeType.REMOVE)
@@ -27,16 +28,19 @@ public class Sensor implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "sensor_package_association",
-            joinColumns = @JoinColumn(name = "package_code", referencedColumnName = "code"),
-            inverseJoinColumns = @JoinColumn(name = "sensor_code", referencedColumnName = "code")
+            joinColumns = @JoinColumn(name = "sensor_code", referencedColumnName = "code"),
+            inverseJoinColumns = @JoinColumn(name = "package_code", referencedColumnName = "code")
     )
     List<Package> packages;
+
+    boolean inUse;
 
     public Sensor(){
 
     }
-    public Sensor(SensorType type) {
+    public Sensor(SensorType type, boolean inUse) {
         this.type = type;
+        this.inUse = inUse;
         this.observations = new ArrayList<Observation>();
         this.packages = new ArrayList<Package>();
     }
@@ -87,6 +91,14 @@ public class Sensor implements Serializable {
 
     public void removePackage(Package p) {
         this.packages.remove(p);
+    }
+
+    public boolean isInUse() {
+        return inUse;
+    }
+
+    public void setInUse(boolean inUse) {
+        this.inUse = inUse;
     }
 
     @Override

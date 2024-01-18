@@ -1,32 +1,27 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import moment from 'moment'
 
 const router = useRouter()
 
-const emit = defineEmits(['loadProductPackages', 'updateProductPackage'])
+const emit = defineEmits(['loadSensors'])
 const props = defineProps({
-    productPackages: {
+    sensors: {
         type: Object,
         required: true
     }
 })
 
-const productPackages = ref(Object.assign({}, props.productPackages))
+const sensors = ref(Object.assign({}, props.sensors))
 
 const navigateTo = (path) => {
     router.push({ path: path })
 }
 
-const formatDate = (value) => {
-    return moment(String(value)).format('DD/MM/YYYY HH:mm:ss')
-}
-
 watch(
     () => props,
     (newProps) => {
-        productPackages.value = Object.assign({}, newProps.productPackages)
+        sensors.value = Object.assign({}, newProps.sensors)
     },
     { immediate: true }
 )
@@ -43,33 +38,21 @@ watch(
                     Tipo
                 </th>
                 <th>
-                    Material
-                </th>
-                <th>
-                    Data de Fabrico
-                </th>
-                <th>
                     Ações
                 </th>
             </tr>
         </thead>
 
         <tbody>
-            <tr v-for="item in productPackages" :key="item.code">
+            <tr v-for="item in sensors" :key="item.code">
                 <td style="width: 20%;">
-                    {{ "PP" +item.code }}
+                    {{ "S" + item.code }}
                 </td>
-                <td style="width: 20%; text-align: center;">
-                    {{ item.typeName }}
-                </td>
-                <td style="width: 30%; text-align: center;">
-                    {{ item.material }}
-                </td>
-                <td style="width: 30%; text-align: center;">
-                    {{ formatDate(item.createdAt) }}
+                <td style="width: 100%; text-align: center;">
+                    {{ item.type }}
                 </td>
                 <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
-                    <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('/product-package/' + item.code)">
+                    <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('/sensor/' + item.code)">
                         <VIcon size="20" icon="bx-show" />
                         <VTooltip activator="parent" location="top">
                             <span>Ver Detalhes</span>

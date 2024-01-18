@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue'
-import ProductTable from '@/views/pages/tables/ProductTable.vue'
+import TransportPackageTable from '@/views/pages/tables/TransportPackageTable.vue'
 import { useRouter } from 'vue-router'
 import { useToast } from "primevue/usetoast";
 import { useConfirm } from "primevue/useconfirm";
@@ -62,19 +62,28 @@ const deleteProductCatalogConfirm = (transportPackageCatalogItem) => {
     });
 }
 
+const goBack = () => {
+    router.back()
+}
+
 onMounted(async () => {
     await loadTransportPackageCatalogDetails();
 })
 </script>
 
 <template>
-    <VRow >
+    <VRow>
         <VCol cols="12">
             <VCard v-if="transportPackageCatalog">
                 <div class="transport-package-catalog-details-header">
-                    <h2>{{ "Embalagem de Transporte - " +transportPackageCatalog.name }}</h2>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="goBack" style="cursor: pointer;" />
+                        <h2>{{ "Embalagem de Transporte - " + transportPackageCatalog.name }}</h2>
+
+                    </div>
+
                     <div class="transport-package-catalog-details-actions">
-                        <VBtn rel="noopener noreferrer" color="primary" v-if="products && products.length == 0"
+                        <VBtn rel="noopener noreferrer" color="primary" v-if="transportPackageCatalog.transportPackageDTOList && transportPackageCatalog.transportPackageDTOList.length == 0"
                             @click="deleteProductCatalogConfirm(productCatalog)">
                             <VIcon size="20" icon="bx-trash" />
                             <VTooltip activator="parent" location="top">
@@ -105,16 +114,16 @@ onMounted(async () => {
                             Volume
                         </label>
                         <span>
-                            {{ transportPackageCatalog.volume + " cm³"}}
+                            {{ transportPackageCatalog.volume + " cm³" }}
                         </span>
                     </div>
                 </div>
                 <div class="products-actions">
                     <h2>Embalagens</h2>
                 </div>
-                <div v-if="transportPackageCatalog.transportPackageDTOList && transportPackageCatalog.transportPackageDTOList.length > 0 && !isLoading">
-                    <ProductTable @loadProducts="loadProductCatalogProducts"
-                        :product-package-view="false" :products="products" />
+                <div
+                    v-if="transportPackageCatalog.transportPackageDTOList && transportPackageCatalog.transportPackageDTOList.length > 0 && !isLoading">
+                    <TransportPackageTable v-if="!isLoading" :transport-packages="transportPackageCatalog.transportPackageDTOList" />
                 </div>
                 <div v-else class="no-transport-packages">
                     Não tem embalagens de transporte

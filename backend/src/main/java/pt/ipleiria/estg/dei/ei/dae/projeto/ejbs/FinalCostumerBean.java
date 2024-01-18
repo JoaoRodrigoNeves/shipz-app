@@ -8,7 +8,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.FinalCostumer;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.LogisticOperator;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.security.Hasher;
@@ -60,7 +59,9 @@ public class FinalCostumerBean {
         entityManager.lock(finalCostumer, LockModeType.OPTIMISTIC);
 
         try {
-            finalCostumer.setPassword(hasher.hash(password));
+            if(password != null){
+                finalCostumer.setPassword(hasher.hash(password));
+            }
             finalCostumer.setName(name);
             finalCostumer.setEmail(email);
         } catch (ConstraintViolationException e) {
@@ -69,36 +70,15 @@ public class FinalCostumerBean {
         entityManager.merge(finalCostumer);
     }
 
-    public boolean delete(String username) throws MyEntityNotFoundException {
-        FinalCostumer finalCostumer = entityManager.find(FinalCostumer.class, username);
-
-        if (finalCostumer != null) {
-            throw new MyEntityNotFoundException("FinalCostumer with username '" + username + "' not found");
-        }
-        entityManager.remove(finalCostumer);
-
-        FinalCostumer finalCostumerFind = entityManager.find(FinalCostumer.class, username);
-        return finalCostumerFind != null;
-    }
-
     //TODO: get all
     public List<FinalCostumer> getAll() {
         return entityManager.createNamedQuery("getAllFinalCostumers", FinalCostumer.class).getResultList();
     }
 
     //TODO get final costumer -> clients orders
-    public FinalCostumer getClientOrders(String username) throws MyEntityNotFoundException {
+    public FinalCostumer getOrders(String username) throws MyEntityNotFoundException {
         FinalCostumer finalCostumer = this.find(username);
-        Hibernate.initialize(finalCostumer.getClientOrders());
-        return finalCostumer;
-    }
-
-    public FinalCostumer findFinalCostumerWithClientOrder(String username) throws MyEntityNotFoundException {
-        if (!exists(username)) {
-            throw new MyEntityNotFoundException("Final Costumer with username '" + username + "' not found");
-        }
-        FinalCostumer finalCostumer = entityManager.find(FinalCostumer.class, username);
-        Hibernate.initialize(finalCostumer.getClientOrders());
+        Hibernate.initialize(finalCostumer.getOrders());
         return finalCostumer;
     }
 }

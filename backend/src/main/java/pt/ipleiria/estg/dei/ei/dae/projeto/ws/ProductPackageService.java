@@ -8,17 +8,13 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductManufacterDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductPackageDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.SensorDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductBean;
-import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductManufacterBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductPackageBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductPackage;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.security.Authenticated;
 
@@ -83,8 +79,8 @@ public class ProductPackageService {
                 product.getProductManufacter().getName()
         );
 
-        if (product.getClientOrder() != null) {
-            productDTO.setClientOrderCode(product.getClientOrder().getCode());
+        if (product.getOrder() != null) {
+            productDTO.setClientOrderCode(product.getOrder().getCode());
         }
         return productDTO;
     }
@@ -96,11 +92,12 @@ public class ProductPackageService {
     private SensorDTO sensorToDTO(Sensor sensor) {
         return new SensorDTO(
                 sensor.getCode(),
-                sensor.getType().getSensorType()
+                sensor.getType().getSensorType(),
+                sensor.isInUse()
         );
     }
 
-    private List<SensorDTO> sensorToDTOs(List<Sensor> sensors){
+    private List<SensorDTO> sensorToDTOs(List<Sensor> sensors) {
         return sensors.stream().map(this::sensorToDTO).collect(Collectors.toList());
     }
 
@@ -125,21 +122,21 @@ public class ProductPackageService {
     }
 
     //TODO update product-package
-    @PUT
+    /*@PUT
     @Path("/")
     public Response update(ProductPackageDTO productPackageDTO) throws MyEntityNotFoundException {
         productPackageBean.update(productPackageDTO.getCode(), productPackageDTO.getType(), productPackageDTO.getMaterial());
         ProductPackage productPackage = productPackageBean.find(productPackageDTO.getCode());
         return Response.status(Response.Status.OK).entity(productPackageToDTONoProducts(productPackage)).build();
-    }
+    }*/
 
     //TODO delete product-package
-    @DELETE
+    /*@DELETE
     @Path("{code}")
     public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException {
         ProductPackage productPackage = productPackageBean.delete(code);
         return Response.status(Response.Status.OK).entity(productPackageToDTONoProducts(productPackage)).build();
-    }
+    }*/
 
     //TODO get all product-packages
     @GET

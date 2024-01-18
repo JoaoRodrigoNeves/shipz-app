@@ -8,7 +8,6 @@ import jakarta.ws.rs.core.Response;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductCatalogDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductCatalogBean;
-import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductPackageBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.ListNotEmptyException;
@@ -61,8 +60,8 @@ public class ProductCatalogService {
                 product.getProductManufacter().getName()
         );
 
-        if(product.getClientOrder() != null){
-            productDTO.setClientOrderCode(product.getClientOrder().getCode());
+        if(product.getOrder() != null){
+            productDTO.setClientOrderCode(product.getOrder().getCode());
         }
         return productDTO;
     }

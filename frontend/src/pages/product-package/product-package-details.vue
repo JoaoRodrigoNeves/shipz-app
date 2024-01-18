@@ -44,7 +44,7 @@ const loadProducts = async () => {
 }
 
 const formatDate = (value) => {
-    return moment(String(value)).format('DD/MM/YYYY hh:mm:ss')
+    return moment(String(value)).format('DD/MM/YYYY HH:mm:ss')
 }
 
 const goBack = (value) => {
@@ -53,10 +53,9 @@ const goBack = (value) => {
 
 
 onMounted(async () => {
-    await loadProductPackage()
-    await loadProducts()
+  await loadProductPackage()
+  await loadProducts()
 })
-
 </script>
 
 <template>
@@ -64,7 +63,7 @@ onMounted(async () => {
         <VCol cols="12">
             <VCard v-if="productPackage">
                 <div class="product-package-details-header">
-                    <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="goBack" />
+                    <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="goBack" style="cursor: pointer;"/>
                     <h2>Embalagem de Produto - {{ "PP" +productPackage.code }}</h2>
                 </div>
                 <div class="product-package-details">

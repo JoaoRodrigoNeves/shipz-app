@@ -3,16 +3,22 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 import jakarta.persistence.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
 
+import java.time.LocalDateTime;
+
 public class ObservationDTO {
-    long id;
     double value;
     long sensorCode;
+
+    String createdAt;
+
     public ObservationDTO() {
 
     }
-    public ObservationDTO(long sensorCode, double value) {
-        this.sensorCode = sensorCode;
+
+    public ObservationDTO( double value, long sensorCode , String createdAt) {
         this.value = value;
+        this.sensorCode = sensorCode;
+        this.createdAt = createdAt;
     }
 
     public double getValue() {
@@ -29,5 +35,13 @@ public class ObservationDTO {
 
     public void setSensorCode(long sensorCode) {
         this.sensorCode = sensorCode;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 }

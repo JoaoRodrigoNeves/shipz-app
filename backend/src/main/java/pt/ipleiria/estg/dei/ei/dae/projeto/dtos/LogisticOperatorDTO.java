@@ -1,7 +1,5 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.User;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +11,7 @@ public class LogisticOperatorDTO implements Serializable {
     private String name;
     private String email;
 
-    private List<ClientOrderDTO> clientOrdersDTO;
+    private List<OrderDTO> clientOrdersDTO;
     public LogisticOperatorDTO(String username, String name, String email) {
         this.username = username;
         this.name = name;
@@ -24,11 +22,11 @@ public class LogisticOperatorDTO implements Serializable {
     public LogisticOperatorDTO() {
     }
 
-    public List<ClientOrderDTO> getClientOrdersDTO() {
+    public List<OrderDTO> getClientOrdersDTO() {
         return clientOrdersDTO;
     }
 
-    public void setClientOrdersDTO(List<ClientOrderDTO> clientOrdersDTO) {
+    public void setClientOrdersDTO(List<OrderDTO> clientOrdersDTO) {
         this.clientOrdersDTO = clientOrdersDTO;
     }
 

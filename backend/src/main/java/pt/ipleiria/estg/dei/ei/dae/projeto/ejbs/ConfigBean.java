@@ -4,16 +4,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
-import java.util.Date;
 
 @Startup
 @Singleton
@@ -21,13 +13,15 @@ public class ConfigBean {
     @EJB
     private LogisticOperatorBean logisticOperatorBean;
     @EJB
-    private ClientOrderBean clientOrderBean;
+    private OrderBean orderBean;
     @EJB
     private ProductManufacterBean productManufacterBean;
     @EJB
     private ProductPackageBean productPackageBean;
     @EJB
     private TransportPackageBean transportPackageBean;
+    @EJB
+    private TransportPackageCatalogBean transportPackageCatalogBean;
     @EJB
     private FinalCostumerBean finalCostumerBean;
     @EJB
@@ -49,9 +43,9 @@ public class ConfigBean {
             finalCostumerBean.create("finalCostumer1", "finalCostumer1", "Final Costumer 1", "final.costumer1@mail.pt", "Some address, N1");
             finalCostumerBean.create("finalCostumer2", "finalCostumer2", "Final Costumer 2", "final.costumer2@mail.pt", "Some address, N2");
 
-            productCatalogBean.create("Sem catálogo", "Sem catálogo", "Sem catálogo", "Sem catálogo", "productManufacter1", null, null, 5, "Plástico", null, null);
-            productCatalogBean.create("PC1", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1",null, null, 10, "Plástico", null, null);
-            productCatalogBean.create("PC2", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1",null, null, 15, "Plástico", null, null);
+            productCatalogBean.create("PC1", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1", null, null, 10, "Plástico", null, null);
+            productCatalogBean.create("PC2", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1", null, null, 15, "Plástico", null, null);
+            productCatalogBean.create("TESTE", "TESTE", "TESTE", "TESTE", "productManufacter1", 2, 1, 50, "TESTE", "TESTE", "TESTE");
 
             productBean.create(100002);
             productBean.create(100002);
@@ -71,7 +65,9 @@ public class ConfigBean {
             productBean.create(100001);
             productBean.create(100001);
 
-            //clientOrderBean.create("finalCostumer1", List.of(100001L, 100002L));
+            transportPackageCatalogBean.create("Embalagem S", "Cartão", 50, "logisticOperator1");
+            transportPackageCatalogBean.create("Embalagem M", "Cartão", 100, "logisticOperator1");
+            transportPackageCatalogBean.create("Embalagem L", "Cartão", 150, "logisticOperator1");
 
             sensorBean.create("Temperatura");
             sensorBean.create("Temperatura");

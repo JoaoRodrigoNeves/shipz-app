@@ -8,14 +8,10 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ClientOrderDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.FinalCostumerDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.LogisticOperatorDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.FinalCostumerBean;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Order;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.FinalCostumer;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.LogisticOperator;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
@@ -37,28 +33,16 @@ public class FinalCostumerService {
     private FinalCostumerBean finalCostumerBean;
 
     private FinalCostumerDTO toDTO(FinalCostumer finalCostumer) {
-        FinalCostumerDTO finalCostumerDTO = new FinalCostumerDTO(
+        return new FinalCostumerDTO(
                 finalCostumer.getUsername(),
                 finalCostumer.getName(),
                 finalCostumer.getEmail(),
                 finalCostumer.getAddress()
         );
-        finalCostumerDTO.setClientOrdersDTO(clientOrderToDTOs(finalCostumer.getClientOrders()));
-        return finalCostumerDTO;
     }
 
-    private ProductDTO productToDTO(Product product) {
-        ProductDTO productDTO = new ProductDTO(
-                product.getCode(),
-                product.getProductCatalog().getCode(),
-                product.getProductCatalog().getName(),
-                product.getProductManufacter().getName()
-        );
-
-        if(product.getClientOrder() != null){
-            productDTO.setClientOrderCode(product.getClientOrder().getCode());
-        }
-        return productDTO;
+    private List<FinalCostumerDTO> toDTOs(List<FinalCostumer> finalCostumers) {
+        return finalCostumers.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     private FinalCostumerDTO toDTONoClientOrders(FinalCostumer finalCostumer) {
@@ -74,28 +58,35 @@ public class FinalCostumerService {
         return finalCostumers.stream().map(this::toDTONoClientOrders).collect(Collectors.toList());
     }
 
+    private ProductDTO productToDTO(Product product) {
+        ProductDTO productDTO = new ProductDTO(
+                product.getCode(),
+                product.getProductCatalog().getCode(),
+                product.getProductCatalog().getName(),
+                product.getProductManufacter().getName()
+        );
+
+        if (product.getOrder() != null) {
+            productDTO.setClientOrderCode(product.getOrder().getCode());
+        }
+        return productDTO;
+    }
+
     private List<ProductDTO> productToDTOs(List<Product> products) {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
 
-    private ClientOrderDTO clientOrderToDTO(ClientOrder clientOrder) {
-        ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
+    private OrderDTO clientOrderToDTO(Order clientOrder) {
+        return new OrderDTO(
                 clientOrder.getCode(),
-                clientOrder.getLocation(),
+                clientOrder.getLogisticOperator().getName(),
                 clientOrder.getStatus().getOrderStatus(),
+                clientOrder.getLocation(),
                 clientOrder.getCreatedAt().toString()
         );
-        clientOrderDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
-        if (clientOrder.getDeliveredAt() != null)
-            clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
-        return clientOrderDTO;
     }
 
-    private List<FinalCostumerDTO> toDTOs(List<FinalCostumer> finalCostumers) {
-        return finalCostumers.stream().map(this::toDTO).collect(Collectors.toList());
-    }
-
-    private List<ClientOrderDTO> clientOrderToDTOs(List<ClientOrder> clientOrders) {
+    private List<OrderDTO> clientOrderToDTOs(List<Order> clientOrders) {
         return clientOrders.stream().map(this::clientOrderToDTO).collect(Collectors.toList());
     }
 
@@ -112,19 +103,40 @@ public class FinalCostumerService {
         return Response.status(Response.Status.CREATED).entity(toDTO(finalCostumer)).build();
     }
 
-    @GET // means: to call this endpoint, we need to use the HTTP GET method
-    @Path("/{username}") // means: the relative url path is “/api/final-costumers/{username}”
-    public Response getDetails(@PathParam("username") String username) throws MyEntityExistsException, MyEntityNotFoundException {
-        FinalCostumer finalCostumer = finalCostumerBean.findFinalCostumerWithClientOrder(username);
-        if (finalCostumer == null)
-            throw new MyEntityExistsException("Final Costumer with username: " + username + " doesn't exist");
-        return Response.ok(toDTO(finalCostumer)).build();
+    //TODO update a logistic-operator
+    @PUT
+    @Path("/")
+    public Response update(FinalCostumerDTO finalCostumerDTO)
+            throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+        finalCostumerBean.update(
+                finalCostumerDTO.getUsername(),
+                finalCostumerDTO.getPassword(),
+                finalCostumerDTO.getName(),
+                finalCostumerDTO.getEmail(),
+                finalCostumerDTO.getAddress()
+        );
+        FinalCostumer finalCostumer = finalCostumerBean.find(finalCostumerDTO.getUsername());
+        return Response.status(Response.Status.CREATED).entity(toDTONoClientOrders(finalCostumer)).build();
     }
 
     @GET // means: to call this endpoint, we need to use the HTTP GET method
-    @Path("/") // means: the relative url path is “/api/final-costumers/”
+    @Path("/{username}") // means: the relative url path is “/api/final-costumers/{username}”
+    public Response getDetails(@PathParam("username") String username) throws MyEntityExistsException, MyEntityNotFoundException {
+        FinalCostumer finalCostumer = finalCostumerBean.find(username);
+        return Response.ok(toDTO(finalCostumer)).build();
+    }
+
+    @GET
+    @Path("/")
     public List<FinalCostumerDTO> getAll() {
         var finalCostumers = finalCostumerBean.getAll();
         return toDTOsNoClientOrders(finalCostumers);
+    }
+
+    @GET
+    @Path("/{username}/orders")
+    public Response getOrders(@PathParam("username") String username) throws MyEntityNotFoundException {
+        FinalCostumer finalCostumer = finalCostumerBean.getOrders(username);
+        return Response.ok(clientOrderToDTOs(finalCostumer.getOrders())).build();
     }
 }

@@ -67,17 +67,6 @@ public class ProductManufacterBean {
         entityManager.merge(productManufacter);
     }
 
-    public void delete(String username) throws MyEntityNotFoundException {
-        ProductManufacter productManufacter = this.find(username);
-
-        if (productManufacter.getProductCatalogs() != null) {
-            productManufacter.getProductCatalogs().forEach(productCatalog -> productCatalog.setProductManufacter(null));
-            productManufacter.getProductCatalogs().forEach(productCatalog -> productCatalog.getProducts().forEach(product -> product.setProductManufacter(null)));
-        }
-
-        entityManager.remove(productManufacter);
-    }
-
     //TODO get all
     public List<ProductManufacter> getAll() {
         return entityManager.createNamedQuery("getAllProductManufacters", ProductManufacter.class).getResultList();

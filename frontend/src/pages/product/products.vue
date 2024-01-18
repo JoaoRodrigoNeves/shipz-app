@@ -8,17 +8,17 @@ const products = ref([])
 
 
 const loadProducts = async () => {
-    isLoading.value = true;
-    await axios.get('product-manufacters/' + JSON.parse(sessionStorage.getItem('user_info')).username + '/products').then(response => {
-        isLoading.value = false;
-        products.value = response.data
+  isLoading.value = true
+  await axios.get('product-manufacters/' + JSON.parse(sessionStorage.getItem('user_info')).username + '/products').then(response => {
+    isLoading.value = false
+    products.value = response.data
 
-    }).catch(
-        error => {
-            isLoading.value = false;
-            console.error(error)
-        }
-    )
+  }).catch(
+    error => {
+      isLoading.value = false
+      console.error(error)
+    },
+  )
 }
 
 const closeFormAndUpdate = async () => {
@@ -26,7 +26,7 @@ const closeFormAndUpdate = async () => {
 }
 
 onMounted(async () => {
-    await loadProducts();
+  await loadProducts()
 })
 </script>
 
@@ -43,6 +43,7 @@ onMounted(async () => {
         </VCol>
     </VRow>
 </template>
+
 <style scoped>
 .product-catalogs-header {
     display: flex;

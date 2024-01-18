@@ -14,7 +14,6 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.ListNotEmptyException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.ws.ProductCatalogService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,9 +114,9 @@ public class ProductCatalogBean {
                 .stream()
                 .filter(productCatalog ->
                         productCatalog.getProducts().stream().noneMatch(product ->
-                                product.getClientOrder() != null && product.getClientOrder().getCode() == 10000
+                                product.getOrder() != null && product.getOrder().getCode() == 10000
                         ) && productCatalog.getProducts().stream().anyMatch(product ->
-                                product.getClientOrder() == null
+                                product.getOrder() == null
                         )
                 )
                 .collect(Collectors.toList());

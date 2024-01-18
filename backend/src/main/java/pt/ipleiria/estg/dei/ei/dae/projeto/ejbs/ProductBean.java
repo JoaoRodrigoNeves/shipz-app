@@ -80,7 +80,7 @@ public class ProductBean {
     public void delete(long code) throws MyEntityNotFoundException {
         Product product = this.find(code);
 
-        if(product.getClientOrder() != null){
+        if(product.getOrder() != null){
             throw new MyEntityNotFoundException("Product cannot be deleted");
         }
         ProductCatalog productCatalog = product.getProductCatalog();
@@ -91,8 +91,8 @@ public class ProductBean {
         productManufacter.removeProduct(product);
 
         // in case it has no optional associations
-        if (product.getClientOrder() != null)
-            product.getClientOrder().removeProduct(product);
+        if (product.getOrder() != null)
+            product.getOrder().removeProduct(product);
         if (product.getProductPackages() != null)
             product.getProductPackages().forEach(productPackage -> productPackage.removeProduct(product));
 
@@ -134,13 +134,13 @@ public class ProductBean {
     }*/
 
     //TODO get / associate / disassociate product with client order
-    public ClientOrder getOrder(long code) throws MyEntityNotFoundException {
+    public Order getOrder(long code) throws MyEntityNotFoundException {
         Product product = this.find(code);
-        return product.getClientOrder();
+        return product.getOrder();
     }
 
     public void addProductToOrder(long code, long clientOrderCode) throws MyEntityExistsException, MyEntityNotFoundException {
-        ClientOrder clientOrder = entityManager.find(ClientOrder.class, clientOrderCode);
+        Order clientOrder = entityManager.find(Order.class, clientOrderCode);
 
         if (clientOrder == null)
             throw new MyEntityNotFoundException("Client Order with code: " + clientOrderCode + " not found");
@@ -150,12 +150,12 @@ public class ProductBean {
         if (clientOrder.getProducts().contains(product))
             throw new MyEntityExistsException("Product with code: " + code + " already added to Order: " + clientOrderCode);
 
-        product.setClientOrder(clientOrder);
+        product.setOrder(clientOrder);
         clientOrder.addProduct(product);
     }
 
     public void removeProductFromOrder(long code, long clientOrderCode) throws MyEntityNotFoundException, MyEntityExistsException {
-        ClientOrder clientOrder = entityManager.find(ClientOrder.class, clientOrderCode);
+        Order clientOrder = entityManager.find(Order.class, clientOrderCode);
         if (clientOrder == null)
             throw new MyEntityNotFoundException("Client Order with code: " + clientOrderCode + " not found");
 
@@ -164,7 +164,7 @@ public class ProductBean {
         if (!clientOrder.getProducts().contains(product))
             throw new MyEntityExistsException("Product with code: " + code + " not added to Client Order: " + clientOrderCode);
 
-        product.setClientOrder(null);
+        product.setOrder(null);
         clientOrder.removeProduct(product);
     }
 

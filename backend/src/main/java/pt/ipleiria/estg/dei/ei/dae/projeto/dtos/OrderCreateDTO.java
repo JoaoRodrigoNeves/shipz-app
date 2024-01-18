@@ -1,18 +1,16 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
-
 import java.io.Serializable;
 import java.util.List;
 
-public class ClientOrderCreateDTO implements Serializable {
+public class OrderCreateDTO implements Serializable {
     String finalCostumer;
     String logisticOperator;
     List<ProductOrderDTO> products;
-    public ClientOrderCreateDTO(){
+    public OrderCreateDTO(){
 
     }
-    public ClientOrderCreateDTO(String finalCostumer, String logisticOperator, List<ProductOrderDTO> products) {
+    public OrderCreateDTO(String finalCostumer, String logisticOperator, List<ProductOrderDTO> products) {
         this.finalCostumer = finalCostumer;
         this.logisticOperator = logisticOperator;
         this.products = products;

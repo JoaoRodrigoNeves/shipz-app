@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue'
-import ProductPackageTable from '@/views/pages/tables/ProductPackageTable.vue';
+import ProductPackageTable from '@/views/pages/tables/ProductPackageTable.vue'
 import { useRouter } from 'vue-router'
 
 const axios = inject('axios')
@@ -11,37 +11,37 @@ const productCatalog = ref(null)
 const productPackages = ref(null)
 
 const loadProductCatalogDetails = async () => {
-    isLoading.value = true;
-    await axios.get('products/' + router.currentRoute.value.params.code + '/product-catalog').then(response => {
-        isLoading.value = false;
-        productCatalog.value = response.data
-    }).catch(
-        error => {
-            isLoading.value = false;
-            console.error(error)
-        }
-    )
+  isLoading.value = true
+  await axios.get('products/' + router.currentRoute.value.params.code + '/product-catalog').then(response => {
+    isLoading.value = false
+    productCatalog.value = response.data
+  }).catch(
+    error => {
+      isLoading.value = false
+      console.error(error)
+    },
+  )
 }
 
 const loadProductPackages = async () => {
-    isLoading.value = true;
-    await axios.get('products/' + router.currentRoute.value.params.code + '/product-package').then(response => {
-        isLoading.value = false;
-        productPackages.value = response.data
-    }).catch(
-        error => {
-            isLoading.value = false;
-            console.error(error)
-        }
-    )
+  isLoading.value = true
+  await axios.get('products/' + router.currentRoute.value.params.code + '/product-package').then(response => {
+    isLoading.value = false
+    productPackages.value = response.data
+  }).catch(
+    error => {
+      isLoading.value = false
+      console.error(error)
+    },
+  )
 }
 const goBack = () => {
     router.back()
 }
 
 onMounted(async () => {
-    await loadProductCatalogDetails();
-    await loadProductPackages();
+  await loadProductCatalogDetails()
+  await loadProductPackages()
 })
 </script>
 
@@ -50,7 +50,7 @@ onMounted(async () => {
         <VCol cols="12">
             <VCard v-if="productCatalog">
                 <div class="product-details-header">
-                    <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="goBack" />
+                    <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="goBack" style="cursor: pointer;"/>
                     <h2>{{ "Produto - P" + router.currentRoute.value.params.code }}</h2>
                 </div>
 
@@ -118,6 +118,7 @@ onMounted(async () => {
         </VCol>
     </VRow>
 </template>
+
 <style scoped>
 .product-details-header {
     display: flex;

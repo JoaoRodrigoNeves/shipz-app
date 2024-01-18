@@ -40,8 +40,8 @@ public class ProductService {
                 product.getProductManufacter().getName()
         );
 
-        if (product.getClientOrder() != null) {
-            productDTO.setClientOrderCode(product.getClientOrder().getCode());
+        if (product.getOrder() != null) {
+            productDTO.setClientOrderCode(product.getOrder().getCode());
         }
         return productDTO;
     }
@@ -67,23 +67,23 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    private ClientOrderDTO clientOrderToDTONoProducts(ClientOrder clientOrder) {
-        ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
+    private OrderDTO clientOrderToDTONoProducts(Order clientOrder) {
+        OrderDTO orderDTO = new OrderDTO(
                 clientOrder.getCode(),
                 clientOrder.getLocation(),
                 clientOrder.getStatus().getOrderStatus(),
                 clientOrder.getCreatedAt().toString()
         );
         if (clientOrder.getLogisticOperator() != null) {
-            clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
+            orderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
         }
         if (clientOrder.getDeliveredAt() != null)
-            clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
+            orderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
 
-        return clientOrderDTO;
+        return orderDTO;
     }
 
-    private List<ClientOrderDTO> clientOrderToDTOsNoProducts(List<ClientOrder> clientOrders) {
+    private List<OrderDTO> clientOrderToDTOsNoProducts(List<Order> clientOrders) {
         return clientOrders.stream().map(this::clientOrderToDTONoProducts).collect(Collectors.toList());
     }
 
@@ -198,7 +198,7 @@ public class ProductService {
     @GET
     @Path("{code}/order/")
     public Response getOrder(@PathParam("code") long code) throws MyEntityNotFoundException {
-        ClientOrder clientOrder = productBean.getOrder(code);
+        Order clientOrder = productBean.getOrder(code);
         return Response.status(Response.Status.OK).entity(clientOrderToDTONoProducts(clientOrder)).build();
     }
 

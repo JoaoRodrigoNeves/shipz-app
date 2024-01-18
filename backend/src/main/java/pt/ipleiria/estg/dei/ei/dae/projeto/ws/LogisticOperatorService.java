@@ -1,18 +1,15 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.ws;
 
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.LogisticOperatorBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.*;
+import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.security.Authenticated;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,29 +34,11 @@ public class LogisticOperatorService {
     }
 
     private LogisticOperatorDTO toDTO(LogisticOperator logisticOperator) {
-         LogisticOperatorDTO logisticOperatorDTO = new LogisticOperatorDTO(
+        return new LogisticOperatorDTO(
                 logisticOperator.getUsername(),
                 logisticOperator.getName(),
                 logisticOperator.getEmail()
         );
-         logisticOperatorDTO.setClientOrdersDTO(clientOrderToDTOs(logisticOperator.getClientorders()));
-         return logisticOperatorDTO;
-    }
-
-    private ClientOrderDTO clientOrderToDTO(ClientOrder clientOrder) {
-        ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
-                clientOrder.getCode(),
-                clientOrder.getLocation(),
-                clientOrder.getStatus().getOrderStatus(),
-                clientOrder.getCreatedAt().toString()
-        );
-        clientOrderDTO.setProductsDTO(productToDTOs(clientOrder.getProducts()));
-        if (clientOrder.getDeliveredAt() != null)
-            clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
-        if(clientOrder.getLogisticOperator() != null){
-            clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
-        }
-        return clientOrderDTO;
     }
 
     private ProductDTO productToDTO(Product product) {
@@ -70,8 +49,8 @@ public class LogisticOperatorService {
                 product.getProductManufacter().getName()
         );
 
-        if(product.getClientOrder() != null){
-            productDTO.setClientOrderCode(product.getClientOrder().getCode());
+        if (product.getOrder() != null) {
+            productDTO.setClientOrderCode(product.getOrder().getCode());
         }
         return productDTO;
     }
@@ -79,13 +58,24 @@ public class LogisticOperatorService {
     private List<ProductDTO> productToDTOs(List<Product> products) {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
-    private List<ClientOrderDTO> clientOrderToDTOs(List<ClientOrder> clientOrders) {
-        return clientOrders.stream().map(this::clientOrderToDTO).collect(Collectors.toList());
+
+    private OrderDTO clientOrderDTO(Order clientOrder) {
+        return new OrderDTO(
+                clientOrder.getCode(),
+                clientOrder.getLogisticOperator().getName(),
+                clientOrder.getStatus().getOrderStatus(),
+                clientOrder.getLocation(),
+                clientOrder.getCreatedAt().toString()
+        );
+    }
+
+    private List<OrderDTO> clientOrderDTOs(List<Order> clientOrders) {
+        return clientOrders.stream().map(this::clientOrderDTO).collect(Collectors.toList());
     }
 
     @POST
     @Path("/")
-    public Response create(LogisticOperatorDTO logisticOperatorDTO) throws MyEntityExistsException {
+    public Response create(LogisticOperatorDTO logisticOperatorDTO) throws MyEntityNotFoundException, MyEntityExistsException {
         logisticOperatorBean.create(
                 logisticOperatorDTO.getUsername(),
                 logisticOperatorDTO.getPassword(),
@@ -94,33 +84,43 @@ public class LogisticOperatorService {
         );
 
         LogisticOperator newLogisticOperator = logisticOperatorBean.find(logisticOperatorDTO.getUsername());
-        if(newLogisticOperator == null)
-            return Response.status(Response.Status.BAD_REQUEST).build();
         return Response.status(Response.Status.CREATED).entity(toDTO(newLogisticOperator)).build();
     }
 
     @GET // means: to call this endpoint, we need to use the HTTP GET method
     @Path("/{username}") // means: the relative url path is “/api/logistic-operators/{username}”
-    public Response getDetails(@PathParam("username") String username) throws MyEntityExistsException {
+    public Response getDetails(@PathParam("username") String username) throws MyEntityNotFoundException {
         var logisticOperator = logisticOperatorBean.find(username);
-        if (logisticOperator == null)
-            throw new MyEntityExistsException("LogisticOperator with username: " + username + " doesn't exist");
         return Response.ok(toDTONoClientOrders(logisticOperator)).build();
     }
 
-    @GET // means: to call this endpoint, we need to use the HTTP GET method
-    @Path("/{username}/orders") // means: the relative url path is “/api/logistic-operators/{username}”
-    public Response getOrders(@PathParam("username") String username) throws MyEntityExistsException, MyEntityNotFoundException {
-       LogisticOperator logisticOperator = logisticOperatorBean.getOrders(username);
-        if (logisticOperator == null)
-            throw new MyEntityExistsException("LogisticOperator with username: " + username + " doesn't exist");
-        return Response.ok(clientOrderToDTOs(logisticOperator.getClientorders())).build();
+    // TODO get logistic-operator orders
+    @GET
+    @Path("/{username}/orders")
+    public Response getOrders(@PathParam("username") String username) throws MyEntityNotFoundException {
+        LogisticOperator logisticOperator = logisticOperatorBean.getOrders(username);
+        return Response.ok(clientOrderDTOs(logisticOperator.getOrders())).build();
     }
 
-    @GET // means: to call this endpoint, we need to use the HTTP GET method
-    @Path("/") // means: the relative url path is “/api/logistic-operators/”
+    @GET
+    @Path("/")
     public List<LogisticOperatorDTO> getAll() {
         var logisticOperators = logisticOperatorBean.getAll();
         return toDTOsNoClientOrders(logisticOperators);
+    }
+
+    //TODO update a logistic-operator
+    @PUT
+    @Path("/")
+    public Response update(LogisticOperatorDTO logisticOperatorDTO)
+            throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
+        logisticOperatorBean.update(
+                logisticOperatorDTO.getUsername(),
+                logisticOperatorDTO.getPassword(),
+                logisticOperatorDTO.getName(),
+                logisticOperatorDTO.getEmail()
+        );
+        LogisticOperator logisticOperator = logisticOperatorBean.find(logisticOperatorDTO.getUsername());
+        return Response.status(Response.Status.CREATED).entity(toDTONoClientOrders(logisticOperator)).build();
     }
 }

@@ -42,6 +42,10 @@ const save = (async () => {
         }
     }).catch(
         error => {
+            if (error.request.status == 409)
+                toast.add({ severity: 'error', summary: 'Erro', detail: error.response.data, life: 3000 })
+            else
+                toast.add({ severity: 'error', summary: 'Erro', life: 3000 })
             isLoading.value = false;
             console.error(error)
         }
