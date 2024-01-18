@@ -92,7 +92,8 @@ public class ProductPackageService {
     private SensorDTO sensorToDTO(Sensor sensor) {
         return new SensorDTO(
                 sensor.getCode(),
-                sensor.getType().getSensorType()
+                sensor.getType().getSensorType(),
+                sensor.isInUse()
         );
     }
 

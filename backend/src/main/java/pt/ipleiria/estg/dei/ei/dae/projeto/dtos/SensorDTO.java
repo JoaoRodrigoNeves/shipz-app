@@ -10,16 +10,17 @@ public class SensorDTO implements Serializable {
 
     long code;
     String type;
-    String sensorTypeName;
-    List<Observation> observations;
+    boolean inUse;
+
 
     public SensorDTO() {
 
     }
 
-    public SensorDTO(long code, String type) {
+    public SensorDTO(long code, String type, boolean inUse) {
         this.code = code;
         this.type = type;
+        this.inUse = inUse;
     }
 
     public long getCode() {
@@ -38,11 +39,11 @@ public class SensorDTO implements Serializable {
         this.type = type;
     }
 
-    public List<Observation> getObservations() {
-        return observations;
+    public boolean isInUse() {
+        return inUse;
     }
 
-    public void setObservations(List<Observation> observations) {
-        this.observations = observations;
+    public void setInUse(boolean inUse) {
+        this.inUse = inUse;
     }
 }
