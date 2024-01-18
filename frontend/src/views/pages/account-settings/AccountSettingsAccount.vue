@@ -180,26 +180,5 @@ const isAccountDeactivated = ref(false)
         </VCardText>
       </VCard>
     </VCol>
-
-    <VCol cols="12">
-      <VCard title="Apagar conta">
-        <VCardText>
-          <div>
-            <VCheckbox
-              v-model="isAccountDeactivated"
-              label="Confirmo que pretendo apagar a conta"
-            />
-          </div>
-
-          <VBtn
-            :disabled="!isAccountDeactivated"
-            color="error"
-            class="mt-3"
-          >
-            Apagar Conta
-          </VBtn>
-        </VCardText>
-      </VCard>
-    </VCol>
   </VRow>
 </template>
