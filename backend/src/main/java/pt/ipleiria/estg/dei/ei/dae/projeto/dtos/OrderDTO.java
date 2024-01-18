@@ -1,12 +1,9 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-public class ClientOrderDTO implements Serializable {
+public class OrderDTO implements Serializable {
     private long code;
     private String logisticOperator;
     private String logisticOperatorName;
@@ -18,18 +15,18 @@ public class ClientOrderDTO implements Serializable {
     private String deliveredAt;
     private ArrayList<ProductDTO> products;
 
-    public ClientOrderDTO() {
+    public OrderDTO() {
         this.products = new ArrayList<ProductDTO>();
     }
 
-    public ClientOrderDTO(long code, String logisticOperatorName, String status) {
+    public OrderDTO(long code, String logisticOperatorName, String status) {
         this.code = code;
         this.logisticOperatorName = logisticOperatorName;
         this.status = status;
         this.products = new ArrayList<ProductDTO>();
     }
 
-    public ClientOrderDTO(long code, String location, String status, String createdAt) {
+    public OrderDTO(long code, String location, String status, String createdAt) {
         this.code = code;
         this.status = status;
         this.location = location;

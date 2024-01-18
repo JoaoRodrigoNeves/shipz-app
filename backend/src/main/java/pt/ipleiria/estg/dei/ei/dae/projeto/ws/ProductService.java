@@ -67,23 +67,23 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    private ClientOrderDTO clientOrderToDTONoProducts(Order clientOrder) {
-        ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
+    private OrderDTO clientOrderToDTONoProducts(Order clientOrder) {
+        OrderDTO orderDTO = new OrderDTO(
                 clientOrder.getCode(),
                 clientOrder.getLocation(),
                 clientOrder.getStatus().getOrderStatus(),
                 clientOrder.getCreatedAt().toString()
         );
         if (clientOrder.getLogisticOperator() != null) {
-            clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
+            orderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
         }
         if (clientOrder.getDeliveredAt() != null)
-            clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
+            orderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
 
-        return clientOrderDTO;
+        return orderDTO;
     }
 
-    private List<ClientOrderDTO> clientOrderToDTOsNoProducts(List<Order> clientOrders) {
+    private List<OrderDTO> clientOrderToDTOsNoProducts(List<Order> clientOrders) {
         return clientOrders.stream().map(this::clientOrderToDTONoProducts).collect(Collectors.toList());
     }
 

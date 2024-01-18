@@ -4,7 +4,6 @@ import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.LogisticOperatorBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.*;
@@ -60,15 +59,15 @@ public class LogisticOperatorService {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
 
-    private ClientOrderDTO clientOrderDTO(Order clientOrder) {
-        return new ClientOrderDTO(
+    private OrderDTO clientOrderDTO(Order clientOrder) {
+        return new OrderDTO(
                 clientOrder.getCode(),
                 clientOrder.getLogisticOperator().getName(),
                 clientOrder.getStatus().getOrderStatus()
         );
     }
 
-    private List<ClientOrderDTO> clientOrderDTOs(List<Order> clientOrders) {
+    private List<OrderDTO> clientOrderDTOs(List<Order> clientOrders) {
         return clientOrders.stream().map(this::clientOrderDTO).collect(Collectors.toList());
     }
 

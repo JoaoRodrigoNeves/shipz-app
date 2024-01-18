@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Stateless
-public class ClientOrderBean {
+public class OrderBean {
 
     @PersistenceContext
     private EntityManager entityManager;

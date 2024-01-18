@@ -1,16 +1,14 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-public class ClientOrderListDTO extends ClientOrderDTO implements Serializable {
+public class OrderListDTO extends OrderDTO implements Serializable {
     private long productQuantity;
 
-    public ClientOrderListDTO() {
+    public OrderListDTO() {
     }
 
-    public ClientOrderListDTO(long code, String logisticOperatorName, String status, long productQuantity) {
+    public OrderListDTO(long code, String logisticOperatorName, String status, long productQuantity) {
         super(code, logisticOperatorName, status);
         this.productQuantity = productQuantity;
     }

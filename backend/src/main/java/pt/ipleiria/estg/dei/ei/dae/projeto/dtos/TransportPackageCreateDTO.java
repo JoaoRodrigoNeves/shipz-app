@@ -4,7 +4,6 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class TransportPackageCreateDTO extends TransportPackageDTO implements Serializable {
 
@@ -16,7 +15,7 @@ public class TransportPackageCreateDTO extends TransportPackageDTO implements Se
 
     public TransportPackageCreateDTO(long code, PackageType type, String material, long volume, String createdAt, long quantity) {
         super(code, type, material, volume, createdAt);
-        this.clientOrders = new ArrayList<ClientOrderDTO>();
+        this.clientOrders = new ArrayList<OrderDTO>();
         this.quantity = quantity;
     }
 

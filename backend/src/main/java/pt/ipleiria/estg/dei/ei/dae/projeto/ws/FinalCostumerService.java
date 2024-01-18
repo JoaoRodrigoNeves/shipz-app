@@ -76,15 +76,15 @@ public class FinalCostumerService {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
 
-    private ClientOrderDTO clientOrderToDTO(Order clientOrder) {
-        return new ClientOrderDTO(
+    private OrderDTO clientOrderToDTO(Order clientOrder) {
+        return new OrderDTO(
                 clientOrder.getCode(),
                 clientOrder.getLogisticOperator().getName(),
                 clientOrder.getStatus().getOrderStatus()
         );
     }
 
-    private List<ClientOrderDTO> clientOrderToDTOs(List<Order> clientOrders) {
+    private List<OrderDTO> clientOrderToDTOs(List<Order> clientOrders) {
         return clientOrders.stream().map(this::clientOrderToDTO).collect(Collectors.toList());
     }
 

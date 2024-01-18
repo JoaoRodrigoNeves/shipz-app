@@ -5,7 +5,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.*;
-import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ClientOrderBean;
+import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.OrderBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ObservationBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.SensorBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.TransportPackageCatalogBean;
@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 @Path("/orders")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-public class ClientOrderService {
+public class OrderService {
     @EJB
-    private ClientOrderBean clientOrderBean;
+    private OrderBean orderBean;
     @EJB
     private ObservationBean observationBean;
     @EJB
@@ -29,43 +29,43 @@ public class ClientOrderService {
     @EJB
     private SensorBean sensorBean;
 
-    private ClientOrderDTO toDTO(Order clientOrder) {
-        ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
+    private OrderDTO toDTO(Order clientOrder) {
+        OrderDTO orderDTO = new OrderDTO(
                 clientOrder.getCode(),
                 clientOrder.getLocation(),
                 clientOrder.getStatus().getOrderStatus(),
                 clientOrder.getCreatedAt().toString()
         );
         if (clientOrder.getDeliveredAt() != null)
-            clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
+            orderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
         if (clientOrder.getLogisticOperator() != null) {
-            clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
-            clientOrderDTO.setLogisticOperatorName(clientOrder.getLogisticOperator().getName());
+            orderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
+            orderDTO.setLogisticOperatorName(clientOrder.getLogisticOperator().getName());
         }
         if (clientOrder.getFinalCostumer() != null) {
-            clientOrderDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
-            clientOrderDTO.setFinalCostumerName(clientOrder.getFinalCostumer().getName());
+            orderDTO.setFinalCostumer(clientOrder.getFinalCostumer().getUsername());
+            orderDTO.setFinalCostumerName(clientOrder.getFinalCostumer().getName());
         }
-        return clientOrderDTO;
+        return orderDTO;
     }
 
-    private ClientOrderDTO toDTONoProducts(Order clientOrder) {
-        ClientOrderDTO clientOrderDTO = new ClientOrderDTO(
+    private OrderDTO toDTONoProducts(Order clientOrder) {
+        OrderDTO orderDTO = new OrderDTO(
                 clientOrder.getCode(),
                 clientOrder.getLocation(),
                 clientOrder.getStatus().getOrderStatus(),
                 clientOrder.getCreatedAt().toString()
         );
         if (clientOrder.getDeliveredAt() != null)
-            clientOrderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
+            orderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
         if (clientOrder.getLogisticOperator() != null) {
-            clientOrderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
+            orderDTO.setLogisticOperator(clientOrder.getLogisticOperator().getUsername());
         }
 
-        return clientOrderDTO;
+        return orderDTO;
     }
 
-    private List<ClientOrderDTO> toDTOsNoProducts(List<Order> clientOrders) {
+    private List<OrderDTO> toDTOsNoProducts(List<Order> clientOrders) {
         return clientOrders.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
@@ -128,8 +128,8 @@ public class ClientOrderService {
     //TODO create order
     @POST
     @Path("/")
-    public Response create(ClientOrderCreateDTO clientOrderDTO) throws MyEntityNotFoundException, MyConstraintViolationException, NoStockException {
-        clientOrderBean.create(
+    public Response create(OrderCreateDTO clientOrderDTO) throws MyEntityNotFoundException, MyConstraintViolationException, NoStockException {
+        orderBean.create(
                 clientOrderDTO.getFinalCostumer(),
                 clientOrderDTO.getLogisticOperator(),
                 clientOrderDTO.getProducts(),
@@ -142,7 +142,7 @@ public class ClientOrderService {
     @GET
     @Path("/{code}")
     public Response getDetails(@PathParam("code") long code) throws MyEntityExistsException, MyEntityNotFoundException {
-        var clientOrder = clientOrderBean.getProducts(code);
+        var clientOrder = orderBean.getProducts(code);
         if (clientOrder == null) {
             throw new MyEntityNotFoundException("ClientOrder with code: " + code + " doesn't exist");
         }
@@ -153,7 +153,7 @@ public class ClientOrderService {
     @GET
     @Path("/")
     public Response getAllClientOrders() {
-        var clientOrders = clientOrderBean.getAll();
+        var clientOrders = orderBean.getAll();
         return Response.status(Response.Status.OK).entity(toDTOsNoProducts(clientOrders)).build();
     }
 
@@ -161,23 +161,23 @@ public class ClientOrderService {
     @GET
     @Path("/{code}/transport-packages")
     public Response getAllTransportPackages(@PathParam("code") long code) throws MyEntityNotFoundException {
-        Order clientOrder = clientOrderBean.getTransportPackages(code);
+        Order clientOrder = orderBean.getTransportPackages(code);
         return Response.status(Response.Status.OK).entity(transportPackageToDTOs(clientOrder.getTransportPackages())).build();
     }
 
     //TODO change location
     @PATCH
     @Path("/{code}/location/")
-    public Response changeLocation(@PathParam("code") long code, ClientOrderDTO clientOrderDTO) throws MyEntityNotFoundException {
-        clientOrderBean.changeLocation(code, clientOrderDTO.getLocation());
+    public Response changeLocation(@PathParam("code") long code, OrderDTO orderDTO) throws MyEntityNotFoundException {
+        orderBean.changeLocation(code, orderDTO.getLocation());
         return Response.status(Response.Status.OK).build();
     }
 
     //TODO change status
     @PATCH
     @Path("/{code}/status")
-    public Response changeStatus(@PathParam("code") long code, ClientOrderDTO clientOrderDTO) throws MyEntityNotFoundException {
-        clientOrderBean.changeStatus(code, clientOrderDTO.getStatus());
+    public Response changeStatus(@PathParam("code") long code, OrderDTO orderDTO) throws MyEntityNotFoundException {
+        orderBean.changeStatus(code, orderDTO.getStatus());
         return Response.status(Response.Status.OK).build();
     }
 
@@ -185,7 +185,7 @@ public class ClientOrderService {
     @GET
     @Path("/{code}/observations")
     public Response getAllObservations(@PathParam("code") long code) throws MyEntityNotFoundException {
-        var clientOrder = clientOrderBean.getProducts(code);
+        var clientOrder = orderBean.getProducts(code);
 
         List<ObservationPackageDTO> observationPackageDTO = new ArrayList<>();
 
@@ -222,7 +222,7 @@ public class ClientOrderService {
     @GET
     @Path("/{code}/products")
     public Response getProducts(@PathParam("code") long code) throws MyEntityNotFoundException {
-        Order clientOrder = clientOrderBean.getProducts(code);
+        Order clientOrder = orderBean.getProducts(code);
         return Response.status(Response.Status.OK).entity(productToDTOs(clientOrder.getProducts())).build();
     }
 
