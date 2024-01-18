@@ -4,10 +4,8 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.hibernate.Hibernate;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Order;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackage;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
 import java.util.List;
@@ -49,9 +47,9 @@ public class TransportPackageBean {
     }
 
     //TODO get orders of a transport package
-    public List<ClientOrder> getOrders(long code) throws MyEntityNotFoundException {
+    public List<Order> getOrders(long code) throws MyEntityNotFoundException {
         TransportPackage transportPackage = this.find(code);
-        Hibernate.initialize(transportPackage.getClientOrders());
-        return transportPackage.getClientOrders();
+        Hibernate.initialize(transportPackage.getOrders());
+        return transportPackage.getOrders();
     }
 }

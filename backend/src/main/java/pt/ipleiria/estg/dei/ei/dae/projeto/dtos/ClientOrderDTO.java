@@ -13,20 +13,28 @@ public class ClientOrderDTO implements Serializable {
     private String finalCostumer;
     private String finalCostumerName;
     private String location;
-    private List<ProductDTO> productsDTO;
     private String status;
     private String createdAt;
     private String deliveredAt;
+    private ArrayList<ProductDTO> products;
+
+    public ClientOrderDTO() {
+        this.products = new ArrayList<ProductDTO>();
+    }
+
+    public ClientOrderDTO(long code, String logisticOperatorName, String status) {
+        this.code = code;
+        this.logisticOperatorName = logisticOperatorName;
+        this.status = status;
+        this.products = new ArrayList<ProductDTO>();
+    }
 
     public ClientOrderDTO(long code, String location, String status, String createdAt) {
         this.code = code;
         this.status = status;
         this.location = location;
         this.createdAt = createdAt;
-        this.productsDTO = new ArrayList<>();
-    }
-
-    public ClientOrderDTO() {
+        this.products = new ArrayList<ProductDTO>();
     }
 
     public long getCode() {
@@ -69,14 +77,6 @@ public class ClientOrderDTO implements Serializable {
         this.finalCostumerName = finalCostumerName;
     }
 
-    public List<ProductDTO> getProductsDTO() {
-        return productsDTO;
-    }
-
-    public void setProductsDTO(List<ProductDTO> productsDTO) {
-        this.productsDTO = productsDTO;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -107,5 +107,13 @@ public class ClientOrderDTO implements Serializable {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public ArrayList<ProductDTO> getProducts() {
+        return products;
+    }
+
+    public void setProducts(ArrayList<ProductDTO> products) {
+        this.products = products;
     }
 }

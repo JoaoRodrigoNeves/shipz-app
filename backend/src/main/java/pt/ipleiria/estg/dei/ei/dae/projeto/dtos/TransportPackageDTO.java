@@ -1,11 +1,8 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ClientOrder;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackage;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

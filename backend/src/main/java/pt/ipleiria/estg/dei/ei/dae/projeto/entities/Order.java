@@ -1,13 +1,12 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.FinalCostumerDTO;
+import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.OrderStatus;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,47 +14,41 @@ import java.util.Objects;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllOrders",
-                query = "SELECT o FROM ClientOrder o ORDER BY o.code" // JPQL
+                query = "SELECT o FROM Order o ORDER BY o.code" // JPQL
         )
 })
 @Table(name = "orders")
-public class ClientOrder {
+public class Order implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "client_order_id_seq")
-    @SequenceGenerator(name = "client_order_id_seq", sequenceName = "client_order_id_seq", initialValue = 100000)
-    private long code;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "order_id_seq")
+    @SequenceGenerator(name = "order_id_seq", sequenceName = "order_id_seq", initialValue = 100000)
+    long code;
+    @ManyToOne
     @JoinColumn(name = "final_costumer_username")
-    private FinalCostumer finalCostumer;
-
-    @ManyToOne(fetch = FetchType.EAGER)
+    FinalCostumer finalCostumer;
+    @ManyToOne
     @JoinColumn(name = "logistic_operator_username")
-    private LogisticOperator logisticOperator;
-
-    @OneToMany(mappedBy = "clientOrder", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Product> products;
-
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "clientOrders")
+    LogisticOperator logisticOperator;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.REMOVE)
+    List<Product> products;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "orders")
     List<TransportPackage> transportPackages;
-
-    private OrderStatus status;
-  
-    private String location;
+    OrderStatus status;
+    String location;
     @Column(name = "created_at")
     LocalDateTime createdAt;
-
     @Column(name = "delivered_at")
     LocalDateTime deliveredAt;
 
-    public ClientOrder(FinalCostumer finalCostumer, LogisticOperator logisticOperator) {
+    public Order() {
+    }
+
+    public Order(FinalCostumer finalCostumer, LogisticOperator logisticOperator) {
         this.finalCostumer = finalCostumer;
         this.logisticOperator = logisticOperator;
         this.products = new ArrayList<Product>();
         this.transportPackages = new ArrayList<TransportPackage>();
         this.status = OrderStatus.STATUS_0;
-    }
-
-    public ClientOrder() {
     }
 
     public long getCode() {
@@ -142,7 +135,7 @@ public class ClientOrder {
     public void setLocation(String location) {
         this.location = location;
     }
-    
+
     public LocalDateTime getDeliveredAt() {
         return deliveredAt;
     }
@@ -155,7 +148,7 @@ public class ClientOrder {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ClientOrder that = (ClientOrder) o;
+        Order that = (Order) o;
         return code == that.code && Objects.equals(finalCostumer, that.finalCostumer) && Objects.equals(logisticOperator, that.logisticOperator) && Objects.equals(products, that.products) && Objects.equals(transportPackages, that.transportPackages) && status == that.status && Objects.equals(location, that.location) && Objects.equals(createdAt, that.createdAt) && Objects.equals(deliveredAt, that.deliveredAt);
     }
 

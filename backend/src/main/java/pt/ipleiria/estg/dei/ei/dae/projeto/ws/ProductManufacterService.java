@@ -78,8 +78,8 @@ public class ProductManufacterService {
                 product.getProductManufacter().getName()
         );
 
-        if(product.getClientOrder() != null){
-            productDTO.setClientOrderCode(product.getClientOrder().getCode());
+        if(product.getOrder() != null){
+            productDTO.setClientOrderCode(product.getOrder().getCode());
         }
         return productDTO;
     }

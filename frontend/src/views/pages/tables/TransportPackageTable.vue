@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-
+import moment from 'moment'
 const router = useRouter()
 
 const props = defineProps({
@@ -46,7 +46,7 @@ watch(
         </thead>
 
         <tbody>
-            <tr v-for="item in transportPackagesCatalogs" :key="item.code">
+            <tr v-for="item in transportPackages" :key="item.code">
                 <td style="width: 20%;">
                     {{ item.code }}
                 </td>
@@ -57,7 +57,7 @@ watch(
                     {{ item.volume + " cm³" }}
                 </td>
                 <td style="width: 30%; text-align: center;">
-                    {{ formatDate(item.createdAt)}}
+                    {{ formatDate(item.createdAt) }}
                 </td>
             </tr>
         </tbody>

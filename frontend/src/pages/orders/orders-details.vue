@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import ProductTable from '@/views/pages/tables/ProductTableOrders.vue'
 import { useToast } from "primevue/usetoast"
 import moment from "moment/moment"
+import TransportPackageTable from '@/views/pages/tables/TransportPackageTable.vue'
 
 const toast = useToast()
 const axios = inject('axios')
@@ -11,6 +12,7 @@ const router = useRouter()
 const isLoading = ref(false)
 const order = ref([])
 const products = ref([])
+const transportPackages = ref([])
 const cities = ref([])
 const dropdown = (JSON.parse(sessionStorage.getItem('user_info')).role == 'LogisticOperator')
 
@@ -23,7 +25,6 @@ const loadOrderDetails = async () => {
 
   await axios.get('orders/' + router.currentRoute.value.params.code).then(response => {
     order.value = response.data
-    products.value = response.data.productsDTO
     isLoading.value = false
   }).catch(
     error => {
@@ -31,6 +32,33 @@ const loadOrderDetails = async () => {
       console.error(error)
     },
   )
+}
+
+const loadTransportPackages = async () => {
+  isLoading.value = true
+
+  await axios.get('orders/' + router.currentRoute.value.params.code + '/transport-packages'
+  ).then(response => {
+    transportPackages.value = response.data
+    isLoading.value = false
+  }).catch(
+    error => {
+      isLoading.value = false
+      console.error(error)
+    },
+  )
+}
+
+const loadProducts = async () => {
+  isLoading.value = true
+  await axios.get('orders/' + router.currentRoute.value.params.code + '/products'
+  ).then(response => {
+    isLoading.value = false
+    products.value = response.data
+  }).catch(error => {
+    isLoading.value = false
+    console.error(error)
+  })
 }
 
 const loadCities = async () => {
@@ -66,6 +94,8 @@ const changeLocation = async () => {
 
 onMounted(async () => {
   await loadOrderDetails()
+  await loadTransportPackages()
+  await loadProducts()
   await loadCities()
 })
 </script>
@@ -139,15 +169,38 @@ onMounted(async () => {
           <VAutocomplete v-model="order.location" label="Localização" placeholder="Selecionar Localização" :items="cities"
             @update:model-value="changeLocation" />
         </div>
-        <div class="products-actions">
-          <h3>Produtos</h3>
-        </div>
-        <div v-if="products && products.length > 0 && !isLoading">
-          <ProductTable v-if="!isLoading" :products="products" />
-        </div>
-        <div v-else class="no-products">
-          Não tem produtos associados a esta encomenda
-        </div>
+        <VExpansionPanels>
+          <VExpansionPanel>
+            <VExpansionPanelTitle>
+              <div class="table-actions">
+                <h3>Embalagens de Transporte</h3>
+              </div>
+            </VExpansionPanelTitle>
+            <VExpansionPanelText>
+              <div v-if="transportPackages && transportPackages.length > 0 && !isLoading">
+                <TransportPackageTable v-if="!isLoading" :transport-packages="transportPackages" />
+              </div>
+              <div v-else class="no-data">
+                Não tem embalagens de transporte associados a esta encomenda
+              </div>
+            </VExpansionPanelText>
+          </VExpansionPanel>
+          <VExpansionPanel>
+            <VExpansionPanelTitle>
+              <div class="table-actions">
+                <h3>Produtos</h3>
+              </div>
+            </VExpansionPanelTitle>
+            <VExpansionPanelText>
+              <div v-if="products && products.length > 0 && !isLoading">
+                <ProductTable v-if="!isLoading" :products="products" />
+              </div>
+              <div v-else class="no-data">
+                Não tem produtos associados a esta encomenda
+              </div>
+            </VExpansionPanelText>
+          </VExpansionPanel>
+        </VExpansionPanels>
       </VCard>
     </VCol>
   </VRow>
@@ -179,19 +232,13 @@ onMounted(async () => {
   font-size: 14px;
 }
 
-.products-actions {
+.table-actions {
   display: flex;
   justify-content: space-between;
   padding: 24px;
 }
 
-.products-actions .product-quantity {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.no-products {
+.no-data {
   padding: 0 24px 24px 24px;
 }
 </style>
