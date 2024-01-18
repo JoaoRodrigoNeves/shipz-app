@@ -1,6 +1,8 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductOrderDTO implements Serializable {
 
@@ -17,8 +19,10 @@ public class ProductOrderDTO implements Serializable {
     String primaryPackageMaterial;
     String secondaryPackageMaterial;
     String tertiaryPackageMaterial;
+    List<String> sensors;
 
     public ProductOrderDTO() {
+        this.sensors = new ArrayList<>();
     }
 
     public ProductOrderDTO(long code, long quantity, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial, long primaryPackageVolume) {
@@ -139,5 +143,13 @@ public class ProductOrderDTO implements Serializable {
 
     public void setPrimaryPackageVolume(long primaryPackageVolume) {
         this.primaryPackageVolume = primaryPackageVolume;
+    }
+
+    public List<String> getSensors() {
+        return sensors;
+    }
+
+    public void setSensors(List<String> sensors) {
+        this.sensors = sensors;
     }
 }

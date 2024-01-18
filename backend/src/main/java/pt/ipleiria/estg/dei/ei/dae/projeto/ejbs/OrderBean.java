@@ -2,6 +2,7 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.ejbs;
 
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
@@ -56,6 +57,11 @@ public class OrderBean {
                     volumeTotal += productCatalog.getPrimaryPackageVolume() * product.getQuantity();
                     for (int i = 0; i < product.getQuantity(); i++) {
                         productsList.get(i).setOrder(clientOrder);
+                        List<ProductPackage> productPackages = productsList.get(i).getProductPackages().stream().filter(productPackage -> productPackage.getType() == PackageType.PRIMARY).collect(Collectors.toList());
+                        productPackages.get(0).getSensors().forEach(sensor -> {
+                            System.out.println("Sensor: " + sensor.getCode());
+                            sensor.setInUse(true);
+                        });
                         clientOrder.addProduct(productsList.get(i));
                     }
                 } else {
@@ -138,7 +144,7 @@ public class OrderBean {
         Order order = this.find(code);
         OrderStatus orderStatus = OrderStatus.fromString(status);
         order.setStatus(orderStatus);
-        if (orderStatus == OrderStatus.STATUS_3)
+        if (orderStatus == OrderStatus.STATUS_2)
             order.setDeliveredAt(LocalDateTime.now());
     }
 

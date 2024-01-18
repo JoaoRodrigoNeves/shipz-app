@@ -6,15 +6,17 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.*;
-import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductBean;
-import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductCatalogBean;
-import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductPackageBean;
+import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.*;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.security.Authenticated;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +33,10 @@ public class ProductService {
     private ProductPackageBean productPackageBean;
     @EJB
     private ProductCatalogBean productCatalogBean;
+    @EJB
+    private SensorBean sensorBean;
+    @EJB
+    private PackageBean packageBean;
 
     private ProductDTO productToDTO(Product product) {
         ProductDTO productDTO = new ProductDTO(
@@ -120,7 +126,34 @@ public class ProductService {
             Product product = productBean.create(
                     productCreateDTO.getProductCatalogCode()
             );
+            ProductCatalog productCatalog = productCatalogBean.find(productCreateDTO.getProductCatalogCode());
             productPackageBean.addProductToAllPackages(product);
+
+
+            ProductPackage productPackage = product.getProductPackages().stream().
+                    filter(productPackage1 -> productPackage1.getType() == PackageType.PRIMARY).findFirst().orElseThrow();
+
+
+            if (productCatalog.isDamageSensor()) {
+                Sensor sensor = sensorBean.create(SensorType.DAMAGE.getSensorType());
+                sensorBean.addToPackage(sensor.getCode(), productPackage.getCode());
+            }
+            if (productCatalog.isGpsSensor()) {
+                Sensor sensor = sensorBean.create(SensorType.GPS.getSensorType());
+                sensorBean.addToPackage(sensor.getCode(), productPackage.getCode());
+            }
+            if (productCatalog.isPressureSensor()) {
+                Sensor sensor = sensorBean.create(SensorType.PRESSURE.getSensorType());
+                sensorBean.addToPackage(sensor.getCode(), productPackage.getCode());
+            }
+            if (productCatalog.isTemperatureSensor()) {
+                Sensor sensor = sensorBean.create(SensorType.TEMPERATURE.getSensorType());
+                sensorBean.addToPackage(sensor.getCode(), productPackage.getCode());
+            }
+            if (productCatalog.isHumiditySensor()) {
+                Sensor sensor = sensorBean.create(SensorType.HUMIDITY.getSensorType());
+                sensorBean.addToPackage(sensor.getCode(), productPackage.getCode());
+            }
         }
         return Response.status(Response.Status.CREATED).build();
     }

@@ -16,6 +16,7 @@ import java.util.Objects;
                 query = "SELECT s FROM Sensor s ORDER BY s.code DESC" //JPQL
         )
 })
+@Table(name = "sensors")
 public class Sensor implements Serializable {
 
     @Id
@@ -25,14 +26,11 @@ public class Sensor implements Serializable {
     SensorType type;
     @OneToMany(mappedBy = "sensor", cascade = CascadeType.REMOVE)
     List<Observation> observations;
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "sensor_package_association",
-            joinColumns = @JoinColumn(name = "sensor_code", referencedColumnName = "code"),
-            inverseJoinColumns = @JoinColumn(name = "package_code", referencedColumnName = "code")
-    )
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "sensors", cascade = CascadeType.PERSIST)
     List<Package> packages;
 
+    @Column(name = "in_use")
     boolean inUse;
 
     public Sensor(){

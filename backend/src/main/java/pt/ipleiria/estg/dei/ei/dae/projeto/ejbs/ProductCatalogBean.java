@@ -7,9 +7,12 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
 import org.hibernate.Hibernate;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.SensorDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.ListNotEmptyException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
@@ -34,7 +37,7 @@ public class ProductCatalogBean {
         return (Long) query.getSingleResult() > 0L;
     }
 
-    public ProductCatalog create(String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, long primaryPackageVolume, String primaryPackageMaterial, String secondaryPackageMaterial,String tertiaryPackageMaterial) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
+    public ProductCatalog create(String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, long primaryPackageVolume, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial, List<String> sensors) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
         ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, productManufacterUsername);
 
         if (productManufacter == null)
@@ -42,6 +45,21 @@ public class ProductCatalogBean {
 
         try {
             var productCatalog = new ProductCatalog(name, catalogArea, category, description, productManufacter, maxSecondaryPackage, maxTertiaryPackage, primaryPackageVolume, primaryPackageMaterial, secondaryPackageMaterial, tertiaryPackageMaterial);
+            if (sensors != null) {
+                sensors.forEach(sensor -> {
+                    SensorType sensorType = SensorType.fromString(sensor);
+                    if (sensorType == SensorType.HUMIDITY)
+                        productCatalog.setHumiditySensor(true);
+                    if (sensorType == SensorType.PRESSURE)
+                        productCatalog.setPressureSensor(true);
+                    if (sensorType == SensorType.TEMPERATURE)
+                        productCatalog.setTemperatureSensor(true);
+                    if (sensorType == SensorType.GPS)
+                        productCatalog.setGpsSensor(true);
+                    if (sensorType == SensorType.DAMAGE)
+                        productCatalog.setDamageSensor(true);
+                });
+            }
             productManufacter.addProductCatalog(productCatalog);
             entityManager.persist(productCatalog);
             entityManager.flush();
@@ -58,7 +76,7 @@ public class ProductCatalogBean {
         return productCatalog;
     }
 
-    public ProductCatalog update(long code, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial,String tertiaryPackageMaterial) throws MyEntityNotFoundException {
+    public ProductCatalog update(long code, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = this.find(code);
         entityManager.lock(productCatalog, LockModeType.OPTIMISTIC);
         productCatalog.setName(name);

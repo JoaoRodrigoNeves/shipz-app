@@ -60,7 +60,7 @@ public class ProductCatalogService {
                 product.getProductManufacter().getName()
         );
 
-        if(product.getOrder() != null){
+        if (product.getOrder() != null) {
             productDTO.setClientOrderCode(product.getOrder().getCode());
         }
         return productDTO;
@@ -76,7 +76,7 @@ public class ProductCatalogService {
     @Path("/")
     public Response create(ProductCatalogDTO productCatalogDTO)
             throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
-        ProductCatalog productCatalog = productCatalogBean.create(
+        productCatalogBean.create(
                 productCatalogDTO.getName(),
                 productCatalogDTO.getCatalogArea(),
                 productCatalogDTO.getCategory(),
@@ -87,10 +87,11 @@ public class ProductCatalogService {
                 productCatalogDTO.getPrimaryPackageVolume(),
                 productCatalogDTO.getPrimaryPackageMaterial(),
                 productCatalogDTO.getSecondaryPackageMaterial(),
-                productCatalogDTO.getTertiaryPackageMaterial()
+                productCatalogDTO.getTertiaryPackageMaterial(),
+                productCatalogDTO.getSensors()
         );
 
-        return Response.status(Response.Status.CREATED).entity(productCatalogToDTO(productCatalog)).build();
+        return Response.status(Response.Status.CREATED).build();
     }
 
     //TODO get product catalog by code
@@ -138,6 +139,7 @@ public class ProductCatalogService {
     public List<ProductCatalogDTO> getAll() {
         return productCatalogToDTOs(productCatalogBean.getAll());
     }
+
     @GET
     @Path("/available")
     @RolesAllowed({"LogisticOperator", "FinalCostumer"})
