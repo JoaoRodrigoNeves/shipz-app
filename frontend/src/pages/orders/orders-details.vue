@@ -14,7 +14,6 @@ const isLoading = ref(false)
 const order = ref([])
 
 const sensors = ref([])
-const selectedSensor = ref(null)
 const selectedTransportPackages = ref(null)
 const products = ref([])
 const transportPackages = ref([])
