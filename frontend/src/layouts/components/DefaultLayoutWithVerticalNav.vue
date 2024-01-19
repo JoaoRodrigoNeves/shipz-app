@@ -72,7 +72,7 @@ const upgradeBanner = computed(() => {
         title: 'Sensores',
         icon: 'mdi-leak',
         to: '/sensors'
-      }" v-if="user && user.role == 'ProductManufacter'" />
+      }" v-if="user && user.role === 'ProductManufacter' || user.role === 'LogisticOperator'" />
       <VerticalNavLink :item="{
         title: 'Encomendas',
         icon: 'bi-box-seam',

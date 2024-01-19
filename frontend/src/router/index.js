@@ -76,13 +76,13 @@ const router = createRouter({
         {
           path: 'sensors',
           component: () => import('../pages/sensor/sensors.vue'),
-          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true }
+          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: false, requiredAuth: true }
         },
         {
           path: 'sensor/:code',
           component: () => import('../pages/sensor/sensor-details.vue'),
           meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true }
-        }  
+        }
       ],
     },
     {

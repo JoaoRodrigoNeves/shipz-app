@@ -133,7 +133,6 @@ public class ProductService {
             ProductPackage productPackage = product.getProductPackages().stream().
                     filter(productPackage1 -> productPackage1.getType() == PackageType.PRIMARY).findFirst().orElseThrow();
 
-
             if (productCatalog.isDamageSensor()) {
                 Sensor sensor = sensorBean.create(SensorType.DAMAGE.getSensorType());
                 sensorBean.addToPackage(sensor.getCode(), productPackage.getCode());

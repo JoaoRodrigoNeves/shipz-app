@@ -44,9 +44,9 @@ public class OrderBean {
 
         try {
             Order clientOrder = new Order(finalCostumer, logisticOperator);
-            
+
             long volumeTotal = 0;
-            
+
             for (ProductOrderDTO product : products) {
                 ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, product.getCode());
                 List<Product> productsList = productCatalog.getProducts()
@@ -69,7 +69,6 @@ public class OrderBean {
             entityManager.persist(clientOrder);
 
 
-
             long finalVolumeTotal = volumeTotal;
             for (int i = 0; i < listTransportPackageCatalogs.size(); i++) {
                 if (listTransportPackageCatalogs.get(i).getVolume() > finalVolumeTotal || i == listTransportPackageCatalogs.size() - 1) {
@@ -84,7 +83,7 @@ public class OrderBean {
             }
 
             entityManager.flush();
-        } catch (ConstraintViolationException e){
+        } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
         } catch (NoStockException e) {
             throw new NoStockException(e.getMessage());
@@ -141,8 +140,15 @@ public class OrderBean {
         Order order = this.find(code);
         OrderStatus orderStatus = OrderStatus.fromString(status);
         order.setStatus(orderStatus);
-        if (orderStatus == OrderStatus.STATUS_2)
+        if (orderStatus == OrderStatus.STATUS_2) {
             order.setDeliveredAt(LocalDateTime.now());
+            order.getTransportPackages().forEach(transportPackage -> transportPackage.getSensors().forEach(sensor -> sensor.setInUse(false)));
+            order.getProducts().forEach(product -> product.getProductPackages().forEach(productPackage -> {
+                if (productPackage.getType() == PackageType.PRIMARY) {
+                    productPackage.getSensors().forEach(sensor -> sensor.setInUse(false));
+                }
+            }));
+        }
     }
 
 
