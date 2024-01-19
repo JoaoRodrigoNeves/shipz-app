@@ -141,6 +141,14 @@ public class OrderBean {
                 }
             }));
         }
+        if (orderStatus == OrderStatus.STATUS_1){
+            order.getTransportPackages().forEach(transportPackage -> transportPackage.getSensors().forEach(sensor -> sensor.setInUse(true)));
+            order.getProducts().forEach(product -> product.getProductPackages().forEach(productPackage -> {
+                if (productPackage.getType() == PackageType.PRIMARY) {
+                    productPackage.getSensors().forEach(sensor -> sensor.setInUse(true));
+                }
+            }));
+        }
     }
 
     public void changeLocation(long code, String location) throws MyEntityNotFoundException {

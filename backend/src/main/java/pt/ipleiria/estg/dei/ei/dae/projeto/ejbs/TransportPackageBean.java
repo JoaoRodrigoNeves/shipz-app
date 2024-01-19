@@ -4,6 +4,7 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.hibernate.Hibernate;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.TransportPackageAddSensorDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.TransportPackageCreateDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Order;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;

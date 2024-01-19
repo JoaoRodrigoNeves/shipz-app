@@ -6,10 +6,8 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.PackageDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.SensorDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.TransportPackageCreateDTO;
-import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.TransportPackageDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.*;
+import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.SensorBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.TransportPackageBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackage;
@@ -27,6 +25,9 @@ public class TransportPackageService {
     private SecurityContext securityContext;
     @EJB
     private TransportPackageBean transportPackageBean;
+
+    @EJB
+    private SensorBean sensorBean;
 
     private TransportPackageDTO transportPackageToDTO(TransportPackage transportPackage) {
         TransportPackageDTO transportPackageDTO = new TransportPackageDTO(
@@ -92,6 +93,24 @@ public class TransportPackageService {
     @Path("{code}")
     public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException {
         transportPackageBean.delete(code);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @POST
+    @Path("{code}/add-sensors")
+    public Response addSensor(@PathParam("code") long code, TransportPackageAddSensorDTO transportPackageAddSensorDTO) throws MyEntityNotFoundException, MyEntityExistsException {
+        transportPackageAddSensorDTO.getSensors().forEach(s -> {
+            try {
+                Sensor sensor = sensorBean.getSensor(s);
+                if (sensor == null){
+                    sensor = sensorBean.create(s, true);
+                }
+                sensorBean.addToPackage(sensor.getCode(), code);
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
         return Response.status(Response.Status.OK).build();
     }
 }

@@ -36,6 +36,59 @@ const formatDate = value => {
   return moment(String(value)).format('DD/MM/YYYY HH:mm:ss')
 }
 
+const removeTransportPackage = (transportPackage) => {
+    confirm.require({
+        message: 'Tem a certeza que pretende apagar a embalagem de transporte ' + transportPackage.code + ' ?',
+        header: 'Apagar Embalagem de Transporte',
+        rejectLabel: 'Não',
+        acceptLabel: 'Sim',
+        accept: async () => {
+            isLoading.value = true;
+
+            await axios.delete('transport-packages/' + transportPackage.code).then(response => {
+                isLoading.value = false
+                emit('loadTransportPackages')
+            }).catch(
+                error => {
+                    isLoading.value = false;
+                    console.error(error)
+                }
+            )
+        }
+    });
+}
+
+const loadSensors = async (packageCode) => {
+    try {
+        await axios.get('transport-packages/' + packageCode + '/sensors').then(response => {
+            removeSensors.value = response.data;
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const addOrRemoveSensorToPackage = async ( packageCode, addOrRemove) => {
+    try {
+        if (addOrRemove == 'addSensor') {
+            let payload = {
+                sensors: selectedSensors.value,
+            }
+            await axios.post('transport-packages/' + packageCode + '/add-sensors', payload).then(response => {
+                toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Sensor adicionado com sucesso', life: 3000 })
+
+            })
+        } else {
+            await axios.delete('sensors/' + selectedSensors.value + '/packages/' + packageCode).then(response => {
+                toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Sensor removido com sucesso', life: 3000 })
+            })
+        }
+        selectedSensors.value = null
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 watch(
   () => props,
   newProps => {
