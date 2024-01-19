@@ -1,20 +1,13 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
-import { useToast } from 'primevue/usetoast';
-
+import { ref, watch, inject } from 'vue';
 import moment from 'moment'
-import { useConfirm } from "primevue/useconfirm";
+import { useToast } from 'primevue/usetoast'
 
-const router = useRouter()
-const confirm = useConfirm();
-const isLoading = ref(false);
-const axios = inject('axios')
 const emit = defineEmits(['loadTransportPackages'])
-
 const toast = useToast()
+const selectedSensors = ref(null)
 const axios = inject('axios')
-const selectedSensor = ref(null)
-const addSensors = ref([])
+const addSensors = ["Temperatura", "Humidade", "Pressão", "Gps", "Dano"]
 const removeSensors = ref([])
 const userRole = JSON.parse(sessionStorage.getItem('user_info')).role
 
@@ -37,6 +30,59 @@ const transportPackages = ref(Object.assign({}, props.transportPackages))
 
 const formatDate = (value) => {
     return moment(String(value)).format('DD/MM/YYYY HH:mm:ss')
+}
+
+const removeTransportPackage = (transportPackage) => {
+    confirm.require({
+        message: 'Tem a certeza que pretende apagar a embalagem de transporte ' + transportPackage.code + ' ?',
+        header: 'Apagar Embalagem de Transporte',
+        rejectLabel: 'Não',
+        acceptLabel: 'Sim',
+        accept: async () => {
+            isLoading.value = true;
+
+            await axios.delete('transport-packages/' + transportPackage.code).then(response => {
+                isLoading.value = false
+                emit('loadTransportPackages')
+            }).catch(
+                error => {
+                    isLoading.value = false;
+                    console.error(error)
+                }
+            )
+        }
+    });
+}
+
+const loadSensors = async (packageCode) => {
+    try {
+        await axios.get('transport-packages/' + packageCode + '/sensors').then(response => {
+            removeSensors.value = response.data;
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const addOrRemoveSensorToPackage = async ( packageCode, addOrRemove) => {
+    try {
+        if (addOrRemove == 'addSensor') {
+            let payload = {
+                sensors: selectedSensors.value,
+            }
+            await axios.post('transport-packages/' + packageCode + '/add-sensors', payload).then(response => {
+                toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Sensor adicionado com sucesso', life: 3000 })
+
+            })
+        } else {
+            await axios.delete('sensors/' + selectedSensors.value + '/packages/' + packageCode).then(response => {
+                toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Sensor removido com sucesso', life: 3000 })
+            })
+        }
+        selectedSensors.value = null
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 watch(
@@ -64,7 +110,8 @@ watch(
                 <th>
                     Data de Criação
                 </th>
-                <th v-if="userRole == 'LogisticOperator' && (order.status == 'Estado Inicial' || order.status == 'Em Processamento') || canDelete">
+                <th
+                    v-if="userRole == 'LogisticOperator' && (order.status == 'Estado Inicial' || order.status == 'Em Processamento') && canDelete">
                     Ações
                 </th>
             </tr>
@@ -84,10 +131,11 @@ watch(
                 <td style="width: 40%; text-align: center;">
                     {{ formatDate(item.createdAt) }}
                 </td>
-                <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content" v-if="userRole == 'LogisticOperator' && (order.status == 'Estado Inicial' || order.status == 'Em Processamento')">
+                <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content"
+                    v-if="userRole == 'LogisticOperator' && (order.status == 'Estado Inicial' || order.status == 'Em Processamento')">
                     <VDialog width="500">
                         <template v-slot:activator="{ props }">
-                            <v-btn v-bind="props" text="Adicionar Sensores" @click="loadSensors(null)">
+                            <v-btn v-bind="props" text="Adicionar Sensores">
                                 <VIcon size="20" icon="bx-plus" />
                                 <VTooltip activator="parent" location="top">
                                     <span>Adicionar sensores</span>
@@ -98,16 +146,15 @@ watch(
                         <template v-slot:default="{ isActive }">
                             <v-card title="Adicionar Sensores">
                                 <v-card-text>
-                                    <VAutocomplete v-model="selectedSensor" label="Tipo de sensor"
-                                        placeholder="Selecionar Sensor" :items="addSensors" item-title="type"
-                                        item-value="code" />
+                                    <VSelect multiple v-model="selectedSensors" label="Tipo de sensor"
+                                        placeholder="Selecionar Sensor" :items="addSensors" />
                                 </v-card-text>
 
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
 
                                     <v-btn text="Adicionar"
-                                        @click="addOrRemoveSensorToPackage(selectedSensor, item.code, 'addSensor'); isActive.value = false;"></v-btn>
+                                        @click="addOrRemoveSensorToPackage(item.code, 'addSensor'); isActive.value = false;"></v-btn>
                                 </v-card-actions>
                             </v-card>
                         </template>
@@ -126,7 +173,7 @@ watch(
                         <template v-slot:default="{ isActive }">
                             <v-card title="Remover Sensores">
                                 <v-card-text>
-                                    <VAutocomplete v-model="selectedSensor" label="Tipo de sensor"
+                                    <VAutocomplete v-model="selectedSensors" label="Tipo de sensor"
                                         placeholder="Selecionar Sensor" :items="removeSensors" item-title="type"
                                         item-value="code" />
                                 </v-card-text>
@@ -135,12 +182,12 @@ watch(
                                     <v-spacer></v-spacer>
 
                                     <v-btn text="Remover"
-                                        @click="addOrRemoveSensorToPackage(selectedSensor, item.code, 'removeSensor'); isActive.value = false;"></v-btn>
+                                        @click="addOrRemoveSensorToPackage(item.code, 'removeSensor'); isActive.value = false;"></v-btn>
                                 </v-card-actions>
                             </v-card>
                         </template>
                     </VDialog>
-                    
+
                     <VBtn rel="noopener noreferrer" color="primary" @click="removeTransportPackage(item)">
                         <VIcon size="20" icon="bx-trash" />
                         <VTooltip activator="parent" location="top">

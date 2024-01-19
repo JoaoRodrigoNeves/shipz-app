@@ -74,7 +74,7 @@ public class SensorService {
     @POST
     @Path("/")
     public Response create(SensorDTO sensorDTO) throws MyEntityExistsException {
-        Sensor sensor = sensorBean.create(sensorDTO.getType());
+        Sensor sensor = sensorBean.create(sensorDTO.getType(), false);
         return Response.status(Response.Status.CREATED).entity(toDTONoObservations(sensor)).build();
     }
 
@@ -147,13 +147,4 @@ public class SensorService {
         List<ObservationDTO> observationDTOs = observationDTOs(observations);
         return Response.status(Response.Status.OK).entity(observationDTOs).build();
     }
-
-    @PATCH
-    @Path("{code}/status")
-    public Response updateStatus(@PathParam("code") long code) throws MyEntityNotFoundException {
-        Sensor sensor = sensorBean.changeStatus(code);
-        return Response.status(Response.Status.OK).entity(toDTONoObservations(sensor)).build();
-    }
-
-
 }

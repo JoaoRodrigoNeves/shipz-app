@@ -134,23 +134,23 @@ public class ProductService {
                     filter(productPackage1 -> productPackage1.getType() == PackageType.PRIMARY).findFirst().orElseThrow();
 
             if (productCatalog.isDamageSensor()) {
-                Sensor sensor = sensorBean.create(SensorType.DAMAGE.getSensorType());
+                Sensor sensor = sensorBean.create(SensorType.DAMAGE.getSensorType(), false);
                 sensorBean.addToPackage(sensor.getCode(), productPackage.getCode());
             }
             if (productCatalog.isGpsSensor()) {
-                Sensor sensor = sensorBean.create(SensorType.GPS.getSensorType());
+                Sensor sensor = sensorBean.create(SensorType.GPS.getSensorType(), false);
                 sensorBean.addToPackage(sensor.getCode(), productPackage.getCode());
             }
             if (productCatalog.isPressureSensor()) {
-                Sensor sensor = sensorBean.create(SensorType.PRESSURE.getSensorType());
+                Sensor sensor = sensorBean.create(SensorType.PRESSURE.getSensorType(), false);
                 sensorBean.addToPackage(sensor.getCode(), productPackage.getCode());
             }
             if (productCatalog.isTemperatureSensor()) {
-                Sensor sensor = sensorBean.create(SensorType.TEMPERATURE.getSensorType());
+                Sensor sensor = sensorBean.create(SensorType.TEMPERATURE.getSensorType(), false);
                 sensorBean.addToPackage(sensor.getCode(), productPackage.getCode());
             }
             if (productCatalog.isHumiditySensor()) {
-                Sensor sensor = sensorBean.create(SensorType.HUMIDITY.getSensorType());
+                Sensor sensor = sensorBean.create(SensorType.HUMIDITY.getSensorType(), false);
                 sensorBean.addToPackage(sensor.getCode(), productPackage.getCode());
             }
         }

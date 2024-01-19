@@ -31,9 +31,9 @@ public class SensorBean {
     private EntityManager entityManager;
 
     //TODO CRUD operations for Sensor entity
-    public Sensor create(String type) {
+    public Sensor create(String type, boolean inUse) {
         SensorType sensorType = SensorType.fromString(type);
-        Sensor sensor = new Sensor(sensorType, false);
+        Sensor sensor = new Sensor(sensorType, inUse);
         entityManager.persist(sensor);
         return sensor;
     }
@@ -72,10 +72,19 @@ public class SensorBean {
         return entityManager.createNamedQuery("getAllSensors", Sensor.class).getResultList();
     }
 
+    //TODO get sensor by type
+    public Sensor getSensor(String type) {
+        SensorType sensorType = SensorType.fromString(type);
+        try {
+            return entityManager.createNamedQuery("getSensorByType", Sensor.class).setParameter("sensorType", sensorType).getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     //TODO associate / disassociate sensor with package
     public void addToPackage(long code, long packageCode) throws MyEntityNotFoundException, MyEntityExistsException {
         Package p = entityManager.find(Package.class, packageCode);
-
         if (p == null)
             throw new MyEntityNotFoundException("Package with code: " + packageCode + " not found");
 
@@ -85,6 +94,7 @@ public class SensorBean {
 
         sensor.addPackage(p);
         p.addSensor(sensor);
+        sensor.setInUse(true);
     }
 
     public void removeFromPackage(long code, long packageCode) throws MyEntityNotFoundException, MyEntityExistsException {
@@ -98,6 +108,7 @@ public class SensorBean {
 
         sensor.removePackage(p);
         p.removeSensor(sensor);
+        sensor.setInUse(false);
     }
 
     //TODO get packages
@@ -130,22 +141,5 @@ public class SensorBean {
 
     private boolean isWithinDateRange(LocalDateTime date, LocalDateTime startDate, LocalDateTime endDate) {
         return date != null && (!date.isBefore(startDate) && !date.isAfter(endDate) || date.isEqual(startDate) || date.isEqual(endDate));
-    }
-
-    public Sensor changeStatus(long code) throws MyEntityNotFoundException {
-        Sensor sensor = this.find(code);
-        sensor.setInUse(!sensor.isInUse());
-        entityManager.persist(sensor);
-        return sensor;
-    }
-
-    public void readCSVFile(long code) throws MyEntityNotFoundException {
-        String fileName = "c:\\test\\csv\\country.csv";
-        try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
-            List<String[]> r = reader.readAll();
-            r.forEach(x -> System.out.println(Arrays.toString(x)));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 }

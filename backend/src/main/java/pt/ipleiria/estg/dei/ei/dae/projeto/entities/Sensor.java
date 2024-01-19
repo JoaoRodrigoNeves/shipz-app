@@ -14,9 +14,12 @@ import java.util.Objects;
         @NamedQuery(
                 name = "getAllSensors",
                 query = "SELECT s FROM Sensor s ORDER BY s.code DESC" //JPQL
+        ),
+        @NamedQuery(
+                name = "getSensorByType",
+                query = "SELECT s FROM Sensor s WHERE s.type = :sensorType ORDER BY s.code ASC"
         )
 })
-@Table(name = "sensors")
 public class Sensor implements Serializable {
 
     @Id
