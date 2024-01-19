@@ -77,4 +77,10 @@ public class TransportPackageBean {
         Hibernate.initialize(transportPackage.getOrders());
         return transportPackage.getOrders();
     }
+
+    public TransportPackage getSensors(long code) throws MyEntityNotFoundException {
+        TransportPackage transportPackage = this.find(code);
+        Hibernate.initialize(transportPackage.getSensors());
+        return transportPackage;
+    }
 }
