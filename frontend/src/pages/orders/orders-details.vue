@@ -172,49 +172,6 @@ onMounted(async () => {
       <VCard>
         <div class="product-catalog-details-header">
           <h2>Encomenda nº{{ order.code }}</h2>
-          <VDialog width="500">
-            <template #activator="{ props }">
-              <VBtn
-                v-bind="props"
-                text="Adicionar Sensores"
-              >
-                <VIcon
-                  size="20"
-                  icon="bx-plus"
-                />
-                <VTooltip
-                  activator="parent"
-                  location="top"
-                >
-                  <span>Adicionar sensores</span>
-                </VTooltip>
-              </VBtn>
-            </template>
-
-            <template #default="{ isActive }">
-              <VCard title="Adicionar Sensores">
-                <VCardText>
-                  <VAutocomplete
-                    v-model="selectedSensor"
-                    label="Tipo de sensor"
-                    placeholder="Selecionar Sensor"
-                    :items="sensors"
-                    item-title="type"
-                    item-value="code"
-                  />
-                </VCardText>
-
-                <VCardActions>
-                  <VSpacer />
-
-                  <VBtn
-                    text="Adicionar"
-                    @click="addSensorToPackage(selectedSensor); isActive.value = false;"
-                  />
-                </VCardActions>
-              </VCard>
-            </template>
-          </VDialog>
         </div>
 
         <div class="product-catalog-details">

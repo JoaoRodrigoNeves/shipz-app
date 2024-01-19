@@ -53,7 +53,7 @@ const save = (async () => {
         <VRow>
             <VCol cols="12">
                 <v-autocomplete label="Tipo de sensor" v-model="sensorForm.type"
-                    :items="['Temperatura', 'Humidade', 'Pressão']"></v-autocomplete>
+                    :items="['Temperatura', 'Humidade', 'Pressão','Gps','Dano']"></v-autocomplete>
             </VCol>
             <VCol cols="12" class="d-flex gap-4">
                 <VBtn type="submit" :disabled="isLoading">

@@ -1,24 +1,24 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
 public class ObservationDetailDTO {
-    double value;
+    String value;
     long sensorCode;
     String sensorName;
     public ObservationDetailDTO() {
 
     }
 
-    public ObservationDetailDTO(double value, long sensorCode, String sensorName) {
+    public ObservationDetailDTO(String value, long sensorCode, String sensorName) {
         this.value = value;
         this.sensorCode = sensorCode;
         this.sensorName = sensorName;
     }
 
-    public double getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

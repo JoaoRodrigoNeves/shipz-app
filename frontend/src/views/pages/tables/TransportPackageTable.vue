@@ -87,6 +87,10 @@ const addOrRemoveSensorToPackage = async ( packageCode, addOrRemove) => {
     }
 }
 
+const resetSelectedSensor = () => {
+    selectedSensors.value = null;
+}
+
 watch(
   () => props,
   newProps => {
@@ -137,7 +141,7 @@ watch(
                     v-if="userRole == 'LogisticOperator' && (order.status == 'Estado Inicial' || order.status == 'Em Processamento')">
                     <VDialog width="500">
                         <template v-slot:activator="{ props }">
-                            <v-btn v-bind="props" text="Adicionar Sensores">
+                            <v-btn v-bind="props" text="Adicionar Sensores" @click="resetSelectedSensor()">
                                 <VIcon size="20" icon="bx-plus" />
                                 <VTooltip activator="parent" location="top">
                                     <span>Adicionar sensores</span>
@@ -164,7 +168,7 @@ watch(
 
                     <VDialog width="500">
                         <template v-slot:activator="{ props }">
-                            <v-btn v-bind="props" text="Remover Sensores" @click="loadSensors(item.code)">
+                            <v-btn v-bind="props" text="Remover Sensores" @click="loadSensors(item.code); resetSelectedSensor()">
                                 <VIcon size="20" icon="bx-minus" />
                                 <VTooltip activator="parent" location="top">
                                     <span>Remover sensores</span>
@@ -173,7 +177,7 @@ watch(
                         </template>
 
                         <template v-slot:default="{ isActive }">
-                            <v-card title="Remover Sensores">
+                            <v-card title="Remover Sensores" >
                                 <v-card-text>
                                     <VAutocomplete v-model="selectedSensors" label="Tipo de sensor"
                                         placeholder="Selecionar Sensor" :items="removeSensors" item-title="type"
