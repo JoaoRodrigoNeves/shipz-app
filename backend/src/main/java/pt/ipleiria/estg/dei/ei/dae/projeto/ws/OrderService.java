@@ -196,7 +196,7 @@ public class OrderService {
 
     //TODO get order sensors with observations
     @GET
-    @Path("/{code}/sensors")
+    @Path("/{code}/sensor-observations")
     public Response getAllSensors(@PathParam("code") long code) throws MyEntityNotFoundException {
         var clientOrder = orderBean.getProducts(code);
 

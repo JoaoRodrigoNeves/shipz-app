@@ -4,32 +4,11 @@ import Chart from 'primevue/chart'
 import { useRouter } from "vue-router"
 import moment from "moment"
 
-const sensors = ref([])
 const axios = inject('axios')
 const router = useRouter()
-const sensor = ref([])
+const sensor = ref(null)
 const isLoading = ref(false)
 const observations = ref([])
-const cities = ref([])
-
-const loadSensors = async () => {
-  isLoading.value = true
-  try {
-    await axios.get('sensors').then(response => {
-
-      const allSensors = response.data
-
-      const filteredSensors = allSensors.filter(sensor => !sensor.inUse)
-
-      sensors.value = filteredSensors
-      isLoading.value = false
-    })
-
-  } catch (error) {
-    isLoading.value = false
-    console.log(error)
-  }
-}
 
 const loadSensorDetails = async () => {
   isLoading.value = true
@@ -37,6 +16,7 @@ const loadSensorDetails = async () => {
     const response = await axios.get('sensors/' + router.currentRoute.value.params.code)
 
     sensor.value = response.data
+    console.log(response.data)
   } catch (error) {
     console.log(error)
   } finally {
@@ -57,29 +37,15 @@ const loadObservations = async () => {
   }
 }
 
-const loadCities = async () => {
-  isLoading.value = true
-  try {
-    await axios.get('https://json.geoapi.pt/municipios').then(response => {
-      cities.value = response.data
-      isLoading.value = false
-    })
-
-  } catch (error) {
-    isLoading.value = false
-    console.log(error)
-  }
-}
-
 const formatDate = value => moment(String(value)).format('DD/MM/YYYY HH:mm:ss')
 
 onMounted(async () => {
-  await loadSensors()
   await loadSensorDetails()
   await loadObservations()
-  await loadCities()
-  chartData.value = setChartData()
-  chartOptions.value = setChartOptions()
+  if (sensor.value.type != 'Gps') {
+    chartData.value = setChartData()
+    chartOptions.value = setChartOptions()
+  }
 })
 
 const chartData = ref()
@@ -90,16 +56,14 @@ const setChartData = () => {
     return { labels: [], datasets: [] }
   }
 
-  const dataType = sensor.value.type
-
   return {
     labels: Object.values(observations.value.map(observation => formatDate(observation.createdAt))),
     datasets: [
       {
-        label: dataType,
+        label: sensor.value.type,
         data: Object.values(observations.value.map(observation => observation.value)),
         fill: false,
-        borderColor: getBorderColorByDataType(dataType),
+        borderColor: getBorderColorByDataType(sensor.value.type),
         tension: 0.4,
       },
     ],
@@ -165,7 +129,10 @@ const getBorderColorByDataType = dataType => {
         <div class="product-catalog-details-header">
           <h2>Observações</h2>
         </div>
-        <div class="card">
+        <div
+          v-if="sensor && sensor.type != 'Gps'"
+          class="card"
+        >
           <Chart
             v-if="observations && observations.length > 0"
             type="line"
@@ -180,53 +147,34 @@ const getBorderColorByDataType = dataType => {
             Não tem observações associadas a esta encomenda
           </div>
         </div>
-        <VTable fixed-header>
-          <thead>
-            <tr>
-              <th class="text-uppercase">
-                Localização
-              </th>
-              <th>
-                Data
-              </th>
-            </tr>
-          </thead>
+        <div v-else>
+          <VTable fixed-header>
+            <thead>
+              <tr>
+                <th class="text-uppercase">
+                  Localização
+                </th>
+                <th>
+                  Data
+                </th>
+              </tr>
+            </thead>
 
-          <tbody>
-            <tr
-              v-for="item in sensors"
-              :key="item.code"
-            >
-              <td style="width: 20%;">
-                {{ item.code }}
-              </td>
-              <td style="width: 100%; text-align: center;">
-                {{ item.type }}
-              </td>
-              <td
-                class="d-flex align-center justify-end gap-x-2"
-                style="width: fit-content"
+            <tbody>
+              <tr
+                v-for="item in observations"
+                :key="item.value"
               >
-                <VBtn
-                  rel="noopener noreferrer"
-                  color="primary"
-                  @click="navigateTo('/order-sensor/' + item.code)"
-                >
-                  <VIcon
-                    size="20"
-                    icon="bx-show"
-                  />
-                  <VTooltip
-                    activator="parent"
-                    location="top"
-                  >
-                    <span>Ver Detalhes</span>
-                  </VTooltip>
-                </VBtn>
-              </td>
-            </tr>
-          </tbody>
-        </VTable>
+                <td style="width: 20%;">
+                  {{ item.value }}
+                </td>
+                <td style="width: 100%; text-align: center;">
+                  {{ formatDate(item.createdAt) }}
+                </td>
+              </tr>
+            </tbody>
+          </VTable>
+        </div>
       </VCard>
     </VCol>
   </VRow>

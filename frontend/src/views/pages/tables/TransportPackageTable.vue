@@ -1,37 +1,39 @@
 <script setup>
-import { ref, watch, inject } from 'vue';
-import moment from 'moment'
+import { ref, watch, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
+import moment from 'moment'
+import { useConfirm } from "primevue/useconfirm"
+
+const props = defineProps({
+  transportPackages: {
+    type: Object,
+    required: true,
+  },
+  order: {
+    type: Object,
+    required: true,
+  },
+  canDelete: {
+    type: Boolean,
+    required: false,
+  },
+})
 
 const emit = defineEmits(['loadTransportPackages'])
-const toast = useToast()
-const selectedSensors = ref(null)
+const router = useRouter()
+const confirm = useConfirm()
+const isLoading = ref(false)
 const axios = inject('axios')
-const addSensors = ["Temperatura", "Humidade", "Pressão", "Gps", "Dano"]
+const toast = useToast()
+const selectedSensor = ref(null)
+const addSensors = ref([])
 const removeSensors = ref([])
 const userRole = JSON.parse(sessionStorage.getItem('user_info')).role
 
-const props = defineProps({
-    transportPackages: {
-        type: Object,
-        required: true
-    },
-    order: {
-        type: Object,
-        required: true
-    },
-    canDelete: {
-        type: Boolean,
-        required: false
-    }
-})
-
-const router = useRouter()
-
 const transportPackages = ref(Object.assign({}, props.transportPackages))
 
-const formatDate = (value) => {
-    return moment(String(value)).format('DD/MM/YYYY HH:mm:ss')
+const formatDate = value => {
+  return moment(String(value)).format('DD/MM/YYYY HH:mm:ss')
 }
 
 const removeTransportPackage = (transportPackage) => {
@@ -101,27 +103,26 @@ watch(
 </script>
 
 <template>
-    <VTable fixed-header>
-        <thead>
-            <tr>
-                <th class="text-uppercase">
-                    Código
-                </th>
-                <th>
-                    Material
-                </th>
-                <th>
-                    Volume
-                </th>
-                <th>
-                    Data de Criação
-                </th>
-                <th
-                    v-if="userRole == 'LogisticOperator' && (order.status == 'Estado Inicial' || order.status == 'Em Processamento') && canDelete">
-                    Ações
-                </th>
-            </tr>
-        </thead>
+  <VTable fixed-header>
+    <thead>
+      <tr>
+        <th class="text-uppercase">
+          Código
+        </th>
+        <th>
+          Material
+        </th>
+        <th>
+          Volume
+        </th>
+        <th>
+          Data de Criação
+        </th>
+        <th v-if="userRole == 'LogisticOperator' && (order.status == 'Estado Inicial' || order.status == 'Em Processamento') || canDelete">
+          Ações
+        </th>
+      </tr>
+    </thead>
 
         <tbody>
             <tr v-for="item in transportPackages" :key="item.code">
@@ -149,22 +150,30 @@ watch(
                             </v-btn>
                         </template>
 
-                        <template v-slot:default="{ isActive }">
-                            <v-card title="Adicionar Sensores">
-                                <v-card-text>
-                                    <VSelect multiple v-model="selectedSensors" label="Tipo de sensor"
-                                        placeholder="Selecionar Sensor" :items="addSensors" />
-                                </v-card-text>
+            <template #default="{ isActive }">
+              <VCard title="Adicionar Sensores">
+                <VCardText>
+                  <VAutocomplete
+                    v-model="selectedSensor"
+                    label="Tipo de sensor"
+                    placeholder="Selecionar Sensor"
+                    :items="addSensors"
+                    item-title="type"
+                    item-value="code"
+                  />
+                </VCardText>
 
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
+                <VCardActions>
+                  <VSpacer />
 
-                                    <v-btn text="Adicionar"
-                                        @click="addOrRemoveSensorToPackage(item.code, 'addSensor'); isActive.value = false;"></v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </template>
-                    </VDialog>
+                  <VBtn
+                    text="Adicionar"
+                    @click="addOrRemoveSensorToPackage(selectedSensor, item.code, 'addSensor'); isActive.value = false;"
+                  />
+                </VCardActions>
+              </VCard>
+            </template>
+          </VDialog>
 
                     <VDialog width="500">
                         <template v-slot:activator="{ props }">
@@ -184,26 +193,38 @@ watch(
                                         item-value="code" />
                                 </v-card-text>
 
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
+                <VCardActions>
+                  <VSpacer />
 
-                                    <v-btn text="Remover"
-                                        @click="addOrRemoveSensorToPackage(item.code, 'removeSensor'); isActive.value = false;"></v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </template>
-                    </VDialog>
-
-                    <VBtn rel="noopener noreferrer" color="primary" @click="removeTransportPackage(item)">
-                        <VIcon size="20" icon="bx-trash" />
-                        <VTooltip activator="parent" location="top">
-                            <span>Remover Embalagem de Transporte</span>
-                        </VTooltip>
-                    </VBtn>
-                </td>
-            </tr>
-        </tbody>
-    </VTable>
+                  <VBtn
+                    text="Remover"
+                    @click="addOrRemoveSensorToPackage(selectedSensor, item.code, 'removeSensor'); isActive.value = false;"
+                  />
+                </VCardActions>
+              </VCard>
+            </template>
+          </VDialog>
+                    
+          <VBtn
+            rel="noopener noreferrer"
+            color="primary"
+            @click="removeTransportPackage(item)"
+          >
+            <VIcon
+              size="20"
+              icon="bx-trash"
+            />
+            <VTooltip
+              activator="parent"
+              location="top"
+            >
+              <span>Remover Embalagem de Transporte</span>
+            </VTooltip>
+          </VBtn>
+        </td>
+      </tr>
+    </tbody>
+  </VTable>
 </template>
 
 <style scoped></style>
