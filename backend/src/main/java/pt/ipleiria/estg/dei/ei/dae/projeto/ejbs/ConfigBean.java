@@ -43,9 +43,9 @@ public class ConfigBean {
             finalCostumerBean.create("finalCostumer1", "finalCostumer1", "Final Costumer 1", "final.costumer1@mail.pt", "Some address, N1");
             finalCostumerBean.create("finalCostumer2", "finalCostumer2", "Final Costumer 2", "final.costumer2@mail.pt", "Some address, N2");
 
-            productCatalogBean.create("PC1", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1", null, null, 10, "Plástico", null, null);
-            productCatalogBean.create("PC2", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1", null, null, 15, "Plástico", null, null);
-            productCatalogBean.create("TESTE", "TESTE", "TESTE", "TESTE", "productManufacter1", 2, 1, 50, "TESTE", "TESTE", "TESTE");
+            productCatalogBean.create("PC1", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1", null, null, 10, "Plástico", null, null, null);
+            productCatalogBean.create("PC2", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1", null, null, 15, "Plástico", null, null, null);
+            productCatalogBean.create("TESTE", "TESTE", "TESTE", "TESTE", "productManufacter1", 2, 1, 50, "TESTE", "TESTE", "TESTE", null);
 
             productBean.create(100002);
             productBean.create(100002);
@@ -68,13 +68,6 @@ public class ConfigBean {
             transportPackageCatalogBean.create("Embalagem S", "Cartão", 50, "logisticOperator1");
             transportPackageCatalogBean.create("Embalagem M", "Cartão", 100, "logisticOperator1");
             transportPackageCatalogBean.create("Embalagem L", "Cartão", 150, "logisticOperator1");
-
-            sensorBean.create("Temperatura");
-            sensorBean.create("Temperatura");
-            sensorBean.create("Humidade");
-            sensorBean.create("Humidade");
-            sensorBean.create("Pressão");
-            sensorBean.create("Pressão");
         } catch (Exception e) {
             logger.severe(e.getMessage());
         }

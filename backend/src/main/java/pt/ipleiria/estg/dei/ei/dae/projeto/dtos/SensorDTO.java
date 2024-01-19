@@ -12,7 +12,6 @@ public class SensorDTO implements Serializable {
     String type;
     boolean inUse;
 
-
     public SensorDTO() {
 
     }

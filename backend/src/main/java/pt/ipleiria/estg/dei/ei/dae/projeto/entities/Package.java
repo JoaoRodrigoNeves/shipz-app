@@ -33,7 +33,12 @@ public class Package extends Versionable implements Serializable {
     @NotNull
     String material;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "packages")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "sensor_package_association",
+            joinColumns = @JoinColumn(name = "package_code", referencedColumnName = "code"),
+            inverseJoinColumns = @JoinColumn(name = "sensor_code", referencedColumnName = "code")
+    )
     List<Sensor> sensors;
 
     long volume;

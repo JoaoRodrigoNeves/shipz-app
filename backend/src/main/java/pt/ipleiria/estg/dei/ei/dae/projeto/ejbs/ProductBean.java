@@ -106,33 +106,6 @@ public class ProductBean {
         return product;
     }
 
-    /*public void addProductToPackage(long code, long productPackageCode) throws MyEntityNotFoundException, MyEntityExistsException {
-        ProductPackage productPackage = entityManager.find(ProductPackage.class, productPackageCode);
-        if (productPackage == null)
-            throw new MyEntityNotFoundException("Package with code: " + productPackageCode + " not found");
-
-        Product product = this.find(code);
-        if (product.getProductPackages().contains(productPackage))
-            throw new MyEntityExistsException("Product with code: " + code + " already added to Package: " + productPackageCode);
-
-        product.addProductPackage(productPackage);
-        productPackage.addProduct(product);
-    }*/
-
-    /*public void removeProductFromPackage(long code, long productPackageCode) throws MyEntityNotFoundException, MyEntityExistsException {
-        ProductPackage productPackage = entityManager.find(ProductPackage.class, productPackageCode);
-        if (productPackage == null)
-            throw new MyEntityNotFoundException("Package with code: " + productPackageCode + " not found");
-
-        Product product = this.find(code);
-
-        if (!product.getProductPackages().contains(productPackage))
-            throw new MyEntityExistsException("Product with code: " + code + " not added to Package: " + productPackage);
-
-        product.removeProductPackage(productPackage);
-        productPackage.removeProduct(product);
-    }*/
-
     //TODO get / associate / disassociate product with client order
     public Order getOrder(long code) throws MyEntityNotFoundException {
         Product product = this.find(code);

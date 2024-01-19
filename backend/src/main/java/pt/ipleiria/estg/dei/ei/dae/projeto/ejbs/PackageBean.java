@@ -4,6 +4,7 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.hibernate.Hibernate;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackage;
@@ -50,6 +51,11 @@ public class PackageBean {
         entityManager.remove(pack);
     }
 
-    //TODO associate / disassociate order with transport package
+    //TODO find package with sensors
+    public Package findWithSensors(long code) throws MyEntityNotFoundException {
+        Package pack = this.find(code);
+        Hibernate.initialize(pack.getSensors());
+        return pack;
+    }
 
 }

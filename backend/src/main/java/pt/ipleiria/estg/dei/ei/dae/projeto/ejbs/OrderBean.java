@@ -2,6 +2,7 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.ejbs;
 
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
@@ -43,9 +44,9 @@ public class OrderBean {
 
         try {
             Order clientOrder = new Order(finalCostumer, logisticOperator);
-            
+
             long volumeTotal = 0;
-            
+
             for (ProductOrderDTO product : products) {
                 ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, product.getCode());
                 List<Product> productsList = productCatalog.getProducts()
@@ -56,6 +57,8 @@ public class OrderBean {
                     volumeTotal += productCatalog.getPrimaryPackageVolume() * product.getQuantity();
                     for (int i = 0; i < product.getQuantity(); i++) {
                         productsList.get(i).setOrder(clientOrder);
+                        List<ProductPackage> productPackages = productsList.get(i).getProductPackages().stream().filter(productPackage -> productPackage.getType() == PackageType.PRIMARY).collect(Collectors.toList());
+                        productPackages.get(0).getSensors().forEach(sensor -> sensor.setInUse(true));
                         clientOrder.addProduct(productsList.get(i));
                     }
                 } else {
@@ -64,7 +67,6 @@ public class OrderBean {
             }
             finalCostumer.addOrder(clientOrder);
             entityManager.persist(clientOrder);
-
 
 
             long finalVolumeTotal = volumeTotal;
@@ -81,7 +83,7 @@ public class OrderBean {
             }
 
             entityManager.flush();
-        } catch (ConstraintViolationException e){
+        } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
         } catch (NoStockException e) {
             throw new NoStockException(e.getMessage());
@@ -130,8 +132,15 @@ public class OrderBean {
         }
         OrderStatus orderStatus = OrderStatus.fromString(status);
         order.setStatus(orderStatus);
-        if (orderStatus == OrderStatus.STATUS_3)
+        if (orderStatus == OrderStatus.STATUS_2) {
             order.setDeliveredAt(LocalDateTime.now());
+            order.getTransportPackages().forEach(transportPackage -> transportPackage.getSensors().forEach(sensor -> sensor.setInUse(false)));
+            order.getProducts().forEach(product -> product.getProductPackages().forEach(productPackage -> {
+                if (productPackage.getType() == PackageType.PRIMARY) {
+                    productPackage.getSensors().forEach(sensor -> sensor.setInUse(false));
+                }
+            }));
+        }
     }
 
 
