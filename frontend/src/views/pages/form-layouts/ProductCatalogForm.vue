@@ -1,7 +1,6 @@
 <script setup>
-import { ref, onMounted, inject } from 'vue'
+import { ref, inject } from 'vue'
 import { useToast } from "primevue/usetoast"
-import { load } from 'webfontloader';
 
 const props = defineProps({
 
@@ -44,15 +43,19 @@ const productCatalogForm = ref({
 })
 
 const validateForm = () => {
-  return !productCatalogForm.value.name || !productCatalogForm.value.catalogArea || !productCatalogForm.value.category || !productCatalogForm.value.description ||
-    !productCatalogForm.value.productManufacterUsername || !productCatalogForm.value.primaryPackageMaterial || isSecondaryPackageActive.value ? !(productCatalogForm.value.maxSecondaryPackage && productCatalogForm.value.secondaryPackageMaterial) : false ||
+  return !productCatalogForm.value.name ||
+    !productCatalogForm.value.catalogArea ||
+    !productCatalogForm.value.category ||
+    !productCatalogForm.value.description ||
+    !productCatalogForm.value.primaryPackageMaterial ||
+    !productCatalogForm.value.primaryPackageVolume ||
+    isSecondaryPackageActive.value ? !(productCatalogForm.value.maxSecondaryPackage && productCatalogForm.value.secondaryPackageMaterial) : false ||
       isTertiaryPackageActive.value ? !(productCatalogForm.value.maxTertiaryPackage && productCatalogForm.value.tertiaryPackageMaterial) : false
 }
 
 const save = (async () => {
   if (validateForm()) {
-    toast.add({ severity: 'error', summary: 'Erro', detail: 'O12312', life: 3000 })
-
+    toast.add({ severity: 'warn', summary: 'Campos por preencher', life: 3000 })
     return
   }
   isLoading.value = true

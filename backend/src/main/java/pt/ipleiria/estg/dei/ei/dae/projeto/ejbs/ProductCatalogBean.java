@@ -41,21 +41,13 @@ public class ProductCatalogBean {
             throw new MyEntityNotFoundException("Product Manufacter with username: '" + productManufacterUsername + "' not found");
 
         try {
-            var productCatalog = new ProductCatalog(name, catalogArea, category, description, productManufacter, maxSecondaryPackage, maxTertiaryPackage, primaryPackageVolume, primaryPackageMaterial, secondaryPackageMaterial, tertiaryPackageMaterial);
+            ProductCatalog productCatalog = new ProductCatalog(name, catalogArea, category, description, productManufacter, maxSecondaryPackage, maxTertiaryPackage, primaryPackageVolume, primaryPackageMaterial, secondaryPackageMaterial, tertiaryPackageMaterial);
             if (sensors != null) {
-                sensors.forEach(sensor -> {
-                    SensorType sensorType = SensorType.fromString(sensor);
-                    if (sensorType == SensorType.HUMIDITY)
-                        productCatalog.setHumiditySensor(true);
-                    if (sensorType == SensorType.PRESSURE)
-                        productCatalog.setPressureSensor(true);
-                    if (sensorType == SensorType.TEMPERATURE)
-                        productCatalog.setTemperatureSensor(true);
-                    if (sensorType == SensorType.GPS)
-                        productCatalog.setGpsSensor(true);
-                    if (sensorType == SensorType.DAMAGE)
-                        productCatalog.setDamageSensor(true);
-                });
+                productCatalog.setHumiditySensor(sensors.contains(SensorType.HUMIDITY.getSensorType()));
+                productCatalog.setPressureSensor(sensors.contains(SensorType.PRESSURE.getSensorType()));
+                productCatalog.setTemperatureSensor(sensors.contains(SensorType.TEMPERATURE.getSensorType()));
+                productCatalog.setGpsSensor(sensors.contains(SensorType.GPS.getSensorType()));
+                productCatalog.setDamageSensor(sensors.contains(SensorType.DAMAGE.getSensorType()));
             }
             productManufacter.addProductCatalog(productCatalog);
             entityManager.persist(productCatalog);
@@ -73,7 +65,7 @@ public class ProductCatalogBean {
         return productCatalog;
     }
 
-    public ProductCatalog update(long code, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial) throws MyEntityNotFoundException {
+    public ProductCatalog update(long code, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial, List<String> sensors) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = this.find(code);
         entityManager.lock(productCatalog, LockModeType.OPTIMISTIC);
         productCatalog.setName(name);
@@ -85,6 +77,14 @@ public class ProductCatalogBean {
         productCatalog.setSecondaryPackageMaterial(secondaryPackageMaterial);
         productCatalog.setTertiaryPackageMaterial(tertiaryPackageMaterial);
         productCatalog.setPrimaryPackageMaterial(primaryPackageMaterial);
+
+        if (sensors != null) {
+            productCatalog.setHumiditySensor(sensors.contains(SensorType.HUMIDITY.getSensorType()));
+            productCatalog.setPressureSensor(sensors.contains(SensorType.PRESSURE.getSensorType()));
+            productCatalog.setTemperatureSensor(sensors.contains(SensorType.TEMPERATURE.getSensorType()));
+            productCatalog.setGpsSensor(sensors.contains(SensorType.GPS.getSensorType()));
+            productCatalog.setDamageSensor(sensors.contains(SensorType.DAMAGE.getSensorType()));
+        }
 
         if (!Objects.equals(productCatalog.getProductManufacter().getUsername(), productManufacterUsername)) {
             // remove old product manufacter
