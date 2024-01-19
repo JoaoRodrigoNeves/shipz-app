@@ -11,7 +11,6 @@ import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
 import UserProfile from '@/layouts/components/UserProfile.vue'
 
 const user = JSON.parse(sessionStorage.getItem('user_info'))
-
 const vuetifyTheme = useTheme()
 
 const upgradeBanner = computed(() => {
@@ -32,14 +31,14 @@ const upgradeBanner = computed(() => {
 
         <NavbarThemeSwitcher class="me-2" />
 
-        <UserProfile />
+        <UserProfile v-if="user" />
       </div>
     </template>
 
     <template #vertical-nav-content>
       <VerticalNavSectionTitle :item="{
         heading: 'Conta',
-      }" v-if="!user" />
+      }" v-if="user" />
       <VerticalNavLink :item="{
         title: 'Definições da Conta',
         icon: 'mdi-account-cog-outline',
@@ -53,6 +52,11 @@ const upgradeBanner = computed(() => {
         icon: 'mdi-baguette',
         to: '/products-list',
       }" v-if="user && user.role === 'FinalCostumer'" />
+      <VerticalNavLink :item="{
+        title: 'Encomendas',
+        icon: 'bi-box-seam',
+        to: '/orders',
+      }" v-if="user && user.role != 'ProductManufacter'" />
       <VerticalNavLink :item="{
         title: 'Transporte',
         icon: 'bi-box-seam',
@@ -72,17 +76,9 @@ const upgradeBanner = computed(() => {
         title: 'Sensores',
         icon: 'mdi-leak',
         to: '/sensors'
-      }" v-if="user && user.role === 'ProductManufacter' || user.role === 'LogisticOperator'" />
-      <VerticalNavLink :item="{
-        title: 'Encomendas',
-        icon: 'bi-box-seam',
-        to: '/orders',
-      }" v-if="user && user.role != 'ProductManufacter'" />
-
-
-      <!-- 👉 Pages -->
+      }" v-if="user && (user.role === 'ProductManufacter' || user.role === 'LogisticOperator')" />
       <VerticalNavSectionTitle v-if="!user" :item="{
-        heading: 'Pages',
+        heading: 'Páginas',
       }" />
       <VerticalNavLink v-if="!user" :item="{
         title: 'Login',

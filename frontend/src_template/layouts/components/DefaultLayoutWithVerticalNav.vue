@@ -36,11 +36,6 @@ const upgradeBanner = computed(() => {
 
     <template #vertical-nav-content>
       <VerticalNavLink :item="{
-        title: 'Dashboard',
-        icon: 'bx-home',
-        to: '/dashboard',
-      }" />
-      <VerticalNavLink :item="{
         title: 'Catálogo',
         icon: 'bx-home',
         to: '/product-catalogs',

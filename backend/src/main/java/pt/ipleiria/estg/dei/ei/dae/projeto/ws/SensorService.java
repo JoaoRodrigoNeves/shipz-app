@@ -154,6 +154,4 @@ public class SensorService {
         Sensor sensor = sensorBean.changeStatus(code);
         return Response.status(Response.Status.OK).entity(toDTONoObservations(sensor)).build();
     }
-
-
 }

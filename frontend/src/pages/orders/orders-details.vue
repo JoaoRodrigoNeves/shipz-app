@@ -18,7 +18,7 @@ const products = ref([])
 const transportPackages = ref([])
 const transportPackagesCatalog = ref([])
 const cities = ref([])
-const isDropdownActive = JSON.parse(sessionStorage.getItem('user_info')).role == 'LogisticOperator'
+const role = JSON.parse(sessionStorage.getItem('user_info')).role
 const isDialogTransportPackageOpen = ref(false)
 const formatDate = value => {
   return moment(String(value)).format('DD/MM/YYYY HH:mm:ss')
@@ -256,7 +256,7 @@ onMounted(async () => {
               Localização
             </label>
             <span>
-              {{ order.location }}
+              {{ order.location ? order.location : 'Sem localização definida' }}
             </span>
           </div>
           <div class="catalog-item">
@@ -275,7 +275,7 @@ onMounted(async () => {
               {{ order.deliveredAt ? formatDate(order.deliveredAt) : 'Não entregue' }}
             </span>
           </div>
-          <div class="catalog-item" style="margin-top: 4px; width: 300px;" v-if="isDropdownActive">
+          <div class="catalog-item" style="margin-top: 4px; width: 300px;" v-if="role == 'LogisticOperator'">
             <span>
               <VAutocomplete v-model="order.location" label="Localização" :items="cities" class="product-quantity"
                 @update:model-value="changeLocation" />
@@ -283,7 +283,7 @@ onMounted(async () => {
           </div>
         </div>
         <VExpansionPanels>
-          <VExpansionPanel>
+          <VExpansionPanel v-if="role != 'FinalCostumer'">
             <VExpansionPanelTitle>
               <div class="table-actions">
                 <h3>Embalagens de Transporte</h3>
