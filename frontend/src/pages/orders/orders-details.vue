@@ -144,7 +144,7 @@ onMounted(async () => {
 <template>
   <VRow>
     <VCol cols="12">
-      <VCard style="padding: 20px;">
+      <VCard>
         <div class="product-catalog-details-header">
           <h2>Encomenda nº{{ order.code }}</h2>
           <VDialog width="500">
