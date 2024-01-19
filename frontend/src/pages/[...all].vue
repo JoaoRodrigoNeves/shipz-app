@@ -23,7 +23,7 @@ import misc404 from '@images/pages/404.png'
         to="/"
         class="mt-10"
       >
-        Voltar ao Dashboard
+        Voltar
       </VBtn>
     </div>
   </div>

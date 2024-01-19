@@ -203,11 +203,11 @@ watch(
         </div>
       </VCol>
       <VCol cols="12" class="d-flex gap-4">
-        <VBtn type="submit">
+        <VBtn type="submit" :disabled="isLoading">
           {{ props.isCreating ? 'Criar' : 'Editar' }}
         </VBtn>
 
-        <VBtn type="reset" color="secondary" variant="tonal">
+        <VBtn type="reset" color="secondary" variant="tonal" :disabled="isLoading">
           Reset
         </VBtn>
       </VCol>

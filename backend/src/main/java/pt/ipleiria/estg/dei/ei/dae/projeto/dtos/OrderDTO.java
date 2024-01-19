@@ -14,9 +14,11 @@ public class OrderDTO implements Serializable {
     private String createdAt;
     private String deliveredAt;
     private ArrayList<ProductDTO> products;
+    private ArrayList<SensorDTO> sensors;
 
     public OrderDTO() {
         this.products = new ArrayList<ProductDTO>();
+        this.sensors = new ArrayList<SensorDTO>();
     }
 
     public OrderDTO(long code, String logisticOperatorName, String status) {
@@ -41,6 +43,7 @@ public class OrderDTO implements Serializable {
         this.location = location;
         this.createdAt = createdAt;
         this.products = new ArrayList<ProductDTO>();
+        this.sensors = new ArrayList<SensorDTO>();
     }
 
     public long getCode() {
@@ -53,6 +56,14 @@ public class OrderDTO implements Serializable {
 
     public String getLogisticOperator() {
         return logisticOperator;
+    }
+
+    public ArrayList<SensorDTO> getSensors() {
+        return sensors;
+    }
+
+    public void setSensors(ArrayList<SensorDTO> sensors) {
+        this.sensors = sensors;
     }
 
     public void setLogisticOperator(String logisticOperator) {

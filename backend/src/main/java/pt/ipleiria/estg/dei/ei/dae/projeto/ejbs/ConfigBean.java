@@ -68,6 +68,14 @@ public class ConfigBean {
             transportPackageCatalogBean.create("Embalagem S", "Cartão", 50, "logisticOperator1");
             transportPackageCatalogBean.create("Embalagem M", "Cartão", 100, "logisticOperator1");
             transportPackageCatalogBean.create("Embalagem L", "Cartão", 150, "logisticOperator1");
+
+            sensorBean.create("Temperatura");
+            sensorBean.create("Temperatura");
+            sensorBean.create("Humidade");
+            sensorBean.create("Humidade");
+            sensorBean.create("Pressão");
+            sensorBean.create("Pressão");
+            sensorBean.create("");
         } catch (Exception e) {
             logger.severe(e.getMessage());
         }

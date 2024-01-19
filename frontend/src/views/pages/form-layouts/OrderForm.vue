@@ -53,7 +53,7 @@ onMounted(async () => {
           :items="['Estado Inicial', 'Em Processamento', 'Enviada', 'Entregue']" />
       </VCol>
       <VCol cols="12" class="d-flex gap-4">
-        <VBtn type="submit">
+        <VBtn type="submit" :disabled="isLoading">
           Atualizar Estado
         </VBtn>
       </VCol>

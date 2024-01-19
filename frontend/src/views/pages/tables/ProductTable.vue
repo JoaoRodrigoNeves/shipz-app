@@ -109,14 +109,14 @@ watch(
               <span>Ver Detalhes</span>
             </VTooltip>
           </VBtn>
-          <VBtn rel="noopener noreferrer" color="primary" v-if="!props.productPackageView"
+          <VBtn rel="noopener noreferrer" color="primary" v-if="!props.productPackageView" :disabled="isLoading"
             @click="deleteProductConfirm(item)">
             <VIcon size="20" icon="bx-trash" />
             <VTooltip activator="parent" location="top">
               <span>Apagar Produto</span>
             </VTooltip>
           </VBtn>
-          <VBtn rel="noopener noreferrer" color="primary" v-if="props.productPackageView" @click="removeProduct(item)">
+          <VBtn rel="noopener noreferrer" color="primary" v-if="props.productPackageView" @click="removeProduct(item)" :disabled="isLoading">
             <VIcon size="20" icon="bx-trash" />
             <VTooltip activator="parent" location="top">
               <span>Remover Produto</span>

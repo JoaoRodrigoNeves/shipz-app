@@ -26,6 +26,8 @@ const props = defineProps({
     }
 })
 
+const router = useRouter()
+
 const transportPackages = ref(Object.assign({}, props.transportPackages))
 
 const formatDate = (value) => {
@@ -86,11 +88,11 @@ const addOrRemoveSensorToPackage = async ( packageCode, addOrRemove) => {
 }
 
 watch(
-    () => props,
-    (newProps) => {
-        transportPackages.value = Object.assign({}, newProps.transportPackages)
-    },
-    { immediate: true }
+  () => props,
+  newProps => {
+    transportPackages.value = Object.assign({}, newProps.transportPackages)
+  },
+  { immediate: true },
 )
 </script>
 

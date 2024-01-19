@@ -151,9 +151,14 @@ public class OrderBean {
         }
     }
 
-
     public void changeLocation(long code, String location) throws MyEntityNotFoundException {
         Order order = this.find(code);
         order.setLocation(location);
+    }
+
+    public Order getSensors(long code) throws MyEntityNotFoundException {
+        Order order = this.find(code);
+        Hibernate.initialize(order.getSensors());
+        return order;
     }
 }
