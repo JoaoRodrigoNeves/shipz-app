@@ -1,5 +1,6 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.dtos;
 
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackageCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
 
 import java.io.Serializable;
@@ -10,7 +11,7 @@ public class TransportPackageDTO extends PackageDTO implements Serializable {
 
     String location;
     List<OrderDTO> clientOrders;
-
+    TransportPackageCatalog transportPackageCatalog;
     public TransportPackageDTO() {
     }
 
@@ -33,5 +34,13 @@ public class TransportPackageDTO extends PackageDTO implements Serializable {
 
     public void setClientOrders(List<OrderDTO> clientOrders) {
         this.clientOrders = clientOrders;
+    }
+
+    public TransportPackageCatalog getTransportPackageCatalog() {
+        return transportPackageCatalog;
+    }
+
+    public void setTransportPackageCatalog(TransportPackageCatalog transportPackageCatalog) {
+        this.transportPackageCatalog = transportPackageCatalog;
     }
 }

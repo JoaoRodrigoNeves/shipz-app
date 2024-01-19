@@ -45,12 +45,12 @@ public class TransportPackage extends Package implements Serializable {
         this.orders = clientOrders;
     }
 
-    public void addClientOrder(Order clientOrder) {
-        this.orders.add(clientOrder);
+    public void addOrder(Order order) {
+        this.orders.add(order);
     }
 
-    public void removeClientOrder(Order clientOrder) {
-        this.orders.remove(clientOrder);
+    public void removeClientOrder(Order order) {
+        this.orders.remove(order);
     }
 
     public String getLocation() {

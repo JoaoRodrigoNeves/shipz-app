@@ -176,7 +176,7 @@ public class OrderService {
     //TODO change status
     @PATCH
     @Path("/{code}/status")
-    public Response changeStatus(@PathParam("code") long code, OrderDTO orderDTO) throws MyEntityNotFoundException {
+    public Response changeStatus(@PathParam("code") long code, OrderDTO orderDTO) throws MyEntityNotFoundException, NotEnoughTransportPackageException {
         orderBean.changeStatus(code, orderDTO.getStatus());
         return Response.status(Response.Status.OK).build();
     }

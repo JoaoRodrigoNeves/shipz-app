@@ -44,6 +44,12 @@ public class TransportPackageService {
                 .collect(Collectors.toList());
     }
 
+    @POST
+    @Path("/")
+    public Response create(TransportPackageCreateDTO transportPackageCreateDTO) throws MyEntityExistsException, MyEntityNotFoundException {
+        boolean dontNeedAddPackage = transportPackageBean.create(transportPackageCreateDTO);
+        return dontNeedAddPackage ? Response.status(Response.Status.ACCEPTED).build() : Response.status(Response.Status.CREATED).build();
+    }
     //TODO get transport-package details
     @GET
     @Path("{code}")
@@ -57,5 +63,12 @@ public class TransportPackageService {
     @Path("/")
     public List<TransportPackageDTO> getAll() {
         return transportPackageToDTOs(transportPackageBean.getAll());
+    }
+    //TODO delete transport-package
+    @DELETE
+    @Path("{code}")
+    public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException {
+        transportPackageBean.delete(code);
+        return Response.status(Response.Status.OK).build();
     }
 }

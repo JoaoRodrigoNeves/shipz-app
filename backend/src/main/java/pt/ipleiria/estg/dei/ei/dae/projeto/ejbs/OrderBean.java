@@ -72,7 +72,7 @@ public class OrderBean {
                 if (listTransportPackageCatalogs.get(i).getVolume() > finalVolumeTotal || i == listTransportPackageCatalogs.size() - 1) {
                     TransportPackage transportPackage = new TransportPackage(PackageType.TRANSPORT, listTransportPackageCatalogs.get(i).getMaterial(), listTransportPackageCatalogs.get(i).getVolume(), listTransportPackageCatalogs.get(i));
                     clientOrder.addTransportPackage(transportPackage);
-                    transportPackage.addClientOrder(clientOrder);
+                    transportPackage.addOrder(clientOrder);
                     finalVolumeTotal -= transportPackage.getVolume();
                     i = 0;
                     entityManager.persist(transportPackage);
@@ -108,34 +108,26 @@ public class OrderBean {
         return clientOrder;
     }
 
-    public void addProduct(long code, long productCode) throws MyEntityNotFoundException {
-        Order clientOrder = find(code);
-        Product product = entityManager.find(Product.class, productCode);
-        if (product == null) {
-            throw new MyEntityNotFoundException("Product with code: " + productCode + " not found");
-        }
-        clientOrder.addProduct(product);
-        product.setOrder(clientOrder);
-    }
-
-    public void removeProduct(long code, long productCode) throws MyEntityNotFoundException {
-        Order order = find(code);
-        Product product = entityManager.find(Product.class, productCode);
-        if (product == null) {
-            throw new MyEntityNotFoundException("Product with code: " + productCode + " not found");
-        }
-        order.removeProduct(product);
-        product.setOrder(null);
-    }
-
     public Order getTransportPackages(long code) throws MyEntityNotFoundException {
         Order order = this.find(code);
         Hibernate.initialize(order.getTransportPackages());
         return order;
     }
 
-    public void changeStatus(long code, String status) throws MyEntityNotFoundException {
+    public void changeStatus(long code, String status) throws MyEntityNotFoundException, NotEnoughTransportPackageException {
         Order order = this.find(code);
+        long transportPackagesVolume = 0;
+        long productsVolume = 0;
+        for (TransportPackage transportPackage: order.getTransportPackages()) {
+            transportPackagesVolume += transportPackage.getVolume();
+        }
+
+        for (Product product: order.getProducts()) {
+            productsVolume += product.getProductCatalog().getPrimaryPackageVolume();
+        }
+        if(productsVolume > transportPackagesVolume){
+            throw new NotEnoughTransportPackageException("Not enough Transport Packages");
+        }
         OrderStatus orderStatus = OrderStatus.fromString(status);
         order.setStatus(orderStatus);
         if (orderStatus == OrderStatus.STATUS_3)
