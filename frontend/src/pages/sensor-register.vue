@@ -9,6 +9,7 @@ const toast = useToast();
 const isLoading = ref(false);
 const sensors = ref([]);
 const inputFile = ref(null)
+const cities = ref([])
 
 const sensorForm = ref({
     sensorCode: null,
@@ -28,15 +29,29 @@ const loadSensors = async () => {
     )
 }
 
+const loadCities = async () => {
+    isLoading.value = true
+    try {
+        await axios.get('https://json.geoapi.pt/municipios').then(response => {
+            cities.value = response.data
+            isLoading.value = false
+        })
+
+    } catch (error) {
+        isLoading.value = false
+        console.log(error)
+    }
+}
+
 const save = async () => {
     isLoading.value = true
     let payload = {
         sensorCode: sensorForm.value.sensorCode,
-        value: sensorForm.value.value - 0
+        value: sensorForm.value.value
     }
     await axios.post('observations', payload)
         .then(response => {
-            toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Observação criada com sucesso no sensor #' + sensorForm.value.sensorCode + ' (' + getSensorInfo().sensorTypeName + ')', life: 3000 });
+            toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Observação criada com sucesso no sensor #' + sensorForm.value.sensorCode + ' (' + getSensorInfo().type + ')', life: 3000 });
             isLoading.value = false
             reset()
         }).catch(error => {
@@ -87,6 +102,7 @@ const onUpload = async (file) => {
 
 onMounted(async () => {
     await loadSensors();
+    await loadCities();
 })
 </script>
 <template>
@@ -114,15 +130,18 @@ onMounted(async () => {
                             </VListItem>
                         </template>
                     </VAutocomplete>
-                    <div style="width: 40%;">
+                    <div style="width: 40%;" v-if="sensorForm.sensorCode && getSensorInfo().type != 'Gps'">
                         <VTextField type="number" v-model="sensorForm.value" label="Valor"
                             placeholder="Inserir o Valor do Sensor" />
                     </div>
+                    <div style="width: 40%;" v-else>
+                        <VAutocomplete v-model="sensorForm.value" label="Localização" :items="cities"/>
+                    </div>
 
 
-                    <span v-if="sensorForm.sensorCode">{{ getSensorInfo().type === "TEMPERATURE" ? 'ºC' :
+                    <span v-if="sensorForm.sensorCode">{{ getSensorInfo().type === "Gps" ? '' : getSensorInfo().type === "Temperatura" ? 'ºC' :
                         getSensorInfo().type
-                            === "PRESSURE" ? 'bar' : '%' }}</span>
+                            === "Pressão" ? 'bar' : '%' }}</span>
                 </VForm>
             </div>
             <div>

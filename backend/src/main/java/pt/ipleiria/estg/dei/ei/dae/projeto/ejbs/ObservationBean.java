@@ -13,7 +13,7 @@ public class ObservationBean {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public Observation create(long sensorCode, double value) throws MyEntityExistsException, MyEntityNotFoundException {
+    public Observation create(long sensorCode, String value) throws MyEntityExistsException, MyEntityNotFoundException {
         Sensor sensor = entityManager.find(Sensor.class, sensorCode);
 
         if(sensor == null)

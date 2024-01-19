@@ -40,6 +40,7 @@ public class ObservationService {
         return Response.status(Response.Status.CREATED).build();
     }
 
+
     //TODO add sensor to package
     @POST
     @Path("upload-csv")
@@ -53,7 +54,7 @@ public class ObservationService {
             for (String[] line : lines) {
                 String[] sensorObservation = Arrays.stream(line).map(String::trim).toArray(String[]::new)[0].split(";");
                 if(sensorObservation.length == 2){
-                    observationBean.create(Long.parseLong(sensorObservation[0]), Double.parseDouble(sensorObservation[1]));
+                    observationBean.create(Long.parseLong(sensorObservation[0]), sensorObservation[1]);
                     observationsCreated++;
                 }
             }
