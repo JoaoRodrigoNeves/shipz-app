@@ -75,7 +75,8 @@ public class ConfigBean {
             sensorBean.create("Humidade");
             sensorBean.create("Pressão");
             sensorBean.create("Pressão");
-            sensorBean.create("");
+            sensorBean.create("Gps");
+
         } catch (Exception e) {
             logger.severe(e.getMessage());
         }
