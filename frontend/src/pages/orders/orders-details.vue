@@ -137,13 +137,19 @@ const addTransportPackageToOrder = async () => {
 const changeLocation = async () => {
   isLoading.value = true
   let payload = {
-    location: order.value.location,
+    sensorCode: 1,
+    value: order.value.location,
   }
   try {
-    await axios.patch('orders/' + router.currentRoute.value.params.code + '/location', payload).then(response => {
-      isLoading.value = false
-      toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Localização alterada com sucesso', life: 3000 })
-    })
+    await axios.post('observations', payload)
+        .then(response => {
+            toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Localização adicionada com sucesso', life: 3000 });
+            isLoading.value = false
+            reset()
+        }).catch(error => {
+            isLoading.value = false
+            console.error(error)
+        })
 
   } catch (error) {
     isLoading.value = false
@@ -170,6 +176,7 @@ onMounted(async () => {
     <VCol cols="12">
       <VCard>
         <div class="product-catalog-details-header">
+          <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="navigateTo('/product-catalogs')" />
           <h2>Encomenda nº{{ order.code }}</h2>
         </div>
 
@@ -332,8 +339,9 @@ onMounted(async () => {
 <style scoped>
 .product-catalog-details-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   align-items: center;
+  gap: 12px;
   padding: 24px;
 }
 
