@@ -22,6 +22,7 @@ const transportPackagesCatalog = ref([])
 const cities = ref([])
 const role = JSON.parse(sessionStorage.getItem('user_info')).role
 const isDialogTransportPackageOpen = ref(false)
+
 const formatDate = value => {
   return moment(String(value)).format('DD/MM/YYYY HH:mm:ss')
 }
@@ -58,7 +59,7 @@ const loadTransportPackages = async () => {
 const loadTransportPackagesCatalog = async () => {
   isLoading.value = true
 
-  await axios.get('transport-package-catalogs'
+  await axios.get('transport-package-catalogs',
   ).then(response => {
     transportPackagesCatalog.value = response.data
     isLoading.value = false
@@ -96,14 +97,12 @@ const loadCities = async () => {
   }
 }
 
-const loadSensors = async () => {
+const loadOrderWithSensors = async () => {
   isLoading.value = true
   try {
-    await axios.get('sensors').then(response => {
-      const allSensors = response.data;
-      const filteredSensors = allSensors.filter(sensor => !sensor.inUse);
-      sensors.value = filteredSensors;
-      isLoading.value = false;
+    await axios.get('orders/' + router.currentRoute.value.params.code + '/sensors').then(response => {
+      sensors.value = response.data
+      isLoading.value = false
     })
 
   } catch (error) {
@@ -123,7 +122,7 @@ const addTransportPackageToOrder = async () => {
       if(response.status == 201){
         toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Embalagem de Transporte adicionada com sucesso', life: 3000 })
       }else{
-      toast.add({ severity: 'warn', summary: 'Atenção', detail: 'Embalagem de Transporte adicionada com sucesso, apesar de não ser necessária', life: 3000 })
+        toast.add({ severity: 'warn', summary: 'Atenção', detail: 'Embalagem de Transporte adicionada com sucesso, apesar de não ser necessária', life: 3000 })
 
       }
     })
@@ -157,12 +156,12 @@ const goBack = () => {
 }
 
 onMounted(async () => {
-  await loadOrderDetails();
-  await loadTransportPackages();
-  await loadProducts();
-  await loadCities();
-  await loadSensors();
-  await loadTransportPackagesCatalog();
+  await loadOrderDetails()
+  await loadTransportPackages()
+  await loadProducts()
+  await loadCities()
+  await loadTransportPackagesCatalog()
+  await loadOrderWithSensors()
 })
 </script>
 
@@ -274,10 +273,19 @@ onMounted(async () => {
               {{ order.deliveredAt ? formatDate(order.deliveredAt) : 'Não entregue' }}
             </span>
           </div>
-          <div class="catalog-item" style="margin-top: 4px; width: 300px;" v-if="role == 'LogisticOperator'">
+          <div
+            v-if="role == 'LogisticOperator'"
+            class="catalog-item"
+            style="margin-top: 4px; width: 300px;"
+          >
             <span>
-              <VAutocomplete v-model="order.location" label="Localização" :items="cities" class="product-quantity"
-                @update:model-value="changeLocation" />
+              <VAutocomplete
+                v-model="order.location"
+                label="Localização"
+                :items="cities"
+                class="product-quantity"
+                @update:model-value="changeLocation"
+              />
             </span>
           </div>
         </div>
@@ -287,35 +295,59 @@ onMounted(async () => {
               <div class="table-actions">
                 <h3>Embalagens de Transporte</h3>
 
-                <VDialog width="500" v-model="isDialogTransportPackageOpen">
-                  <template v-slot:activator="{ props }">
-                    <VBtn v-bind="props" text="Adicionar Sensores">
-                      <VIcon size="20" icon="bx-plus" />
-                      <VTooltip activator="parent" location="top">
+                <VDialog
+                  v-model="isDialogTransportPackageOpen"
+                  width="500"
+                >
+                  <template #activator="{ props }">
+                    <VBtn
+                      v-bind="props"
+                      text="Adicionar Sensores"
+                    >
+                      <VIcon
+                        size="20"
+                        icon="bx-plus"
+                      />
+                      <VTooltip
+                        activator="parent"
+                        location="top"
+                      >
                         <span>Adicionar Embalagem de Transporte</span>
                       </VTooltip>
                     </VBtn>
                   </template>
-                  <v-card title="Embalagem de Transporte">
-                    <v-card-text>
-                      <VAutocomplete v-model="selectedTransportPackages" label="Embalagem de Transporte"
-                        :items="transportPackagesCatalog" item-title="name" item-value="code" />
-                    </v-card-text>
+                  <VCard title="Embalagem de Transporte">
+                    <VCardText>
+                      <VAutocomplete
+                        v-model="selectedTransportPackages"
+                        label="Embalagem de Transporte"
+                        :items="transportPackagesCatalog"
+                        item-title="name"
+                        item-value="code"
+                      />
+                    </VCardText>
 
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
+                    <VCardActions>
+                      <VSpacer />
 
-                      <v-btn text="Adicionar"
-                        @click="addTransportPackageToOrder(); isDialogTransportPackageOpen = false;"></v-btn>
-                    </v-card-actions>
-                  </v-card>
+                      <VBtn
+                        text="Adicionar"
+                        @click="addTransportPackageToOrder(); isDialogTransportPackageOpen = false;"
+                      />
+                    </VCardActions>
+                  </VCard>
                 </VDialog>
               </div>
             </VExpansionPanelTitle>
             <VExpansionPanelText>
               <div v-if="transportPackages && transportPackages.length > 0 && !isLoading">
-                <TransportPackageTable v-if="!isLoading" :transport-packages="transportPackages" :canDelete="true"
-                  @loadTransportPackages="loadTransportPackages" :order="order" />
+                <TransportPackageTable
+                  v-if="!isLoading"
+                  :transport-packages="transportPackages"
+                  :can-delete="true"
+                  :order="order"
+                  @loadTransportPackages="loadTransportPackages"
+                />
               </div>
               <div
                 v-else
