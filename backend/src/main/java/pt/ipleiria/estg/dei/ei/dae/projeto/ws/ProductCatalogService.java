@@ -12,6 +12,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.TransportPackageCatalogBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackageCatalog;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.security.Authenticated;
 
@@ -31,7 +32,7 @@ public class ProductCatalogService {
     private TransportPackageCatalogBean transportPackageCatalogBean;
 
     private ProductCatalogDTO productCatalogToDTO(ProductCatalog productCatalog) {
-        return new ProductCatalogDTO(
+        ProductCatalogDTO productCatalogDTO = new ProductCatalogDTO(
                 productCatalog.getCode(),
                 productCatalog.getName(),
                 productCatalog.getCatalogArea(),
@@ -45,6 +46,19 @@ public class ProductCatalogService {
                 productCatalog.getSecondaryPackageMaterial(),
                 productCatalog.getTertiaryPackageMaterial()
         );
+
+        if (productCatalog.isTemperatureSensor())
+            productCatalogDTO.addSensor(SensorType.TEMPERATURE.getSensorType());
+        if (productCatalog.isGpsSensor())
+            productCatalogDTO.addSensor(SensorType.GPS.getSensorType());
+        if (productCatalog.isDamageSensor())
+            productCatalogDTO.addSensor(SensorType.DAMAGE.getSensorType());
+        if (productCatalog.isPressureSensor())
+            productCatalogDTO.addSensor(SensorType.PRESSURE.getSensorType());
+        if (productCatalog.isHumiditySensor())
+            productCatalogDTO.addSensor(SensorType.HUMIDITY.getSensorType());
+
+        return productCatalogDTO;
     }
 
     private List<ProductCatalogDTO> productCatalogToDTOs(List<ProductCatalog> productCatalog) {
@@ -124,7 +138,8 @@ public class ProductCatalogService {
                 productCatalogDTO.getMaxTertiaryPackage(),
                 productCatalogDTO.getPrimaryPackageMaterial(),
                 productCatalogDTO.getSecondaryPackageMaterial(),
-                productCatalogDTO.getTertiaryPackageMaterial()
+                productCatalogDTO.getTertiaryPackageMaterial(),
+                productCatalogDTO.getSensors()
         );
         return Response.status(Response.Status.OK).entity(productCatalogToDTO(productCatalog)).build();
     }

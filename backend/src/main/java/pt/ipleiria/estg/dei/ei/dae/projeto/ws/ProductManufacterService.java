@@ -14,6 +14,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductManufacterBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
@@ -48,7 +49,7 @@ public class ProductManufacterService {
     }
 
     private ProductCatalogDTO productCatalogToDTO(ProductCatalog productCatalog) {
-        return new ProductCatalogDTO(
+        ProductCatalogDTO productCatalogDTO = new ProductCatalogDTO(
                 productCatalog.getCode(),
                 productCatalog.getName(),
                 productCatalog.getCatalogArea(),
@@ -62,6 +63,19 @@ public class ProductManufacterService {
                 productCatalog.getSecondaryPackageMaterial(),
                 productCatalog.getTertiaryPackageMaterial()
         );
+
+        if (productCatalog.isTemperatureSensor())
+            productCatalogDTO.addSensor(SensorType.TEMPERATURE.getSensorType());
+        if (productCatalog.isGpsSensor())
+            productCatalogDTO.addSensor(SensorType.GPS.getSensorType());
+        if (productCatalog.isDamageSensor())
+            productCatalogDTO.addSensor(SensorType.DAMAGE.getSensorType());
+        if (productCatalog.isPressureSensor())
+            productCatalogDTO.addSensor(SensorType.PRESSURE.getSensorType());
+        if (productCatalog.isHumiditySensor())
+            productCatalogDTO.addSensor(SensorType.HUMIDITY.getSensorType());
+
+        return productCatalogDTO;
     }
 
     private List<ProductCatalogDTO> productCatalogToDTOs(List<ProductCatalog> productCatalog) {
