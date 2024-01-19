@@ -3,7 +3,9 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.entities.types;
 public enum SensorType {
     TEMPERATURE("Temperatura"),
     HUMIDITY("Humidade"),
-    PRESSURE("Pressão");
+    PRESSURE("Pressão"),
+    GPS("Gps"),
+    DAMAGE("Dano");
     private final String sensorType;
 
     SensorType(String sensorType) {

@@ -8,11 +8,12 @@ import jakarta.ws.rs.core.Response;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductCatalogDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.ProductDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.ProductCatalogBean;
+import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.TransportPackageCatalogBean;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
-import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackageCatalog;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
+import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.security.Authenticated;
 
 import java.util.List;
@@ -27,15 +28,17 @@ public class ProductCatalogService {
 
     @EJB
     private ProductCatalogBean productCatalogBean;
+    @EJB
+    private TransportPackageCatalogBean transportPackageCatalogBean;
 
     private ProductCatalogDTO productCatalogToDTO(ProductCatalog productCatalog) {
-        return new ProductCatalogDTO(
+        ProductCatalogDTO productCatalogDTO = new ProductCatalogDTO(
                 productCatalog.getCode(),
                 productCatalog.getName(),
                 productCatalog.getCatalogArea(),
                 productCatalog.getCategory(),
                 productCatalog.getDescription(),
-                productCatalog.getProductManufacter().getUsername(),
+                productCatalog.getProductManufacter().getName(),
                 productCatalog.getMaxSecondaryPackage(),
                 productCatalog.getMaxTertiaryPackage(),
                 productCatalog.getPrimaryPackageVolume(),
@@ -43,6 +46,19 @@ public class ProductCatalogService {
                 productCatalog.getSecondaryPackageMaterial(),
                 productCatalog.getTertiaryPackageMaterial()
         );
+
+        if (productCatalog.isTemperatureSensor())
+            productCatalogDTO.addSensor(SensorType.TEMPERATURE.getSensorType());
+        if (productCatalog.isGpsSensor())
+            productCatalogDTO.addSensor(SensorType.GPS.getSensorType());
+        if (productCatalog.isDamageSensor())
+            productCatalogDTO.addSensor(SensorType.DAMAGE.getSensorType());
+        if (productCatalog.isPressureSensor())
+            productCatalogDTO.addSensor(SensorType.PRESSURE.getSensorType());
+        if (productCatalog.isHumiditySensor())
+            productCatalogDTO.addSensor(SensorType.HUMIDITY.getSensorType());
+
+        return productCatalogDTO;
     }
 
     private List<ProductCatalogDTO> productCatalogToDTOs(List<ProductCatalog> productCatalog) {
@@ -59,7 +75,7 @@ public class ProductCatalogService {
                 product.getProductManufacter().getName()
         );
 
-        if(product.getOrder() != null){
+        if (product.getOrder() != null) {
             productDTO.setClientOrderCode(product.getOrder().getCode());
         }
         return productDTO;
@@ -74,8 +90,12 @@ public class ProductCatalogService {
     @POST
     @Path("/")
     public Response create(ProductCatalogDTO productCatalogDTO)
-            throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
-        ProductCatalog productCatalog = productCatalogBean.create(
+            throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException, NoVolumeException {
+        List<TransportPackageCatalog> transportPackageCatalogs = transportPackageCatalogBean.getAll();
+        if (transportPackageCatalogs.get(0).getVolume() < productCatalogDTO.getPrimaryPackageVolume())
+            throw new NoVolumeException("ProductCatalog primary volume not acceptable, max acceptable: " + transportPackageCatalogs.get(0).getVolume());
+
+        productCatalogBean.create(
                 productCatalogDTO.getName(),
                 productCatalogDTO.getCatalogArea(),
                 productCatalogDTO.getCategory(),
@@ -86,10 +106,11 @@ public class ProductCatalogService {
                 productCatalogDTO.getPrimaryPackageVolume(),
                 productCatalogDTO.getPrimaryPackageMaterial(),
                 productCatalogDTO.getSecondaryPackageMaterial(),
-                productCatalogDTO.getTertiaryPackageMaterial()
+                productCatalogDTO.getTertiaryPackageMaterial(),
+                productCatalogDTO.getSensors()
         );
 
-        return Response.status(Response.Status.CREATED).entity(productCatalogToDTO(productCatalog)).build();
+        return Response.status(Response.Status.CREATED).build();
     }
 
     //TODO get product catalog by code
@@ -117,7 +138,8 @@ public class ProductCatalogService {
                 productCatalogDTO.getMaxTertiaryPackage(),
                 productCatalogDTO.getPrimaryPackageMaterial(),
                 productCatalogDTO.getSecondaryPackageMaterial(),
-                productCatalogDTO.getTertiaryPackageMaterial()
+                productCatalogDTO.getTertiaryPackageMaterial(),
+                productCatalogDTO.getSensors()
         );
         return Response.status(Response.Status.OK).entity(productCatalogToDTO(productCatalog)).build();
     }
@@ -125,7 +147,7 @@ public class ProductCatalogService {
     //TODO delete a product-catalog
     @DELETE
     @Path("{code}")
-    public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException {
+    public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException, ListNotEmptyException {
         productCatalogBean.remove(code);
         return Response.status(Response.Status.OK).entity("Success").build();
     }
@@ -137,6 +159,7 @@ public class ProductCatalogService {
     public List<ProductCatalogDTO> getAll() {
         return productCatalogToDTOs(productCatalogBean.getAll());
     }
+
     @GET
     @Path("/available")
     @RolesAllowed({"LogisticOperator", "FinalCostumer"})

@@ -6,9 +6,12 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.PackageDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.SensorDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.TransportPackageCreateDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.TransportPackageDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.TransportPackageBean;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackage;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
@@ -44,6 +47,12 @@ public class TransportPackageService {
                 .collect(Collectors.toList());
     }
 
+    @POST
+    @Path("/")
+    public Response create(TransportPackageCreateDTO transportPackageCreateDTO) throws MyEntityExistsException, MyEntityNotFoundException {
+        boolean dontNeedAddPackage = transportPackageBean.create(transportPackageCreateDTO);
+        return dontNeedAddPackage ? Response.status(Response.Status.ACCEPTED).build() : Response.status(Response.Status.CREATED).build();
+    }
     //TODO get transport-package details
     @GET
     @Path("{code}")
@@ -52,10 +61,37 @@ public class TransportPackageService {
         return Response.status(Response.Status.OK).entity(transportPackageToDTO(transportPackage)).build();
     }
 
+    @GET
+    @Path("{code}/sensors")
+    public Response getSensors(@PathParam("code") long code) throws MyEntityNotFoundException {
+        TransportPackage transportPackage = transportPackageBean.getSensors(code);
+        List<SensorDTO> sensorDTOs = sensorDTOs(transportPackage.getSensors());
+        return Response.status(Response.Status.OK).entity(sensorDTOs).build();
+    }
+
+    private List<SensorDTO> sensorDTOs(List<Sensor> sensors) {
+        return sensors.stream().map(this::sensorDTO).collect(Collectors.toList());
+    }
+
+    private SensorDTO sensorDTO(Sensor sensor) {
+        return new SensorDTO(
+                sensor.getCode(),
+                sensor.getType().getSensorType(),
+                sensor.isInUse()
+        );
+    }
+
     //TODO get all transport-packages
     @GET
     @Path("/")
     public List<TransportPackageDTO> getAll() {
         return transportPackageToDTOs(transportPackageBean.getAll());
+    }
+    //TODO delete transport-package
+    @DELETE
+    @Path("{code}")
+    public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException {
+        transportPackageBean.delete(code);
+        return Response.status(Response.Status.OK).build();
     }
 }

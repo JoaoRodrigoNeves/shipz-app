@@ -3,20 +3,19 @@ import { createRouter, createWebHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', redirect: '/dashboard' },
     {
       path: '/',
       component: () => import('../layouts/default.vue'),
       children: [
         {
-          path: 'dashboard',
-          component: () => import('../pages/dashboard.vue'),
-          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true },
-        },
-        {
           path: 'products-list',
           component: () => import('../pages/client/products.vue'),
           meta: { manufacterAuth: false, logisticAuth: false, clientAuth: true, requiredAuth: true },
+        },
+        {
+          path: 'product-package/:code',
+          component: () => import('../pages/product-package/product-package-details.vue'),
+          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true },
         },
         {
           path: 'product-catalogs',
@@ -39,11 +38,6 @@ const router = createRouter({
           meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true },
         },
         {
-          path: 'product-packages',
-          component: () => import('../pages/product-package/product-packages.vue'),
-          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true },
-        },
-        {
           path: 'orders',
           component: () => import('../pages/orders/orders.vue'),
           meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true },
@@ -57,11 +51,6 @@ const router = createRouter({
           path: 'account-settings',
           component: () => import('../pages/account-settings.vue'),
           meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true },
-        },
-        {
-          path: 'product-package/:code',
-          component: () => import('../pages/product-package/product-package-details.vue'),
-          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true },
         },
         {
           path: 'sensor-observation',
@@ -81,7 +70,7 @@ const router = createRouter({
         {
           path: 'sensors',
           component: () => import('../pages/sensor/sensors.vue'),
-          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true },
+          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: false, requiredAuth: true },
         },
         {
           path: 'sensor/:code',
@@ -135,7 +124,15 @@ router.beforeEach(async (to, from, next) => {
     }
   } else {
     if (authUser) {
-      return next({ path: '/dashboard' })
+      if (user && user.role === 'ProductManufacter') {
+        return next({path: 'product-catalogs'})
+      } else if (user && user.role === 'LogisticOperator') {
+        return next({path: 'orders'})
+      } else if (user && user.role === 'FinalCostumer') {
+        return next({path: 'products-list'})
+      }
+    }else{
+      next()
     }
   }
 

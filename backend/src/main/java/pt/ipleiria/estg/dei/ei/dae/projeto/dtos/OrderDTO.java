@@ -28,6 +28,15 @@ public class OrderDTO implements Serializable {
         this.products = new ArrayList<ProductDTO>();
     }
 
+    public OrderDTO(long code, String logisticOperatorName, String status, String location, String createdAt) {
+        this.code = code;
+        this.logisticOperatorName = logisticOperatorName;
+        this.status = status;
+        this.products = new ArrayList<ProductDTO>();
+        this.location = location;
+        this.createdAt = createdAt;
+    }
+
     public OrderDTO(long code, String location, String status, String createdAt) {
         this.code = code;
         this.status = status;

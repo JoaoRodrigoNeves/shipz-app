@@ -2,8 +2,11 @@
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import moment from 'moment'
+import { useConfirm } from "primevue/useconfirm";
 
 const router = useRouter()
+const confirm = useConfirm();
+const axios = inject('axios')
 
 const emit = defineEmits(['loadTransportPackageCatalog'])
 const props = defineProps({

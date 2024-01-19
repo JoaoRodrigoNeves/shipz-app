@@ -162,7 +162,7 @@ const isAccountDeactivated = ref(false)
                 cols="12"
                 class="d-flex flex-wrap gap-4"
               >
-                <VBtn @click="save">
+                <VBtn @click="save" :disabled="isLoading">
                   Guardar Alterações
                 </VBtn>
 
@@ -171,6 +171,7 @@ const isAccountDeactivated = ref(false)
                   variant="tonal"
                   type="reset"
                   @click.prevent="resetForm"
+                  :disabled="isLoading"
                 >
                   Reset
                 </VBtn>

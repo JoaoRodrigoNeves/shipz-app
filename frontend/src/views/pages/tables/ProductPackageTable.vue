@@ -20,7 +20,7 @@ const navigateTo = (path) => {
 }
 
 const formatDate = (value) => {
-    return moment(String(value)).format('DD/MM/YYYY hh:mm:ss')
+    return moment(String(value)).format('DD/MM/YYYY HH:mm:ss')
 }
 
 watch(
@@ -57,7 +57,7 @@ watch(
         <tbody>
             <tr v-for="item in productPackages" :key="item.code">
                 <td style="width: 20%;">
-                    {{ item.code }}
+                    {{ "PP" +item.code }}
                 </td>
                 <td style="width: 20%; text-align: center;">
                     {{ item.typeName }}

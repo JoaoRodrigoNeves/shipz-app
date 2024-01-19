@@ -43,10 +43,9 @@ public class ConfigBean {
             finalCostumerBean.create("finalCostumer1", "finalCostumer1", "Final Costumer 1", "final.costumer1@mail.pt", "Some address, N1");
             finalCostumerBean.create("finalCostumer2", "finalCostumer2", "Final Costumer 2", "final.costumer2@mail.pt", "Some address, N2");
 
-            productCatalogBean.create("Sem catálogo", "Sem catálogo", "Sem catálogo", "Sem catálogo", "productManufacter1", null, null, 5, "Plástico", null, null);
-            productCatalogBean.create("PC1", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1", null, null, 10, "Plástico", null, null);
-            productCatalogBean.create("PC2", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1", null, null, 15, "Plástico", null, null);
-            productCatalogBean.create("TESTE", "TESTE", "TESTE", "TESTE", "productManufacter1", 2, 1, 50, "TESTE", "TESTE", "TESTE");
+            productCatalogBean.create("PC1", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1", null, null, 10, "Plástico", null, null, null);
+            productCatalogBean.create("PC2", "tecnologia", "telemovel", "Telemóvel Top", "productManufacter1", null, null, 15, "Plástico", null, null, null);
+            productCatalogBean.create("TESTE", "TESTE", "TESTE", "TESTE", "productManufacter1", 2, 1, 50, "TESTE", "TESTE", "TESTE", null);
 
             productBean.create(100002);
             productBean.create(100002);

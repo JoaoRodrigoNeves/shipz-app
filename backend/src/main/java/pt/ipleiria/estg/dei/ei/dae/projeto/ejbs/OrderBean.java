@@ -2,6 +2,7 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.ejbs;
 
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
@@ -43,9 +44,9 @@ public class OrderBean {
 
         try {
             Order clientOrder = new Order(finalCostumer, logisticOperator);
-            
+
             long volumeTotal = 0;
-            
+
             for (ProductOrderDTO product : products) {
                 ProductCatalog productCatalog = entityManager.find(ProductCatalog.class, product.getCode());
                 List<Product> productsList = productCatalog.getProducts()
@@ -56,6 +57,8 @@ public class OrderBean {
                     volumeTotal += productCatalog.getPrimaryPackageVolume() * product.getQuantity();
                     for (int i = 0; i < product.getQuantity(); i++) {
                         productsList.get(i).setOrder(clientOrder);
+                        List<ProductPackage> productPackages = productsList.get(i).getProductPackages().stream().filter(productPackage -> productPackage.getType() == PackageType.PRIMARY).collect(Collectors.toList());
+                        productPackages.get(0).getSensors().forEach(sensor -> sensor.setInUse(true));
                         clientOrder.addProduct(productsList.get(i));
                     }
                 } else {
@@ -66,13 +69,12 @@ public class OrderBean {
             entityManager.persist(clientOrder);
 
 
-
             long finalVolumeTotal = volumeTotal;
             for (int i = 0; i < listTransportPackageCatalogs.size(); i++) {
                 if (listTransportPackageCatalogs.get(i).getVolume() > finalVolumeTotal || i == listTransportPackageCatalogs.size() - 1) {
                     TransportPackage transportPackage = new TransportPackage(PackageType.TRANSPORT, listTransportPackageCatalogs.get(i).getMaterial(), listTransportPackageCatalogs.get(i).getVolume(), listTransportPackageCatalogs.get(i));
                     clientOrder.addTransportPackage(transportPackage);
-                    transportPackage.addClientOrder(clientOrder);
+                    transportPackage.addOrder(clientOrder);
                     finalVolumeTotal -= transportPackage.getVolume();
                     i = 0;
                     entityManager.persist(transportPackage);
@@ -81,7 +83,7 @@ public class OrderBean {
             }
 
             entityManager.flush();
-        } catch (ConstraintViolationException e){
+        } catch (ConstraintViolationException e) {
             throw new MyConstraintViolationException(e);
         } catch (NoStockException e) {
             throw new NoStockException(e.getMessage());
@@ -108,38 +110,37 @@ public class OrderBean {
         return clientOrder;
     }
 
-    public void addProduct(long code, long productCode) throws MyEntityNotFoundException {
-        Order clientOrder = find(code);
-        Product product = entityManager.find(Product.class, productCode);
-        if (product == null) {
-            throw new MyEntityNotFoundException("Product with code: " + productCode + " not found");
-        }
-        clientOrder.addProduct(product);
-        product.setOrder(clientOrder);
-    }
-
-    public void removeProduct(long code, long productCode) throws MyEntityNotFoundException {
-        Order order = find(code);
-        Product product = entityManager.find(Product.class, productCode);
-        if (product == null) {
-            throw new MyEntityNotFoundException("Product with code: " + productCode + " not found");
-        }
-        order.removeProduct(product);
-        product.setOrder(null);
-    }
-
     public Order getTransportPackages(long code) throws MyEntityNotFoundException {
         Order order = this.find(code);
         Hibernate.initialize(order.getTransportPackages());
         return order;
     }
 
-    public void changeStatus(long code, String status) throws MyEntityNotFoundException {
+    public void changeStatus(long code, String status) throws MyEntityNotFoundException, NotEnoughTransportPackageException {
         Order order = this.find(code);
+        long transportPackagesVolume = 0;
+        long productsVolume = 0;
+        for (TransportPackage transportPackage: order.getTransportPackages()) {
+            transportPackagesVolume += transportPackage.getVolume();
+        }
+
+        for (Product product: order.getProducts()) {
+            productsVolume += product.getProductCatalog().getPrimaryPackageVolume();
+        }
+        if(productsVolume > transportPackagesVolume){
+            throw new NotEnoughTransportPackageException("Not enough Transport Packages");
+        }
         OrderStatus orderStatus = OrderStatus.fromString(status);
         order.setStatus(orderStatus);
-        if (orderStatus == OrderStatus.STATUS_3)
+        if (orderStatus == OrderStatus.STATUS_2) {
             order.setDeliveredAt(LocalDateTime.now());
+            order.getTransportPackages().forEach(transportPackage -> transportPackage.getSensors().forEach(sensor -> sensor.setInUse(false)));
+            order.getProducts().forEach(product -> product.getProductPackages().forEach(productPackage -> {
+                if (productPackage.getType() == PackageType.PRIMARY) {
+                    productPackage.getSensors().forEach(sensor -> sensor.setInUse(false));
+                }
+            }));
+        }
     }
 
     public void changeLocation(long code, String location) throws MyEntityNotFoundException {

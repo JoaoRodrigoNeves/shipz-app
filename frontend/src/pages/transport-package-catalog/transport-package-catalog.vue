@@ -49,7 +49,7 @@ onMounted(async () => {
                     @loadTransportPackageCatalog="loadTransportPackagesCatalogs" :transportPackagesCatalogs="transportPackages" />
                 </div>
                 <div v-else class="no-transport-packages">
-                    Não há caixas de transporte deste tipo
+                    Não há embalagens de transporte registadas
                 </div>    
             </VCard>
             <VCard v-else>

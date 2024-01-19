@@ -33,27 +33,7 @@ const logout = () => {
           </VListItem>
           <VDivider class="my-2" />
 
-          <!-- 👉 Profile -->
-          <VListItem link>
-            <template #prepend>
-              <VIcon class="me-2" icon="bx-user" size="22" />
-            </template>
-
-            <VListItemTitle>Profile</VListItemTitle>
-          </VListItem>
-
-          <!-- 👉 Settings -->
-          <VListItem link>
-            <template #prepend>
-              <VIcon class="me-2" icon="bx-cog" size="22" />
-            </template>
-
-            <VListItemTitle>Settings</VListItemTitle>
-          </VListItem>
-
           <!-- Divider -->
-          <VDivider class="my-2" />
-
           <!-- 👉 Logout -->
           <VListItem to="/login" @click="logout">
             <template #prepend>

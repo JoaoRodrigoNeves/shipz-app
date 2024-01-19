@@ -1,5 +1,7 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.ejbs;
 
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -14,7 +16,11 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationExcep
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -131,5 +137,15 @@ public class SensorBean {
         sensor.setInUse(!sensor.isInUse());
         entityManager.persist(sensor);
         return sensor;
+    }
+
+    public void readCSVFile(long code) throws MyEntityNotFoundException {
+        String fileName = "c:\\test\\csv\\country.csv";
+        try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
+            List<String[]> r = reader.readAll();
+            r.forEach(x -> System.out.println(Arrays.toString(x)));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

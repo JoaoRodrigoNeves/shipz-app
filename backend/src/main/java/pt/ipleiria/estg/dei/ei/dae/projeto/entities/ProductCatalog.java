@@ -2,6 +2,7 @@ package pt.ipleiria.estg.dei.ei.dae.projeto.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.DefaultValue;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -44,7 +45,16 @@ public class ProductCatalog extends Versionable implements Serializable {
     Long activeProductPackageSecondaryCode;
     @Column(name = "active_product_package_primary_code")
     Long activeProductPackageTertiaryCode;
-
+    @Column(name = "humidity_sensor")
+    boolean humiditySensor = false;
+    @Column(name = "temperature_sensor")
+    boolean temperatureSensor = false;
+    @Column(name = "pressure_sensor")
+    boolean pressureSensor = false;
+    @Column(name = "gps_sensor")
+    boolean gpsSensor = false;
+    @Column(name = "damage_sensor")
+    boolean damageSensor = false;
     @OneToMany(mappedBy = "productCatalog", cascade = CascadeType.REMOVE)
     @OrderBy("createdAt desc")
     @NotNull
@@ -201,16 +211,56 @@ public class ProductCatalog extends Versionable implements Serializable {
         this.products.remove(product);
     }
 
+    public boolean isHumiditySensor() {
+        return humiditySensor;
+    }
+
+    public void setHumiditySensor(boolean humiditySensor) {
+        this.humiditySensor = humiditySensor;
+    }
+
+    public boolean isTemperatureSensor() {
+        return temperatureSensor;
+    }
+
+    public void setTemperatureSensor(boolean temperatureSensor) {
+        this.temperatureSensor = temperatureSensor;
+    }
+
+    public boolean isPressureSensor() {
+        return pressureSensor;
+    }
+
+    public void setPressureSensor(boolean pressureSensor) {
+        this.pressureSensor = pressureSensor;
+    }
+
+    public boolean isGpsSensor() {
+        return gpsSensor;
+    }
+
+    public void setGpsSensor(boolean gpsSensor) {
+        this.gpsSensor = gpsSensor;
+    }
+
+    public boolean isDamageSensor() {
+        return damageSensor;
+    }
+
+    public void setDamageSensor(boolean damageSensor) {
+        this.damageSensor = damageSensor;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProductCatalog that = (ProductCatalog) o;
-        return code == that.code && Objects.equals(name, that.name) && Objects.equals(catalogArea, that.catalogArea) && Objects.equals(category, that.category) && Objects.equals(description, that.description) && Objects.equals(maxSecondaryPackage, that.maxSecondaryPackage) && Objects.equals(maxTertiaryPackage, that.maxTertiaryPackage) && Objects.equals(primaryPackageVolume, that.primaryPackageVolume) && Objects.equals(primaryPackageMaterial, that.primaryPackageMaterial) && Objects.equals(secondaryPackageMaterial, that.secondaryPackageMaterial) && Objects.equals(tertiaryPackageMaterial, that.tertiaryPackageMaterial) && Objects.equals(activeProductPackageSecondaryCode, that.activeProductPackageSecondaryCode) && Objects.equals(activeProductPackageTertiaryCode, that.activeProductPackageTertiaryCode) && Objects.equals(products, that.products) && Objects.equals(productManufacter, that.productManufacter);
+        return code == that.code && primaryPackageVolume == that.primaryPackageVolume && humiditySensor == that.humiditySensor && temperatureSensor == that.temperatureSensor && pressureSensor == that.pressureSensor && gpsSensor == that.gpsSensor && damageSensor == that.damageSensor && Objects.equals(name, that.name) && Objects.equals(catalogArea, that.catalogArea) && Objects.equals(category, that.category) && Objects.equals(description, that.description) && Objects.equals(maxSecondaryPackage, that.maxSecondaryPackage) && Objects.equals(maxTertiaryPackage, that.maxTertiaryPackage) && Objects.equals(primaryPackageMaterial, that.primaryPackageMaterial) && Objects.equals(secondaryPackageMaterial, that.secondaryPackageMaterial) && Objects.equals(tertiaryPackageMaterial, that.tertiaryPackageMaterial) && Objects.equals(activeProductPackageSecondaryCode, that.activeProductPackageSecondaryCode) && Objects.equals(activeProductPackageTertiaryCode, that.activeProductPackageTertiaryCode) && Objects.equals(products, that.products) && Objects.equals(productManufacter, that.productManufacter);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, name, catalogArea, category, description, maxSecondaryPackage, maxTertiaryPackage, primaryPackageVolume, primaryPackageMaterial, secondaryPackageMaterial, tertiaryPackageMaterial, activeProductPackageSecondaryCode, activeProductPackageTertiaryCode, products, productManufacter);
+        return Objects.hash(code, name, catalogArea, category, description, maxSecondaryPackage, maxTertiaryPackage, primaryPackageVolume, primaryPackageMaterial, secondaryPackageMaterial, tertiaryPackageMaterial, activeProductPackageSecondaryCode, activeProductPackageTertiaryCode, humiditySensor, temperatureSensor, pressureSensor, gpsSensor, damageSensor, products, productManufacter);
     }
 }

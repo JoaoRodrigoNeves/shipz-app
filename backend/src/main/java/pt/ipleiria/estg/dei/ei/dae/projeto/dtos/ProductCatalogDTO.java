@@ -6,6 +6,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductCatalogDTO implements Serializable {
@@ -21,9 +22,9 @@ public class ProductCatalogDTO implements Serializable {
     String primaryPackageMaterial;
     String secondaryPackageMaterial;
     String tertiaryPackageMaterial;
+    List<String> sensors;
 
-    public ProductCatalogDTO() {
-    }
+    public ProductCatalogDTO() {}
 
     public ProductCatalogDTO(long code, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, long primaryPackageVolume, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial) {
         this.code = code;
@@ -38,6 +39,7 @@ public class ProductCatalogDTO implements Serializable {
         this.primaryPackageMaterial = primaryPackageMaterial;
         this.secondaryPackageMaterial = secondaryPackageMaterial;
         this.tertiaryPackageMaterial = tertiaryPackageMaterial;
+        this.sensors = new ArrayList<>();
     }
 
     public long getCode() {
@@ -134,5 +136,17 @@ public class ProductCatalogDTO implements Serializable {
 
     public void setTertiaryPackageMaterial(String tertiaryPackageMaterial) {
         this.tertiaryPackageMaterial = tertiaryPackageMaterial;
+    }
+
+    public List<String> getSensors() {
+        return sensors;
+    }
+
+    public void setSensors(List<String> sensors) {
+        this.sensors = sensors;
+    }
+
+    public void addSensor(String sensor) {
+        this.sensors.add(sensor);
     }
 }

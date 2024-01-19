@@ -1,9 +1,8 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.entities.types;
 public enum OrderStatus {
-    STATUS_0("Estado Inicial"),
-    STATUS_1("Em Processamento"),
-    STATUS_2("Enviada"),
-    STATUS_3("Entregue");
+    STATUS_0("Em Processamento"),
+    STATUS_1("Enviada"),
+    STATUS_2("Entregue");
     private final String orderStatus;
 
     OrderStatus(String orderStatus) {

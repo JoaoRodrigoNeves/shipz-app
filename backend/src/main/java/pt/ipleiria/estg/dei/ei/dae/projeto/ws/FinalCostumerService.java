@@ -80,7 +80,9 @@ public class FinalCostumerService {
         return new OrderDTO(
                 clientOrder.getCode(),
                 clientOrder.getLogisticOperator().getName(),
-                clientOrder.getStatus().getOrderStatus()
+                clientOrder.getStatus().getOrderStatus(),
+                clientOrder.getLocation(),
+                clientOrder.getCreatedAt().toString()
         );
     }
 

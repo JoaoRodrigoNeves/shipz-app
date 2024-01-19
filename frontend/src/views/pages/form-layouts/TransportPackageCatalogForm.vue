@@ -77,11 +77,10 @@ const resetForm = () => {
                 <VTextField type="number" v-model="transportPackageForm.volume" label="Volume" placeholder="20 cm³" />
             </VCol>
             <VCol cols="12" class="d-flex gap-4">
-                <VBtn type="submit">
+                <VBtn type="submit" :disabled="isLoading">
                     Criar
                 </VBtn>
-
-                <VBtn type="reset" color="secondary" variant="tonal" @click="resetForm">
+                <VBtn type="reset" color="secondary" variant="tonal" @click="resetForm" :disabled="isLoading">
                     Reset
                 </VBtn>
             </VCol>

@@ -22,7 +22,7 @@ const submit = (async () => {
     axios.defaults.headers.common.Authorization = "Bearer " + response.data.token
     sessionStorage.setItem("token", JSON.stringify(response.data.token));
     sessionStorage.setItem("user_info", JSON.stringify(response.data.user_info));
-    router.push({ path: 'dashboard' })
+    router.push({ path: '/' })
     return true
   } catch (error) {
     toast.add({ severity: 'error', summary: 'Error', detail: 'Ocorreu um problema ao entrar na aplicação!', life: 3000 });

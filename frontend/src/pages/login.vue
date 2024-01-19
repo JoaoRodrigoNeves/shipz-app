@@ -24,7 +24,7 @@ const submit = (async () => {
     sessionStorage.setItem("user_info", JSON.stringify(response.data.user_info))
     isLoading.value = false
 
-    router.push({ path: 'dashboard' })
+    router.push({ path: '/' })
   },
   ).catch(
     error => {
@@ -63,7 +63,7 @@ const navigateToSensorObservation = () => {
 
       <VCardText class="pt-2">
         <h5 class="text-h5 mb-1">
-          Welcome to sneat! 👋🏻
+          Welcome to Shipz! 👋🏻
         </h5>
         <p class="mb-0">
           Please sign-in to your account and start the adventure
@@ -74,19 +74,10 @@ const navigateToSensorObservation = () => {
         <VForm @submit.prevent="submit">
           <VRow>
             <VCol cols="12">
-              <VTextField
-                v-model="form.username"
-                autofocus
-                placeholder="johndoe"
-                label="Username"
-                type="text"
-              />
+              <VTextField v-model="form.username" autofocus label="Nome de Utilizador" type="text" />
             </VCol>
             <VCol cols="12">
-              <VTextField
-                v-model="form.password"
-                label="Password"
-                placeholder="············"
+              <VTextField v-model="form.password" label="Palavra Passe"
                 :type="isPasswordVisible ? 'text' : 'password'"
                 :append-inner-icon="isPasswordVisible ? 'bx-hide' : 'bx-show'"
                 @click:append-inner="isPasswordVisible = !isPasswordVisible"

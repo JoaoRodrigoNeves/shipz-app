@@ -4,8 +4,14 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.hibernate.Hibernate;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.TransportPackageCreateDTO;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Order;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Package;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackage;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackageCatalog;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.PackageType;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
 
 import java.util.List;
@@ -18,6 +24,22 @@ public class TransportPackageBean {
     public boolean exists(long code) {
         TransportPackage transportPackage = entityManager.find(TransportPackage.class, code);
         return transportPackage != null;
+    }
+
+    public boolean create(TransportPackageCreateDTO transportPackageCreateDTO) {
+        Order order = entityManager.find(Order.class, transportPackageCreateDTO.getOrderCode());
+        TransportPackageCatalog transportPackageCatalog = entityManager.find(TransportPackageCatalog.class, transportPackageCreateDTO.getTransportPackageCatalogCode());
+
+        long productsVolume = order.getProducts().stream().mapToLong(product -> product.getProductCatalog().getPrimaryPackageVolume()).sum();
+        long transportPackagesVolume = order.getTransportPackages().stream().mapToLong(Package::getVolume).sum();
+        boolean dontNeedAddPackage = transportPackagesVolume > productsVolume;
+
+        TransportPackage transportPackage = new TransportPackage(PackageType.TRANSPORT, transportPackageCatalog.getMaterial(), transportPackageCatalog.getVolume(), transportPackageCatalog);
+        order.addTransportPackage(transportPackage);
+        transportPackage.addOrder(order);
+        entityManager.persist(transportPackage);
+        entityManager.flush();
+        return dontNeedAddPackage;
     }
 
     public TransportPackage find(long code) throws MyEntityNotFoundException {
@@ -34,12 +56,15 @@ public class TransportPackageBean {
         entityManager.merge(transportPackage);
     }*/
 
-    /*public TransportPackage delete(long code) throws MyEntityNotFoundException {
+    public void delete(long code) throws MyEntityNotFoundException {
         TransportPackage transportPackage = this.find(code);
+        List<Order> orders = this.getOrders(code);
+        if (!orders.isEmpty()) {
+            orders.get(0).removeTransportPackage(transportPackage);
+            transportPackage.removeClientOrder(orders.get(0));
+        }
         entityManager.remove(transportPackage);
-        transportPackage.getClientOrders().forEach(clientOrder -> clientOrder.removeTransportPackage(transportPackage));
-        return transportPackage;
-    }*/
+    }
 
     //TODO get all transportPackages
     public List<TransportPackage> getAll() {
@@ -51,5 +76,11 @@ public class TransportPackageBean {
         TransportPackage transportPackage = this.find(code);
         Hibernate.initialize(transportPackage.getOrders());
         return transportPackage.getOrders();
+    }
+
+    public TransportPackage getSensors(long code) throws MyEntityNotFoundException {
+        TransportPackage transportPackage = this.find(code);
+        Hibernate.initialize(transportPackage.getSensors());
+        return transportPackage;
     }
 }

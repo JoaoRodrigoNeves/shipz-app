@@ -40,6 +40,7 @@ const deleteProductCatalogConfirm = (productCatalog) => {
         emit('loadProductCatalogs')
       }).catch(
         error => {
+          toast.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possivel apagar o catalogo com o código PC' + productCatalogItem.value.code, life: 3000 });
           isLoading.value = false;
           console.error(error)
         }
@@ -76,7 +77,7 @@ watch(
     <tbody>
       <tr v-for="item in productCatalogs" :key="item.code">
         <td>
-          {{ item.code }}
+          {{ "PC" + item.code }}
         </td>
         <td class="text-center" style="width: 100%;">
           {{ item.name }}
@@ -86,12 +87,6 @@ watch(
             <VIcon size="20" icon="bx-show" />
             <VTooltip activator="parent" location="top">
               <span>Ver Detalhes</span>
-            </VTooltip>
-          </VBtn>
-          <VBtn rel="noopener noreferrer" color="primary">
-            <VIcon size="20" icon="bx-plus" />
-            <VTooltip activator="parent" location="top">
-              <span>Adicionar Produto</span>
             </VTooltip>
           </VBtn>
           <VBtn rel="noopener noreferrer" color="primary" @click="updateProductCatalog(item)">

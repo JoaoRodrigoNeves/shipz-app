@@ -1,14 +1,10 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue'
 import ProductTable from '@/views/pages/tables/ProductTable.vue'
-import ProductForm from '@/views/pages/form-layouts/ProductForm.vue'
 
 const axios = inject('axios')
 const isLoading = ref(false)
-const isCreatingOrUpdating = ref(false)
-const isCreating = ref(false)
 const products = ref([])
-const productToUpdate = ref(null)
 
 
 const loadProducts = async () => {
@@ -26,14 +22,7 @@ const loadProducts = async () => {
 }
 
 const closeFormAndUpdate = async () => {
-  isCreatingOrUpdating.value = false
-  await loadProducts()
-}
-
-const updateProduct = async product => {
-  productToUpdate.value = product
-  isCreatingOrUpdating.value = true
-  isCreating.value = false
+    await loadProducts()
 }
 
 onMounted(async () => {
@@ -42,52 +31,17 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VRow>
-    <VCol cols="12">
-      <VCard v-if="!isCreatingOrUpdating">
-        <div class="product-catalogs-header">
-          <h2>Produtos</h2>
-          <VBtn
-            rel="noopener noreferrer"
-            color="primary"
-            @click="isCreatingOrUpdating = true; isCreating = true"
-          >
-            <VIcon
-              size="20"
-              icon="bx-plus"
-            />
-            <VTooltip
-              activator="parent"
-              location="top"
-            >
-              <span>Criar Produto</span>
-            </VTooltip>
-          </VBtn>
-        </div>
-        <ProductTable
-          v-if="products && products.length > 0 && !isLoading"
-          :product-package-view="false"
-          :products="products"
-          @updateProduct="updateProduct"
-          @loadProducts="loadProducts"
-        />
-      </VCard>
-      <VCard v-if="isCreatingOrUpdating">
-        <VCard>
-          <div class="product-catalogs-header">
-            <h2>{{ isCreating ? 'Criar Produto' : 'Editar Produto' }}</h2>
-          </div>
-          <VCardText>
-            <ProductForm
-              :product-to-update="productToUpdate"
-              :is-creating="isCreating"
-              @closeFormAndUpdate="closeFormAndUpdate"
-            />
-          </VCardText>
-        </VCard>
-      </VCard>
-    </VCol>
-  </VRow>
+    <VRow>
+        <VCol cols="12">
+            <VCard>
+                <div class="product-catalogs-header">
+                    <h2>Produtos</h2>
+                </div>
+                <ProductTable v-if="products && products.length > 0 && !isLoading"
+                    @loadProducts="loadProducts" :product-package-view="false" :products="products" />
+            </VCard>
+        </VCol>
+    </VRow>
 </template>
 
 <style scoped>

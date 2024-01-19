@@ -53,13 +53,13 @@ onMounted(async () => {
         <VCol cols="12">
             <VCard v-if="sensor">
                 <div class="sensor-details-header">
-                    <h2>Sensor #{{ sensor.code }}</h2>
+                    <h2>{{ "Sensor - S" + sensor.code }}</h2>
                 </div>
                 <div class="sensor-details">
                     <div class="sensor-item">
                         <label>
                             Tipo de sensor:
-                        
+
                             <span class="bold">
                                 {{ sensor.type }}
                             </span>

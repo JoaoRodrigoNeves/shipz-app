@@ -7,9 +7,10 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintViolationException;
 import org.hibernate.Hibernate;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Product;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductCatalog;
-import pt.ipleiria.estg.dei.ei.dae.projeto.entities.ProductManufacter;
+import pt.ipleiria.estg.dei.ei.dae.projeto.dtos.SensorDTO;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.*;
+import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.SensorType;
+import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.ListNotEmptyException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
@@ -33,14 +34,21 @@ public class ProductCatalogBean {
         return (Long) query.getSingleResult() > 0L;
     }
 
-    public ProductCatalog create(String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, long primaryPackageVolume, String primaryPackageMaterial, String secondaryPackageMaterial,String tertiaryPackageMaterial) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
+    public ProductCatalog create(String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, long primaryPackageVolume, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial, List<String> sensors) throws MyEntityExistsException, MyConstraintViolationException, MyEntityNotFoundException {
         ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, productManufacterUsername);
 
         if (productManufacter == null)
             throw new MyEntityNotFoundException("Product Manufacter with username: '" + productManufacterUsername + "' not found");
 
         try {
-            var productCatalog = new ProductCatalog(name, catalogArea, category, description, productManufacter, maxSecondaryPackage, maxTertiaryPackage, primaryPackageVolume, primaryPackageMaterial, secondaryPackageMaterial, tertiaryPackageMaterial);
+            ProductCatalog productCatalog = new ProductCatalog(name, catalogArea, category, description, productManufacter, maxSecondaryPackage, maxTertiaryPackage, primaryPackageVolume, primaryPackageMaterial, secondaryPackageMaterial, tertiaryPackageMaterial);
+            if (sensors != null) {
+                productCatalog.setHumiditySensor(sensors.contains(SensorType.HUMIDITY.getSensorType()));
+                productCatalog.setPressureSensor(sensors.contains(SensorType.PRESSURE.getSensorType()));
+                productCatalog.setTemperatureSensor(sensors.contains(SensorType.TEMPERATURE.getSensorType()));
+                productCatalog.setGpsSensor(sensors.contains(SensorType.GPS.getSensorType()));
+                productCatalog.setDamageSensor(sensors.contains(SensorType.DAMAGE.getSensorType()));
+            }
             productManufacter.addProductCatalog(productCatalog);
             entityManager.persist(productCatalog);
             entityManager.flush();
@@ -57,7 +65,7 @@ public class ProductCatalogBean {
         return productCatalog;
     }
 
-    public ProductCatalog update(long code, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial,String tertiaryPackageMaterial) throws MyEntityNotFoundException {
+    public ProductCatalog update(long code, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial, List<String> sensors) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = this.find(code);
         entityManager.lock(productCatalog, LockModeType.OPTIMISTIC);
         productCatalog.setName(name);
@@ -69,6 +77,14 @@ public class ProductCatalogBean {
         productCatalog.setSecondaryPackageMaterial(secondaryPackageMaterial);
         productCatalog.setTertiaryPackageMaterial(tertiaryPackageMaterial);
         productCatalog.setPrimaryPackageMaterial(primaryPackageMaterial);
+
+        if (sensors != null) {
+            productCatalog.setHumiditySensor(sensors.contains(SensorType.HUMIDITY.getSensorType()));
+            productCatalog.setPressureSensor(sensors.contains(SensorType.PRESSURE.getSensorType()));
+            productCatalog.setTemperatureSensor(sensors.contains(SensorType.TEMPERATURE.getSensorType()));
+            productCatalog.setGpsSensor(sensors.contains(SensorType.GPS.getSensorType()));
+            productCatalog.setDamageSensor(sensors.contains(SensorType.DAMAGE.getSensorType()));
+        }
 
         if (!Objects.equals(productCatalog.getProductManufacter().getUsername(), productManufacterUsername)) {
             // remove old product manufacter
@@ -90,14 +106,12 @@ public class ProductCatalogBean {
         return productCatalog;
     }
 
-    public void remove(long code) throws MyEntityNotFoundException {
+    public void remove(long code) throws MyEntityNotFoundException, ListNotEmptyException {
         ProductCatalog productCatalog = this.find(code);
         ProductManufacter productManufacter = entityManager.find(ProductManufacter.class, productCatalog.getProductManufacter().getUsername());
 
-        if (productCatalog.getProducts().toArray().length > 0) {
-            ProductCatalog defaultCatalog = this.find(1);
-            productCatalog.getProducts().forEach(product -> product.setProductCatalog(defaultCatalog));
-            productCatalog.getProducts().addAll(productCatalog.getProducts());
+        if (!productCatalog.getProducts().isEmpty()) {
+            throw new ListNotEmptyException("Product Catalog cannot be deleted");
         }
 
         productManufacter.removeProductCatalog(productCatalog);

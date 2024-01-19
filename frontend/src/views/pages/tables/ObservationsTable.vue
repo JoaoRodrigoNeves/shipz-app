@@ -14,7 +14,7 @@ const props = defineProps({
 const observations = ref(Object.assign({}, props.observations))
 
 const formatDate = (value) => {
-    return moment(String(value)).format('DD/MM/YYYY hh:mm:ss')
+    return moment(String(value)).format('DD/MM/YYYY HH:mm:ss')
 }
 
 watch(
