@@ -39,6 +39,7 @@ public class ProductCatalogService {
                 productCatalog.getCategory(),
                 productCatalog.getDescription(),
                 productCatalog.getProductManufacter().getName(),
+                productCatalog.getProductManufacter().getUsername(),
                 productCatalog.getMaxSecondaryPackage(),
                 productCatalog.getMaxTertiaryPackage(),
                 productCatalog.getPrimaryPackageVolume(),

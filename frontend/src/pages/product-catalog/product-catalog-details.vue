@@ -165,7 +165,7 @@ onMounted(async () => {
               Criado por
             </label>
             <span>
-              {{ productCatalog.productManufacterUsername }}
+              {{ productCatalog.productManufacterName }}
             </span>
           </div>
           <div class="catalog-item">
@@ -294,19 +294,19 @@ onMounted(async () => {
         </div>
       </VCard>
     </VCol>
-    </VRow>
-    <VCard v-if="isCreatingOrUpdatingCatalog">
-      <VCard>
-        <div class="product-catalogs-header">
-          <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="isCreatingOrUpdatingCatalog = false" />
-          <h2>Editar Catálogo</h2>
-        </div>
-        <VCardText>
-          <ProductCatalogForm @closeFormAndUpdate="closeFormAndUpdateCatalog" :productCatalogToUpdate="catalogToUpdate"
-            :isCreating="false"></ProductCatalogForm>
-        </VCardText>
-      </VCard>
+  </VRow>
+  <VCard v-if="isCreatingOrUpdatingCatalog">
+    <VCard>
+      <div class="product-catalogs-header">
+        <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="isCreatingOrUpdatingCatalog = false" />
+        <h2>Editar Catálogo</h2>
+      </div>
+      <VCardText>
+        <ProductCatalogForm @closeFormAndUpdate="closeFormAndUpdateCatalog" :productCatalogToUpdate="catalogToUpdate"
+          :isCreating="false"></ProductCatalogForm>
+      </VCardText>
     </VCard>
+  </VCard>
 </template>
 
 <style scoped>

@@ -15,6 +15,8 @@ public class ProductCatalogDTO implements Serializable {
     String catalogArea;
     String category;
     String description;
+
+    String productManufacterName;
     String productManufacterUsername;
     Integer maxSecondaryPackage;
     Integer maxTertiaryPackage;
@@ -24,14 +26,16 @@ public class ProductCatalogDTO implements Serializable {
     String tertiaryPackageMaterial;
     List<String> sensors;
 
-    public ProductCatalogDTO() {}
+    public ProductCatalogDTO() {
+    }
 
-    public ProductCatalogDTO(long code, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, long primaryPackageVolume, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial) {
+    public ProductCatalogDTO(long code, String name, String catalogArea, String category, String description, String productManufacterName, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, long primaryPackageVolume, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial) {
         this.code = code;
         this.name = name;
         this.catalogArea = catalogArea;
         this.category = category;
         this.description = description;
+        this.productManufacterName = productManufacterName;
         this.productManufacterUsername = productManufacterUsername;
         this.maxSecondaryPackage = maxSecondaryPackage;
         this.maxTertiaryPackage = maxTertiaryPackage;
@@ -80,6 +84,14 @@ public class ProductCatalogDTO implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getProductManufacterName() {
+        return productManufacterName;
+    }
+
+    public void setProductManufacterName(String productManufacterName) {
+        this.productManufacterName = productManufacterName;
     }
 
     public String getProductManufacterUsername() {

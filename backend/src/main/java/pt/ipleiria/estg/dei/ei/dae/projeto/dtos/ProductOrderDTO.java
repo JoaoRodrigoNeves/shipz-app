@@ -12,6 +12,7 @@ public class ProductOrderDTO implements Serializable {
     String catalogArea;
     String category;
     String description;
+    String productManufacterName;
     String productManufacterUsername;
     long primaryPackageVolume;
     Integer maxSecondaryPackage;
@@ -25,13 +26,14 @@ public class ProductOrderDTO implements Serializable {
         this.sensors = new ArrayList<>();
     }
 
-    public ProductOrderDTO(long code, long quantity, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial, long primaryPackageVolume) {
+    public ProductOrderDTO(long code, long quantity, String name, String catalogArea, String category, String description, String productManufacterName, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial, long primaryPackageVolume) {
         this.code = code;
         this.quantity = quantity;
         this.name = name;
         this.catalogArea = catalogArea;
         this.category = category;
         this.description = description;
+        this.productManufacterName = productManufacterName;
         this.productManufacterUsername = productManufacterUsername;
         this.maxSecondaryPackage = maxSecondaryPackage;
         this.maxTertiaryPackage = maxTertiaryPackage;
@@ -87,6 +89,14 @@ public class ProductOrderDTO implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getProductManufacterName() {
+        return productManufacterName;
+    }
+
+    public void setProductManufacterName(String productManufacterName) {
+        this.productManufacterName = productManufacterName;
     }
 
     public String getProductManufacterUsername() {

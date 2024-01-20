@@ -55,6 +55,7 @@ public class ProductManufacterService {
                 productCatalog.getCatalogArea(),
                 productCatalog.getCategory(),
                 productCatalog.getDescription(),
+                productCatalog.getProductManufacter().getName(),
                 productCatalog.getProductManufacter().getUsername(),
                 productCatalog.getMaxSecondaryPackage(),
                 productCatalog.getMaxTertiaryPackage(),
