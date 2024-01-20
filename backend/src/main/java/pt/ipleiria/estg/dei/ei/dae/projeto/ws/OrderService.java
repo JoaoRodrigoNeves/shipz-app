@@ -26,6 +26,12 @@ public class OrderService {
     private OrderBean orderBean;
     @EJB
     private TransportPackageCatalogBean transportPackageCatalogBean;
+    @EJB
+    private ProductBean productBean;
+    @EJB
+    private ProductPackageBean productPackageBean;
+    @EJB
+    private TransportPackageBean transportPackageBean;
 
     private OrderDTO toDTO(Order clientOrder) {
         OrderDTO orderDTO = new OrderDTO(
@@ -123,17 +129,17 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    /*private SensorDTO sensorToDTO(Sensor sensor) {
+    private SensorDTO sensorToDTO(Sensor sensor) {
         return new SensorDTO(
                 sensor.getCode(),
                 sensor.getType().getSensorType(),
                 sensor.isInUse()
         );
-    }*/
+    }
 
-    /*private List<SensorDTO> sensorToDTOs(List<Sensor> sensors) {
+    private List<SensorDTO> sensorToDTOs(List<Sensor> sensors) {
         return sensors.stream().map(this::sensorToDTO).collect(Collectors.toList());
-    }*/
+    }
 
     //TODO create order
     @POST
@@ -188,8 +194,8 @@ public class OrderService {
     }
 
     //TODO get order sensors with observations
-    /*@GET
-    @Path("/{code}/sensor-observations")
+    @GET
+    @Path("/{code}/sensors")
     public Response getAllSensors(@PathParam("code") long code) throws MyEntityNotFoundException {
         var clientOrder = orderBean.getProducts(code);
 
@@ -212,12 +218,14 @@ public class OrderService {
             }
         }
 
+
+
         if (sensorDTOs.isEmpty()) {
             throw new MyEntityNotFoundException("Sem sensores");
         }
 
         return Response.status(Response.Status.OK).entity(sensorDTOs).build();
-    }*/
+    }
 
     //TODO get observations
     /*@GET
@@ -265,12 +273,4 @@ public class OrderService {
         return Response.status(Response.Status.OK).entity(productToDTOs(clientOrder.getProducts())).build();
     }
 
-    //TODO get order sensors
-    @GET
-    @Path("/{code}/sensors")
-    @RolesAllowed({"FinalCostumer", "LogisticOperator"})
-    public Response getSensors(@PathParam("code") long code) throws MyEntityNotFoundException {
-        Order clientOrder = orderBean.getProducts(code);
-        return Response.status(Response.Status.OK).entity(productToDTOs(clientOrder.getProducts())).build();
-    }
 }
