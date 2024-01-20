@@ -35,8 +35,8 @@ public class ProductService {
     private ProductCatalogBean productCatalogBean;
     @EJB
     private SensorBean sensorBean;
-    @EJB
-    private PackageBean packageBean;
+    /*@EJB
+    private PackageBean packageBean;*/
 
     private ProductDTO productToDTO(Product product) {
         ProductDTO productDTO = new ProductDTO(
