@@ -31,7 +31,7 @@ public class TransportPackageService {
     @EJB
     private SensorBean sensorBean;
 
-    /*private TransportPackageDTO transportPackageToDTO(TransportPackage transportPackage) {
+    private TransportPackageDTO transportPackageToDTO(TransportPackage transportPackage) {
         TransportPackageDTO transportPackageDTO = new TransportPackageDTO(
                 transportPackage.getCode(),
                 transportPackage.getType(),
@@ -42,25 +42,25 @@ public class TransportPackageService {
         if (transportPackage.getLocation() != null)
             transportPackageDTO.setLocation(transportPackageDTO.getLocation());
         return transportPackageDTO;
-    }*/
+    }
 
-    /*private List<TransportPackageDTO> transportPackageToDTOs(List<TransportPackage> transportPackages) {
+    private List<TransportPackageDTO> transportPackageToDTOs(List<TransportPackage> transportPackages) {
         return transportPackages.stream()
                 .map(this::transportPackageToDTO)
                 .collect(Collectors.toList());
-    }*/
+    }
 
-    /*private List<SensorDTO> sensorDTOs(List<Sensor> sensors) {
+    private List<SensorDTO> sensorDTOs(List<Sensor> sensors) {
         return sensors.stream().map(this::sensorDTO).collect(Collectors.toList());
-    }*/
+    }
 
-    /*private SensorDTO sensorDTO(Sensor sensor) {
+    private SensorDTO sensorDTO(Sensor sensor) {
         return new SensorDTO(
                 sensor.getCode(),
                 sensor.getType().getSensorType(),
                 sensor.isInUse()
         );
-    }*/
+    }
 
     @POST
     @Path("/")
@@ -76,15 +76,16 @@ public class TransportPackageService {
     public Response getDetails(@PathParam("code") long code) throws MyEntityNotFoundException {
         TransportPackage transportPackage = transportPackageBean.find(code);
         return Response.status(Response.Status.OK).entity(transportPackageToDTO(transportPackage)).build();
-    }+/
+    }*/
 
-    /*@GET
+    @GET
     @Path("{code}/sensors")
+    @RolesAllowed({"LogisticOperator"})
     public Response getSensors(@PathParam("code") long code) throws MyEntityNotFoundException {
         TransportPackage transportPackage = transportPackageBean.getSensors(code);
         List<SensorDTO> sensorDTOs = sensorDTOs(transportPackage.getSensors());
         return Response.status(Response.Status.OK).entity(sensorDTOs).build();
-    }*/
+    }
 
     //TODO get all transport-packages
     /*@GET
