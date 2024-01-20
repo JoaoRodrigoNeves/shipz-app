@@ -178,15 +178,6 @@ public class OrderService {
         return Response.status(Response.Status.OK).entity(transportPackageToDTOs(clientOrder.getTransportPackages())).build();
     }
 
-    //TODO change location
-    @PATCH
-    @Path("/{code}/location/")
-    @RolesAllowed({"LogisticOperator"})
-    public Response changeLocation(@PathParam("code") long code, OrderDTO orderDTO) throws MyEntityNotFoundException {
-        orderBean.changeLocation(code, orderDTO.getLocation());
-        return Response.status(Response.Status.OK).build();
-    }
-
     //TODO change status
     @PATCH
     @Path("/{code}/status")
