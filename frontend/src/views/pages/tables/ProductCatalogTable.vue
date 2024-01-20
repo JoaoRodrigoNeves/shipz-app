@@ -2,14 +2,16 @@
 import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router';
 import { useConfirm } from "primevue/useconfirm";
+import { useToast } from "primevue/usetoast";
 
 const emit = defineEmits(['updateProductCatalog', 'loadProductCatalogs'])
 const axios = inject('axios')
 const isLoading = ref(false)
 const router = useRouter()
 const confirm = useConfirm();
-const props = defineProps({
+const toast = useToast()
 
+const props = defineProps({
   productCatalogs: {
     type: Object,
     required: true
@@ -40,7 +42,7 @@ const deleteProductCatalogConfirm = (productCatalog) => {
         emit('loadProductCatalogs')
       }).catch(
         error => {
-          toast.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possivel apagar o catalogo com o código PC' + productCatalogItem.value.code, life: 3000 });
+          toast.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possivel apagar o catalogo com o código PC' + productCatalog.code, life: 3000 });
           isLoading.value = false;
           console.error(error)
         }

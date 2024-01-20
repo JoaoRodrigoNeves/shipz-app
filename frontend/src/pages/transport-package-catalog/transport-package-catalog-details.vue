@@ -26,21 +26,7 @@ const loadTransportPackageCatalogDetails = async () => {
     )
 }
 
-const loadProductCatalogProducts = async () => {
-    isLoading.value = true;
-
-    await axios.get('transport-package-catalogs/' + router.currentRoute.value.params.code + '/products').then(response => {
-        isLoading.value = false;
-        products.value = response.data
-    }).catch(
-        error => {
-            isLoading.value = false;
-            console.error(error)
-        }
-    )
-}
-
-const deleteProductCatalogConfirm = (transportPackageCatalogItem) => {
+const deleteTransportPackageCatalogConfirm = (transportPackageCatalogItem) => {
     confirm.require({
         message: 'Tem a certeza que pretende apagar o catálogo ' + transportPackageCatalogItem.name + ' ?',
         header: 'Apagar Catálogo',
@@ -51,7 +37,7 @@ const deleteProductCatalogConfirm = (transportPackageCatalogItem) => {
 
             await axios.delete('transport-package-catalogs/' + transportPackageCatalogItem.code).then(response => {
                 isLoading.value = false
-                router.push({ path: '/transport-package-catalogs' })
+                router.back()
             }).catch(
                 error => {
                     isLoading.value = false;
@@ -84,7 +70,7 @@ onMounted(async () => {
 
                     <div class="transport-package-catalog-details-actions">
                         <VBtn rel="noopener noreferrer" color="primary" v-if="transportPackageCatalog.transportPackageDTOList && transportPackageCatalog.transportPackageDTOList.length == 0"
-                            @click="deleteProductCatalogConfirm(productCatalog)">
+                            @click="deleteTransportPackageCatalogConfirm(transportPackageCatalog)">
                             <VIcon size="20" icon="bx-trash" />
                             <VTooltip activator="parent" location="top">
                                 <span>Apagar Embalagem de Transporte</span>

@@ -75,12 +75,7 @@ const router = createRouter({
         {
           path: 'sensor/:code',
           component: () => import('../pages/sensor/sensor-details.vue'),
-          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true },
-        },
-        {
-          path: 'order-sensor/:code',
-          component: () => import('../pages/orders/order-sensor-details.vue'),
-          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: true, requiredAuth: true },
+          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: false, requiredAuth: true },
         },
       ],
     },

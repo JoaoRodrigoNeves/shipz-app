@@ -106,7 +106,7 @@ onMounted(async () => {
                 </div>
                 <div v-if="products && products.length > 0 && !isLoading">
                     <ProductTable v-if="!isLoading" @loadProducts="loadProducts"
-                        :product-package-view="true" :products="products" />
+                        :product-package-view="true" :products="products" :cantDelete="true" />
                 </div>
                 <div v-else class="no-products">
                     Não tem produtos associados a esta embalagem

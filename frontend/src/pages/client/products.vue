@@ -42,6 +42,11 @@ const loadLogisticOperators = async () => {
 const createOrder = async () => {
   isLoading.value = true
 
+  if(productCatalogsSelected.value.some(p => p.quantity <= 0)){
+    toast.add({ severity: 'error', summary: 'Erro', detail: 'Apenas são permitidas quantidades superiores a 0', life: 3000 })
+    return;
+  }
+
   var payload = {
     products: productCatalogsSelected.value,
     logisticOperator: logisticOperatorSelected.value,

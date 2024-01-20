@@ -19,6 +19,10 @@ const props = defineProps({
   products: {
     type: Object,
     required: true
+  },
+  cantDelete: {
+    type: Boolean,
+    required: false
   }
 })
 const isLoading = ref(false)
@@ -34,6 +38,7 @@ const deleteProductConfirm = (product) => {
 
       await axios.delete('products/' + product.code).then(response => {
         isLoading.value = false
+        toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Produto apagado com sucesso', life: 3000 });
         emit('loadProducts')
       }).catch(
         error => {
@@ -119,7 +124,7 @@ watch(
               <span>Apagar Produto</span>
             </VTooltip>
           </VBtn>
-          <VBtn rel="noopener noreferrer" color="primary" v-if="props.productPackageView" @click="removeProduct(item)"
+          <VBtn rel="noopener noreferrer" color="primary" v-if="props.productPackageView && !cantDelete" @click="removeProduct(item)"
             :disabled="isLoading">
             <VIcon size="20" icon="bx-trash" />
             <VTooltip activator="parent" location="top">

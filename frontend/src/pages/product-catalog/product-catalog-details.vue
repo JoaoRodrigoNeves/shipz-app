@@ -273,6 +273,17 @@ onMounted(async () => {
               </span>
             </div>
           </div>
+          <div class="catalog-item" v-if="productCatalog.sensors && productCatalog.sensors.length > 0">
+            <label>
+              Sensores
+            </label>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span v-for="(sensor, i) in productCatalog.sensors" :key="i">
+                {{ sensor }} <span v-if="i < productCatalog.sensors.length - 1"> / </span>
+              </span>
+            </div>
+
+          </div>
         </div>
         <div class="products-actions">
           <h2>Produtos</h2>

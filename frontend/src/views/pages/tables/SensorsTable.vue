@@ -53,7 +53,7 @@ watch(
                     {{ item.type }}
                 </td>
                 <td class="d-flex align-center justify-end gap-x-2" style="width: fit-content">
-                    <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('/order-sensor/' + item.code)">
+                    <VBtn rel="noopener noreferrer" color="primary" @click="navigateTo('/sensor/' + item.code)">
                         <VIcon size="20" icon="bx-show" />
                         <VTooltip activator="parent" location="top">
                             <span>Ver Detalhes</span>

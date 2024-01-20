@@ -11,7 +11,7 @@ const props = defineProps({
   },
   order: {
     type: Object,
-    required: true,
+    required: false,
   },
   canDelete: {
     type: Boolean,
@@ -48,6 +48,7 @@ const removeTransportPackage = transportPackage => {
 
       await axios.delete('transport-packages/' + transportPackage.code).then(response => {
         isLoading.value = false
+        toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Embalagem de Transporte apagada com sucesso', life: 3000 })
         emit('loadTransportPackages')
       }).catch(
         error => {
@@ -120,7 +121,7 @@ watch(
         <th>
           Data de Criação
         </th>
-        <th v-if="userRole == 'LogisticOperator' && (order.status == 'Estado Inicial' || order.status == 'Em Processamento') && canDelete">
+        <th v-if="userRole == 'LogisticOperator' && canDelete && order && (order.status == 'Estado Inicial' || order.status == 'Em Processamento')">
           Ações
         </th>
       </tr>
@@ -144,7 +145,7 @@ watch(
           {{ formatDate(item.createdAt) }}
         </td>
         <td
-          v-if="userRole == 'LogisticOperator' && (order.status == 'Estado Inicial' || order.status == 'Em Processamento')"
+          v-if="userRole == 'LogisticOperator' && order && (order.status == 'Estado Inicial' || order.status == 'Em Processamento')"
           class="d-flex align-center justify-end gap-x-2"
           style="width: fit-content"
         >

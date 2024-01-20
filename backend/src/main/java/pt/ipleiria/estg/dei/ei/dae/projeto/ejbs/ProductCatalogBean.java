@@ -65,7 +65,7 @@ public class ProductCatalogBean {
         return productCatalog;
     }
 
-    public ProductCatalog update(long code, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial, List<String> sensors) throws MyEntityNotFoundException {
+    public ProductCatalog update(long code, String name, String catalogArea, String category, String description, String productManufacterUsername, Integer maxSecondaryPackage, Integer maxTertiaryPackage, long primaryPackageVolume, String primaryPackageMaterial, String secondaryPackageMaterial, String tertiaryPackageMaterial, List<String> sensors) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = this.find(code);
         entityManager.lock(productCatalog, LockModeType.OPTIMISTIC);
         productCatalog.setName(name);
@@ -77,6 +77,7 @@ public class ProductCatalogBean {
         productCatalog.setSecondaryPackageMaterial(secondaryPackageMaterial);
         productCatalog.setTertiaryPackageMaterial(tertiaryPackageMaterial);
         productCatalog.setPrimaryPackageMaterial(primaryPackageMaterial);
+        productCatalog.setPrimaryPackageVolume(primaryPackageVolume);
 
         if (sensors != null) {
             productCatalog.setHumiditySensor(sensors.contains(SensorType.HUMIDITY.getSensorType()));

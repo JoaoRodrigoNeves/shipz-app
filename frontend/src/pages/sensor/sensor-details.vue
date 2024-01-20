@@ -1,104 +1,212 @@
 <script setup>
-import { ref, onMounted, inject } from 'vue'
-import { useRouter } from 'vue-router'
-import { useToast } from "primevue/usetoast";
-import { useConfirm } from "primevue/useconfirm";
-import ObservationsTable from '@/views/pages/tables/ObservationsTable.vue'
+import { ref, onMounted, inject } from "vue"
+import Chart from 'primevue/chart'
+import { useRouter } from "vue-router"
+import moment from "moment"
 
 const axios = inject('axios')
-const isLoading = ref(false)
 const router = useRouter()
-const confirm = useConfirm();
-const toast = useToast();
-
 const sensor = ref(null)
+const isLoading = ref(false)
 const observations = ref([])
 
 const loadSensorDetails = async () => {
-    isLoading.value = true;
-    await axios.get('sensors/' + router.currentRoute.value.params.code).then(response => {
-        isLoading.value = false;
-        sensor.value = response.data
-    }).catch(
-        error => {
-            isLoading.value = false;
-            console.error(error)
-        }
-    )
+  isLoading.value = true
+  try {
+    const response = await axios.get('sensors/' + router.currentRoute.value.params.code)
+
+    sensor.value = response.data
+    console.log(response.data)
+  } catch (error) {
+    console.log(error)
+  } finally {
+    isLoading.value = false
+  }
 }
 
-const loadSensorObservations = async () => {
-    isLoading.value = true;
+const loadObservations = async () => {
+  isLoading.value = true
+  try {
+    const response = await axios.get('sensors/' + router.currentRoute.value.params.code + '/observations')
 
-    await axios.get('sensors/' + router.currentRoute.value.params.code + '/observations').then(response => {
-        isLoading.value = false;
-        observations.value = response.data
-    }).catch(
-        error => {
-            isLoading.value = false;
-            console.error(error)
-        }
-    )
+    observations.value = response.data
+  } catch (error) {
+    console.log(error)
+  } finally {
+    isLoading.value = false
+  }
 }
+
+const goBack = () => {
+  router.back()
+}
+
+const formatDate = value => moment(String(value)).format('DD/MM/YYYY HH:mm:ss')
 
 onMounted(async () => {
-    await loadSensorDetails();
-    await loadSensorObservations();
+  await loadSensorDetails()
+  await loadObservations()
+  if (sensor.value.type != 'Gps') {
+    chartData.value = setChartData()
+    chartOptions.value = setChartOptions()
+  }
 })
 
+const chartData = ref()
+const chartOptions = ref()
+
+const setChartData = () => {
+  if (!sensor.value || observations.value.length === 0) {
+    return { labels: [], datasets: [] }
+  }
+
+  return {
+    labels: Object.values(observations.value.map(observation => formatDate(observation.createdAt))),
+    datasets: [
+      {
+        label: sensor.value.type,
+        data: Object.values(observations.value.map(observation => observation.value)),
+        fill: false,
+        borderColor: getBorderColorByDataType(sensor.value.type),
+        tension: 0.4,
+      },
+    ],
+  }
+}
+
+const setChartOptions = () => {
+  const documentStyle = getComputedStyle(document.documentElement)
+  const textColor = documentStyle.getPropertyValue('--text-color')
+  const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
+  const surfaceBorder = documentStyle.getPropertyValue('--surface-border')
+
+  return {
+    maintainAspectRatio: false,
+    aspectRatio: 0.6,
+    plugins: {
+      legend: {
+        labels: {
+          color: textColor,
+        },
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: textColorSecondary,
+        },
+        grid: {
+          color: surfaceBorder,
+        },
+      },
+      y: {
+        ticks: {
+          color: textColorSecondary,
+        },
+        grid: {
+          color: surfaceBorder,
+        },
+      },
+    },
+  }
+}
+
+const getBorderColorByDataType = dataType => {
+  const documentStyle = getComputedStyle(document.documentElement)
+  switch (dataType) {
+  case sensor.value.type = 'Temperatura':
+    return documentStyle.getPropertyValue('--blue-500')
+  case sensor.value.type = 'Humidade':
+    return documentStyle.getPropertyValue('--green-500')
+  case sensor.value.type = 'Pressão':
+    return documentStyle.getPropertyValue('--red-500')
+  default:
+    return ''
+  }
+}
 </script>
 
 <template>
-    <VRow>
-        <VCol cols="12">
-            <VCard v-if="sensor">
-                <div class="sensor-details-header">
-                    <h2>{{ "Sensor - S" + sensor.code }}</h2>
-                </div>
-                <div class="sensor-details">
-                    <div class="sensor-item">
-                        <label>
-                            Tipo de sensor:
+  <VRow>
+    <VCol cols="12">
+      <VCard>
+        <div class="product-catalog-details-header">
+          <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="goBack" />
+          <h2>Observações</h2>
+        </div>
+        <div
+          v-if="sensor && sensor.type != 'Gps'"
+          class="card"
+          style="padding: 20px;"
+        >
+          <Chart
+            v-if="observations && observations.length > 0"
+            type="line"
+            :data="chartData"
+            :options="chartOptions"
+            class="h-30rem"
+          />
+          <div
+            v-else
+            class="no-data"
+          >
+            Não tem observações associadas a este sensor
+          </div>
+        </div>
+        <div v-else>
+          <VTable fixed-header v-if="observations">
+            <thead>
+              <tr>
+                <th class="text-uppercase">
+                  Localização
+                </th>
+                <th>
+                  Data
+                </th>
+              </tr>
+            </thead>
 
-                            <span class="bold">
-                                {{ sensor.type }}
-                            </span>
-                        </label>
-                    </div>
-                </div>
-                <br>
-                <div v-if="observations && observations.length > 0 && !isLoading">
-                    <ObservationsTable :observations="observations" />
-                </div>
-                <div v-else class="no-obervations">
-                    Não existem observações para este sensor.
-                </div>
-            </VCard>
-        </VCol>
-    </VRow>
+            <tbody>
+              <tr
+                v-for="item in observations"
+                :key="item.value"
+              >
+                <td style="width: 20%;">
+                  {{ item.value }}
+                </td>
+                <td style="width: 100%; text-align: center;">
+                  {{ formatDate(item.createdAt) }}
+                </td>
+              </tr>
+            </tbody>
+          </VTable>
+        </div>
+        <div
+          v-else
+          class="no-data"
+        >
+          Não tem observações de localização
+        </div>
+      </VCard>
+    </VCol>
+  </VRow>
 </template>
+
 <style scoped>
-.sensor-details-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 24px 24px 10px;
+.product-catalog-details-header {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding: 24px;
+  gap: 12px;
 }
 
-.no-obervations {
-    padding: 0 24px 24px 24px;
+.product-catalog-details .catalog-item label {
+  opacity: 0.7;
+  font-size: 14px;
 }
 
-.sensor-details {
-    display: flex;
-    padding: 0 24px;
-    gap: 16px 0px;
-    flex-wrap: wrap;
-}
-
-.sensor-details .sensor-item {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
+.no-data {
+  padding: 0 24px 24px 24px;
 }
 </style>
