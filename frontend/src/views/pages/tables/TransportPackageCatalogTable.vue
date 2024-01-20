@@ -7,6 +7,7 @@ import { useConfirm } from "primevue/useconfirm";
 const router = useRouter()
 const confirm = useConfirm();
 const axios = inject('axios')
+const isLoading = ref(false)
 
 const emit = defineEmits(['loadTransportPackageCatalog'])
 const props = defineProps({
@@ -33,7 +34,7 @@ const removeTransportPackageCatalog = (transportPackage) => {
 
             await axios.delete('transport-package-catalogs/' + transportPackage.code).then(response => {
                 isLoading.value = false
-                router.push({ path: '/transport-packages' })
+                emit('loadTransportPackageCatalog')
             }).catch(
                 error => {
                     isLoading.value = false;
