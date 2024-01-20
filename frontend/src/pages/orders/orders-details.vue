@@ -177,7 +177,7 @@ onMounted(async () => {
     <VCol cols="12">
       <VCard>
         <div class="product-catalog-details-header">
-          <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="navigateTo('/product-catalogs')" />
+          <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="goBack" />
           <h2>Encomenda nº{{ order.code }}</h2>
         </div>
 
@@ -337,14 +337,14 @@ onMounted(async () => {
               </div>
             </VExpansionPanelText>
           </VExpansionPanel>
-          <VExpansionPanel>
+          <VExpansionPanel v-if="sensors && sensors.length > 0">
             <VExpansionPanelTitle>
               <div class="table-actions">
                 <h3>Sensores</h3>
               </div>
             </VExpansionPanelTitle>
             <VExpansionPanelText>
-              <div v-if="sensors && sensors.length > 0 && !isLoading">
+              <div v-if="!isLoading">
                 <SensorTable
                   v-if="!isLoading"
                   :sensors="sensors"

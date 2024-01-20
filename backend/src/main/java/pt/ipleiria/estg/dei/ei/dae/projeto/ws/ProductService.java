@@ -100,6 +100,7 @@ public class ProductService {
                 productCatalog.getCategory(),
                 productCatalog.getDescription(),
                 productCatalog.getProductManufacter().getName(),
+                productCatalog.getProductManufacter().getUsername(),
                 productCatalog.getMaxSecondaryPackage(),
                 productCatalog.getMaxTertiaryPackage(),
                 productCatalog.getPrimaryPackageVolume(),

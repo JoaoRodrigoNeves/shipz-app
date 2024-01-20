@@ -149,7 +149,7 @@ const getBorderColorByDataType = dataType => {
             v-else
             class="no-data"
           >
-            Não tem observações associadas a esta encomenda
+            Não tem observações associadas a este sensor
           </div>
         </div>
         <div v-else>

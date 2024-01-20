@@ -2,10 +2,13 @@
 import { ref, inject } from 'vue'
 import { useConfirm } from "primevue/useconfirm";
 import { useRouter } from 'vue-router';
+import { useToast } from "primevue/usetoast";
 
 const emit = defineEmits(['loadProducts'])
 const axios = inject('axios')
 const router = useRouter()
+const toast = useToast()
+
 
 const confirm = useConfirm();
 const props = defineProps({
@@ -49,7 +52,7 @@ const removeProduct = (product) => {
 }
 
 const navigateTo = (path) => {
-    router.push({ path: path })
+  router.push({ path: path })
 }
 watch(
   () => props,
@@ -116,7 +119,8 @@ watch(
               <span>Apagar Produto</span>
             </VTooltip>
           </VBtn>
-          <VBtn rel="noopener noreferrer" color="primary" v-if="props.productPackageView" @click="removeProduct(item)" :disabled="isLoading">
+          <VBtn rel="noopener noreferrer" color="primary" v-if="props.productPackageView" @click="removeProduct(item)"
+            :disabled="isLoading">
             <VIcon size="20" icon="bx-trash" />
             <VTooltip activator="parent" location="top">
               <span>Remover Produto</span>

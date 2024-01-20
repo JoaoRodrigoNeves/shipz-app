@@ -27,18 +27,13 @@ public class TransportPackageCatalog implements Serializable {
     @OrderBy("createdAt DESC")
     List<TransportPackage> transportPackages;
 
-    @ManyToOne
-    @JoinColumn(name = "logistic_operator_code")
-    LogisticOperator logisticOperator;
-
     public TransportPackageCatalog() {
 
     }
-    public TransportPackageCatalog(String name, String material, long volume, LogisticOperator logisticOperator) {
+    public TransportPackageCatalog(String name, String material, long volume) {
         this.name = name;
         this.material = material;
         this.volume = volume;
-        this.logisticOperator = logisticOperator;
         this.transportPackages = new ArrayList<>();
     }
 
@@ -89,15 +84,6 @@ public class TransportPackageCatalog implements Serializable {
     public void removeTransportPackage(TransportPackage transportPackage){
         this.transportPackages.remove(transportPackage);
     }
-
-    public LogisticOperator getLogisticOperator() {
-        return logisticOperator;
-    }
-
-    public void setLogisticOperator(LogisticOperator logisticOperator) {
-        this.logisticOperator = logisticOperator;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -11,8 +11,7 @@ const transportPackageForm = ref({
     code: -1,
     name: null,
     material: null,
-    volume: null,
-    logisticOperatorUsername: JSON.parse(sessionStorage.getItem('user_info')).username
+    volume: null
 })
 
 const validateForm = () => {
@@ -34,8 +33,7 @@ const save = (async () => {
                 code: -1,
                 name: null,
                 material: null,
-                volume: null,
-                logisticOperatorUsername: JSON.parse(sessionStorage.getItem('user_info')).username
+                volume: null
             }
             isLoading.value = false
             emit('closeFormAndUpdate')
@@ -58,8 +56,7 @@ const resetForm = () => {
         code: -1,
         name: null,
         material: null,
-        volume: null,
-        logisticOperatorUsername: JSON.parse(sessionStorage.getItem('user_info')).username
+        volume: null
     }
 }
 </script>

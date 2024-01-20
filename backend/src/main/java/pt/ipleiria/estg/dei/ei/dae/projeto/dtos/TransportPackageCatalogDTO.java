@@ -7,17 +7,15 @@ public class TransportPackageCatalogDTO {
     String name;
     String material;
     long volume;
-    String logisticOperatorUsername;
     List<TransportPackageDTO> transportPackageDTOList;
     public TransportPackageCatalogDTO(){
 
     }
-    public TransportPackageCatalogDTO(long code, String name, String material, long volume, String logisticOperatorUsername) {
+    public TransportPackageCatalogDTO(long code, String name, String material, long volume) {
         this.code = code;
         this.name = name;
         this.material = material;
         this.volume = volume;
-        this.logisticOperatorUsername = logisticOperatorUsername;
     }
 
     public long getCode() {
@@ -50,14 +48,6 @@ public class TransportPackageCatalogDTO {
 
     public void setCode(long code) {
         this.code = code;
-    }
-
-    public String getLogisticOperatorUsername() {
-        return logisticOperatorUsername;
-    }
-
-    public void setLogisticOperatorUsername(String logisticOperatorUsername) {
-        this.logisticOperatorUsername = logisticOperatorUsername;
     }
 
     public List<TransportPackageDTO> getTransportPackageDTOList() {

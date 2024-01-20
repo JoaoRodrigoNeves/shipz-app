@@ -46,11 +46,12 @@ onMounted(async () => {
                 </div>
                 <div v-if="transportPackages && transportPackages.length > 0">
                     <TransportPackageCatalogTable v-if="transportPackages && !isLoading"
-                    @loadTransportPackageCatalog="loadTransportPackagesCatalogs" :transportPackagesCatalogs="transportPackages" />
+                        @loadTransportPackageCatalogs="loadTransportPackagesCatalogs"
+                        :transportPackagesCatalogs="transportPackages" />
                 </div>
                 <div v-else class="no-transport-packages">
                     Não há embalagens de transporte registadas
-                </div>    
+                </div>
             </VCard>
             <VCard v-else>
                 <VCard>
@@ -76,5 +77,4 @@ onMounted(async () => {
 .no-transport-packages {
     padding: 0 24px 24px 24px;
 }
-
 </style>
