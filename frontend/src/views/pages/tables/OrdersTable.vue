@@ -81,13 +81,6 @@ watch(
               <span>Ver Detalhes</span>
             </VTooltip>
           </VBtn>
-          <VBtn v-if="userRole == 'LogisticOperator'" rel="noopener noreferrer" color="primary"
-            @click="updateOrder(item, true)">
-            <VIcon size="20" icon="mdi-package" />
-            <VTooltip activator="parent" location="top">
-              <span>Atualizar Estado</span>
-            </VTooltip>
-          </VBtn>
         </td>
       </tr>
     </tbody>

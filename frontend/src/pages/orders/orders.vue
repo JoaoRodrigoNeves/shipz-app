@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue'
 import OrdersTable from '@/views/pages/tables/OrdersTable.vue'
-import OrderForm from '@/views/pages/form-layouts/OrderForm.vue'
 
 const axios = inject('axios')
 const isLoading = ref(false)
@@ -41,13 +40,6 @@ const updateOrder = async (order, flagStatus) => {
   isUpdatingStatus.value = flagStatus
 }
 
-const closeFormAndUpdate = async () => {
-  isUpdating.value = false
-  isUpdatingStatus.value = null
-  orderToUpdate.value = null
-  await loadOrders()
-}
-
 onMounted(async () => {
   await loadOrders()
 })
@@ -58,7 +50,6 @@ onMounted(async () => {
     <VCol cols="12">
       <VCard>
         <div class="orders-header">
-          <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="isUpdatingStatus = false;isUpdating = false;" v-if="isUpdatingStatus == true"/>
           <h2>Encomendas</h2>
         </div>
         <div v-if="!isUpdating">
@@ -66,10 +57,6 @@ onMounted(async () => {
             <div v-else class="no-orders">
               Não há encomendas registadas
             </div>
-        </div>
-        <div v-else class="orders-form">
-          <OrderForm @closeFormAndUpdate="closeFormAndUpdate" :order="orderToUpdate"
-            :is-updating-status="isUpdatingStatus" />
         </div>
       </VCard>
     </VCol>
