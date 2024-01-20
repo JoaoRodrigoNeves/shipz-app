@@ -36,6 +36,7 @@ public class OrderService {
     private OrderDTO toDTO(Order clientOrder) {
         OrderDTO orderDTO = new OrderDTO(
                 clientOrder.getCode(),
+                clientOrder.getLogisticOperator().getName(),
                 clientOrder.getStatus().getOrderStatus(),
                 clientOrder.getCreatedAt().toString()
         );

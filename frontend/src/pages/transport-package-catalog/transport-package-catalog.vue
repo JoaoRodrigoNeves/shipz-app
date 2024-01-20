@@ -55,7 +55,8 @@ onMounted(async () => {
             </VCard>
             <VCard v-else>
                 <VCard>
-                    <div class="transport-package-header">
+                    <div class="transport-package-form-header">
+                        <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="isCreating = false" />
                         <h2>Criar Embalagem de Transporte</h2>
                     </div>
                     <VCardText>
@@ -71,6 +72,14 @@ onMounted(async () => {
     display: flex;
     justify-content: space-between;
     align-self: center;
+    padding: 24px;
+}
+
+.transport-package-form-header{
+    display: flex;
+    justify-content: start;
+    align-self: center;
+    gap: 12px;
     padding: 24px;
 }
 

@@ -58,6 +58,7 @@ onMounted(async () => {
     <VCol cols="12">
       <VCard>
         <div class="orders-header">
+          <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="isUpdatingStatus = false;isUpdating = false;" v-if="isUpdatingStatus == true"/>
           <h2>Encomendas</h2>
         </div>
         <div v-if="!isUpdating">
@@ -78,8 +79,9 @@ onMounted(async () => {
 <style scoped>
 .orders-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   align-self: center;
+  gap: 12px;
   padding: 24px;
 }
 

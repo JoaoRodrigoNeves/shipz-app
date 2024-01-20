@@ -6,6 +6,7 @@ import { useToast } from "primevue/usetoast"
 import moment from "moment/moment"
 import TransportPackageTable from '@/views/pages/tables/TransportPackageTable.vue'
 import SensorTable from '@/views/pages/tables/SensorsTable.vue'
+import OrderForm from '@/views/pages/form-layouts/OrderForm.vue'
 
 const toast = useToast()
 const axios = inject('axios')
@@ -13,7 +14,7 @@ const router = useRouter()
 const isLoading = ref(false)
 const order = ref([])
 const hasGpsSensor = ref(false)
-
+const isUpdatingStatus = ref(false)
 const sensors = ref([])
 const selectedTransportPackages = ref(null)
 const products = ref([])
@@ -47,6 +48,7 @@ const loadTransportPackages = async () => {
   await axios.get('orders/' + router.currentRoute.value.params.code + '/transport-packages',
   ).then(response => {
     transportPackages.value = response.data
+    loadOrderWithSensors()
     isLoading.value = false
   }).catch(
     error => {
@@ -108,6 +110,7 @@ const loadOrderWithSensors = async () => {
 
   } catch (error) {
     isLoading.value = false
+    sensors.value = null
     console.log(error)
   }
 }
@@ -120,9 +123,9 @@ const addTransportPackageToOrder = async () => {
   }
   try {
     await axios.post('transport-packages', payload).then(response => {
-      if(response.status == 201){
+      if (response.status == 201) {
         toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Embalagem de Transporte adicionada com sucesso', life: 3000 })
-      }else{
+      } else {
         toast.add({ severity: 'warn', summary: 'Atenção', detail: 'Embalagem de Transporte adicionada com sucesso, apesar de não ser necessária', life: 3000 })
 
       }
@@ -143,14 +146,14 @@ const changeLocation = async () => {
   }
   try {
     await axios.post('observations', payload)
-        .then(response => {
-            toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Localização adicionada com sucesso', life: 3000 });
-            isLoading.value = false
-            reset()
-        }).catch(error => {
-            isLoading.value = false
-            console.error(error)
-        })
+      .then(response => {
+        toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Localização adicionada com sucesso', life: 3000 });
+        isLoading.value = false
+        reset()
+      }).catch(error => {
+        isLoading.value = false
+        console.error(error)
+      })
 
   } catch (error) {
     isLoading.value = false
@@ -162,23 +165,43 @@ const goBack = () => {
   router.back()
 }
 
+const closeFormAndUpdate = async () => {
+  isUpdatingStatus.value = false
+  await loadOrderDetails()
+}
+
 onMounted(async () => {
   await loadOrderDetails()
   await loadTransportPackages()
   await loadProducts()
   await loadCities()
   await loadTransportPackagesCatalog()
-  await loadOrderWithSensors()
 })
 </script>
 
 <template>
   <VRow>
     <VCol cols="12">
-      <VCard>
+      <VCard v-if="!isUpdatingStatus">
         <div class="product-catalog-details-header">
-          <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="goBack" />
-          <h2>Encomenda nº{{ order.code }}</h2>
+          <div style="display: flex; align-items: center; gap:12px">
+            <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="goBack" />
+            <h2>Encomenda nº{{ order.code }}</h2>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; ">
+            <span style="color: rgb(255, 193, 7); font-size: 14px; text-decoration: underline;"
+              v-if="!isLoading && (!transportPackages || transportPackages.length == 0)">
+              Terá de adicionar pelo menos uma caixa de transporte.
+            </span>
+            <VBtn v-if="role == 'LogisticOperator'" rel="noopener noreferrer" color="primary"
+              @click="isUpdatingStatus = true" :disabled="transportPackages && transportPackages.length == 0">
+              <VIcon size="20" icon="mdi-package" />
+              <VTooltip activator="parent" location="top">
+                <span>Atualizar Estado</span>
+              </VTooltip>
+            </VBtn>
+          </div>
+
         </div>
 
         <div class="product-catalog-details">
@@ -230,20 +253,10 @@ onMounted(async () => {
               {{ order.deliveredAt ? formatDate(order.deliveredAt) : 'Não entregue' }}
             </span>
           </div>
-          <div
-            v-if="role == 'LogisticOperator'"
-            class="catalog-item"
-            style="margin-top: 4px; width: 300px;"
-          >
+          <div v-if="role == 'LogisticOperator'" class="catalog-item" style="margin-top: 4px; width: 300px;">
             <span>
-              <VAutocomplete
-                v-if="hasGpsSensor"
-                v-model="order.location"
-                label="Localização"
-                :items="cities"
-                class="product-quantity"
-                @update:model-value="changeLocation"
-              />
+              <VAutocomplete v-if="hasGpsSensor" v-model="order.location" label="Localização" :items="cities"
+                class="product-quantity" @update:model-value="changeLocation" />
             </span>
           </div>
         </div>
@@ -253,45 +266,26 @@ onMounted(async () => {
               <div class="table-actions">
                 <h3>Embalagens de Transporte</h3>
 
-                <VDialog
-                  v-model="isDialogTransportPackageOpen"
-                  width="500"
-                >
+                <VDialog v-model="isDialogTransportPackageOpen" width="500">
                   <template #activator="{ props }">
-                    <VBtn
-                      v-bind="props"
-                      text="Adicionar Sensores"
-                    >
-                      <VIcon
-                        size="20"
-                        icon="bx-plus"
-                      />
-                      <VTooltip
-                        activator="parent"
-                        location="top"
-                      >
+                    <VBtn v-bind="props" text="Adicionar Sensores">
+                      <VIcon size="20" icon="bx-plus" />
+                      <VTooltip activator="parent" location="top">
                         <span>Adicionar Embalagem de Transporte</span>
                       </VTooltip>
                     </VBtn>
                   </template>
                   <VCard title="Embalagem de Transporte">
                     <VCardText>
-                      <VAutocomplete
-                        v-model="selectedTransportPackages"
-                        label="Embalagem de Transporte"
-                        :items="transportPackagesCatalog"
-                        item-title="name"
-                        item-value="code"
-                      />
+                      <VAutocomplete v-model="selectedTransportPackages" label="Embalagem de Transporte"
+                        :items="transportPackagesCatalog" item-title="name" item-value="code" />
                     </VCardText>
 
                     <VCardActions>
                       <VSpacer />
 
-                      <VBtn
-                        text="Adicionar"
-                        @click="addTransportPackageToOrder(); isDialogTransportPackageOpen = false;"
-                      />
+                      <VBtn text="Adicionar"
+                        @click="addTransportPackageToOrder(); isDialogTransportPackageOpen = false;" />
                     </VCardActions>
                   </VCard>
                 </VDialog>
@@ -299,19 +293,10 @@ onMounted(async () => {
             </VExpansionPanelTitle>
             <VExpansionPanelText>
               <div v-if="transportPackages && transportPackages.length > 0 && !isLoading">
-                <TransportPackageTable
-                  v-if="!isLoading"
-                  :transport-packages="transportPackages"
-                  :can-delete="true"
-                  :order="order"
-                  @loadTransportPackages="loadTransportPackages"
-                  @load-sensors="loadOrderWithSensors"
-                />
+                <TransportPackageTable v-if="!isLoading" :transport-packages="transportPackages" :can-delete="true"
+                  :order="order" @loadTransportPackages="loadTransportPackages" @load-sensors="loadOrderWithSensors" />
               </div>
-              <div
-                v-else
-                class="no-data"
-              >
+              <div v-else class="no-data">
                 Não tem embalagens de transporte associados a esta encomenda
               </div>
             </VExpansionPanelText>
@@ -324,15 +309,9 @@ onMounted(async () => {
             </VExpansionPanelTitle>
             <VExpansionPanelText>
               <div v-if="products && products.length > 0 && !isLoading">
-                <ProductTable
-                  v-if="!isLoading"
-                  :products="products"
-                />
+                <ProductTable v-if="!isLoading" :products="products" />
               </div>
-              <div
-                v-else
-                class="no-data"
-              >
+              <div v-else class="no-data">
                 Não tem produtos associados a esta encomenda
               </div>
             </VExpansionPanelText>
@@ -345,21 +324,25 @@ onMounted(async () => {
             </VExpansionPanelTitle>
             <VExpansionPanelText>
               <div v-if="!isLoading">
-                <SensorTable
-                  v-if="!isLoading"
-                  :sensors="sensors"
-                />
+                <SensorTable v-if="!isLoading" :sensors="sensors" />
               </div>
-              <div
-                v-else
-                class="no-data"
-              >
+              <div v-else class="no-data">
                 Não tem sensores associados a esta encomenda
               </div>
             </VExpansionPanelText>
           </VExpansionPanel>
         </VExpansionPanels>
       </VCard>
+      <VCard v-else>
+        <div class="orders-form">
+          <div style="display: flex; align-items: center; gap:12px; margin-bottom: 24px;">
+            <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="isUpdatingStatus = false" />
+            <h2>Encomenda nº{{ order.code }}</h2>
+          </div>
+          <OrderForm @closeFormAndUpdate="closeFormAndUpdate" :order="order" :is-updating-status="true" />
+        </div>
+      </VCard>
+
     </VCol>
   </VRow>
 </template>
@@ -367,9 +350,8 @@ onMounted(async () => {
 <style scoped>
 .product-catalog-details-header {
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
   padding: 24px;
 }
 
@@ -380,7 +362,10 @@ onMounted(async () => {
   flex-wrap: wrap;
   margin-bottom: 24px;
 }
+.orders-form{
+  padding: 20px;
 
+}
 .product-catalog-details .catalog-item {
   display: flex;
   flex-direction: column;
