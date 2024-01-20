@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @Authenticated
-@RolesAllowed({"LogisticOperator"})
+@RolesAllowed({"LogisticOperator", "FinalCostumer"})
 public class LogisticOperatorService {
     @Context
     private SecurityContext securityContext;
@@ -37,9 +37,9 @@ public class LogisticOperatorService {
         );
     }
 
-    /*private List<LogisticOperatorDTO> toDTOsNoClientOrders(List<LogisticOperator> logisticOperators) {
+    private List<LogisticOperatorDTO> toDTOsNoClientOrders(List<LogisticOperator> logisticOperators) {
         return logisticOperators.stream().map(this::toDTONoClientOrders).collect(Collectors.toList());
-    }*/
+    }
 
     /*private LogisticOperatorDTO toDTO(LogisticOperator logisticOperator) {
         return new LogisticOperatorDTO(
@@ -115,16 +115,18 @@ public class LogisticOperatorService {
         return Response.ok(clientOrderDTOs(logisticOperator.getOrders())).build();
     }
 
-    /*@GET
+    @GET
     @Path("/")
+    @RolesAllowed({"FinalCostumer"})
     public List<LogisticOperatorDTO> getAll() {
         var logisticOperators = logisticOperatorBean.getAll();
         return toDTOsNoClientOrders(logisticOperators);
-    }*/
+    }
 
     //TODO update a logistic-operator
     @PUT
     @Path("/")
+    @RolesAllowed({"LogisticOperator"})
     public Response update(LogisticOperatorDTO logisticOperatorDTO)
             throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
         logisticOperatorBean.update(

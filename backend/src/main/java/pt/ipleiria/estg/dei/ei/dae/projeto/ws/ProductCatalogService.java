@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
 @Authenticated
-@RolesAllowed({"ProductManufacter", "Administrator", "LogisticOperator"})
+@RolesAllowed({"ProductManufacter", "FinalCostumer"})
 public class ProductCatalogService {
 
     @EJB
@@ -90,6 +90,7 @@ public class ProductCatalogService {
     //TODO create a new product-catalog
     @POST
     @Path("/")
+    @RolesAllowed({"ProductManufacter"})
     public Response create(ProductCatalogDTO productCatalogDTO)
             throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException, NoVolumeException {
         List<TransportPackageCatalog> transportPackageCatalogs = transportPackageCatalogBean.getAll();
@@ -148,22 +149,22 @@ public class ProductCatalogService {
     //TODO delete a product-catalog
     @DELETE
     @Path("{code}")
+    @RolesAllowed({"ProductManufacter"})
     public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException, ListNotEmptyException {
         productCatalogBean.remove(code);
         return Response.status(Response.Status.OK).entity("Success").build();
     }
 
     //TODO get all product-catalogs
-    @GET
+    /*@GET
     @Path("/")
-    @RolesAllowed({"LogisticOperator", "FinalCostumer"})
     public List<ProductCatalogDTO> getAll() {
         return productCatalogToDTOs(productCatalogBean.getAll());
-    }
+    }*/
 
     @GET
     @Path("/available")
-    @RolesAllowed({"LogisticOperator", "FinalCostumer"})
+    @RolesAllowed({"FinalCostumer"})
     public List<ProductCatalogDTO> getAllAvailable() {
         return productCatalogToDTOs(productCatalogBean.getAllAvailable());
     }
@@ -171,36 +172,34 @@ public class ProductCatalogService {
     //TODO get products from product-catalog
     @GET
     @Path("{code}/products")
-    @RolesAllowed({"ProductsManufacters", "LogisticOperator"})
+    @RolesAllowed({"ProductManufacter"})
     public Response getProducts(@PathParam("code") long code) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = productCatalogBean.getProductCatalogProducts(code);
         return Response.status(Response.Status.OK).entity(productsToDTOs(productCatalog.getProducts())).build();
     }
 
     //TODO add product to product-catalog
-    @POST
+    /*@POST
     @Path("{productCatalogCode}")
-    @RolesAllowed({"ProductManufacter"})
     public Response addProduct(@PathParam("productCatalogCode") long productCatalogCode, ProductDTO productDTO) throws MyEntityNotFoundException, MyEntityExistsException {
         productCatalogBean.addProduct(productCatalogCode, productDTO.getCode());
         return Response.status(Response.Status.OK).entity("Product added").build();
-    }
+    }*/
 
     //TODO remove product from product-catalog
-    @DELETE
+    /*@DELETE
     @Path("{productCatalogCode}")
-    @RolesAllowed({"ProductManufacter"})
     public Response removeProduct(@PathParam("productCatalogCode") long productCatalogCode, ProductDTO productDTO) throws MyEntityNotFoundException, MyEntityExistsException {
         productCatalogBean.removeProduct(productCatalogCode, productDTO.getCode());
         return Response.status(Response.Status.OK).entity("Product removed").build();
-    }
+    }*/
 
     //TODO get products without product-package
-    @GET
+    /*@GET
     @Path("{code}/products/no-package")
     public Response getProductsWithoutProductPackage(@PathParam("code") long code) throws MyEntityNotFoundException {
         ProductCatalog productCatalog = productCatalogBean.getProductCatalogProducts(code);
         List<ProductDTO> productsToDTOs = productsToDTOs(productCatalogBean.getProductsWithoutProductPackage(productCatalog));
         return Response.status(Response.Status.OK).entity(productsToDTOs).build();
-    }
+    }*/
 }
