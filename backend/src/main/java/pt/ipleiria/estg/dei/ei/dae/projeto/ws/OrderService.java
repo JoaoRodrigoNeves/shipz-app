@@ -266,10 +266,11 @@ public class OrderService {
     }
 
     //TODO get order sensors
-    /*@GET
+    @GET
     @Path("/{code}/sensors")
+    @RolesAllowed({"FinalCostumer", "LogisticOperator"})
     public Response getSensors(@PathParam("code") long code) throws MyEntityNotFoundException {
         Order clientOrder = orderBean.getProducts(code);
         return Response.status(Response.Status.OK).entity(productToDTOs(clientOrder.getProducts())).build();
-    }*/
+    }
 }
