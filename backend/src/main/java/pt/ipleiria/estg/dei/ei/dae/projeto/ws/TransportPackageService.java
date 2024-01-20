@@ -1,5 +1,6 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.ws;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
@@ -13,6 +14,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackage;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.projeto.security.Authenticated;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,16 +22,16 @@ import java.util.stream.Collectors;
 @Path("transport-packages")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
+@RolesAllowed({"LogisticOperator"})
 public class TransportPackageService {
-    @Context
-    private SecurityContext securityContext;
     @EJB
     private TransportPackageBean transportPackageBean;
 
     @EJB
     private SensorBean sensorBean;
 
-    private TransportPackageDTO transportPackageToDTO(TransportPackage transportPackage) {
+    /*private TransportPackageDTO transportPackageToDTO(TransportPackage transportPackage) {
         TransportPackageDTO transportPackageDTO = new TransportPackageDTO(
                 transportPackage.getCode(),
                 transportPackage.getType(),
@@ -40,57 +42,61 @@ public class TransportPackageService {
         if (transportPackage.getLocation() != null)
             transportPackageDTO.setLocation(transportPackageDTO.getLocation());
         return transportPackageDTO;
-    }
+    }*/
 
-    private List<TransportPackageDTO> transportPackageToDTOs(List<TransportPackage> transportPackages) {
+    /*private List<TransportPackageDTO> transportPackageToDTOs(List<TransportPackage> transportPackages) {
         return transportPackages.stream()
                 .map(this::transportPackageToDTO)
                 .collect(Collectors.toList());
-    }
+    }*/
 
-    @POST
-    @Path("/")
-    public Response create(TransportPackageCreateDTO transportPackageCreateDTO) throws MyEntityExistsException, MyEntityNotFoundException {
-        boolean dontNeedAddPackage = transportPackageBean.create(transportPackageCreateDTO);
-        return dontNeedAddPackage ? Response.status(Response.Status.ACCEPTED).build() : Response.status(Response.Status.CREATED).build();
-    }
-    //TODO get transport-package details
-    @GET
-    @Path("{code}")
-    public Response getDetails(@PathParam("code") long code) throws MyEntityNotFoundException {
-        TransportPackage transportPackage = transportPackageBean.find(code);
-        return Response.status(Response.Status.OK).entity(transportPackageToDTO(transportPackage)).build();
-    }
-
-    @GET
-    @Path("{code}/sensors")
-    public Response getSensors(@PathParam("code") long code) throws MyEntityNotFoundException {
-        TransportPackage transportPackage = transportPackageBean.getSensors(code);
-        List<SensorDTO> sensorDTOs = sensorDTOs(transportPackage.getSensors());
-        return Response.status(Response.Status.OK).entity(sensorDTOs).build();
-    }
-
-    private List<SensorDTO> sensorDTOs(List<Sensor> sensors) {
+    /*private List<SensorDTO> sensorDTOs(List<Sensor> sensors) {
         return sensors.stream().map(this::sensorDTO).collect(Collectors.toList());
-    }
+    }*/
 
-    private SensorDTO sensorDTO(Sensor sensor) {
+    /*private SensorDTO sensorDTO(Sensor sensor) {
         return new SensorDTO(
                 sensor.getCode(),
                 sensor.getType().getSensorType(),
                 sensor.isInUse()
         );
+    }*/
+
+    @POST
+    @Path("/")
+    @RolesAllowed({"LogisticOperator"})
+    public Response create(TransportPackageCreateDTO transportPackageCreateDTO) throws MyEntityExistsException, MyEntityNotFoundException {
+        boolean dontNeedAddPackage = transportPackageBean.create(transportPackageCreateDTO);
+        return dontNeedAddPackage ? Response.status(Response.Status.ACCEPTED).build() : Response.status(Response.Status.CREATED).build();
     }
 
+    //TODO get transport-package details
+    /*@GET
+    @Path("{code}")
+    public Response getDetails(@PathParam("code") long code) throws MyEntityNotFoundException {
+        TransportPackage transportPackage = transportPackageBean.find(code);
+        return Response.status(Response.Status.OK).entity(transportPackageToDTO(transportPackage)).build();
+    }+/
+
+    /*@GET
+    @Path("{code}/sensors")
+    public Response getSensors(@PathParam("code") long code) throws MyEntityNotFoundException {
+        TransportPackage transportPackage = transportPackageBean.getSensors(code);
+        List<SensorDTO> sensorDTOs = sensorDTOs(transportPackage.getSensors());
+        return Response.status(Response.Status.OK).entity(sensorDTOs).build();
+    }*/
+
     //TODO get all transport-packages
-    @GET
+    /*@GET
     @Path("/")
     public List<TransportPackageDTO> getAll() {
         return transportPackageToDTOs(transportPackageBean.getAll());
-    }
+    }*/
+
     //TODO delete transport-package
     @DELETE
     @Path("{code}")
+    @RolesAllowed({"LogisticOperator"})
     public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException {
         transportPackageBean.delete(code);
         return Response.status(Response.Status.OK).build();
@@ -98,11 +104,12 @@ public class TransportPackageService {
 
     @POST
     @Path("{code}/add-sensors")
+    @RolesAllowed({"LogisticOperator"})
     public Response addSensor(@PathParam("code") long code, TransportPackageAddSensorDTO transportPackageAddSensorDTO) throws MyEntityNotFoundException, MyEntityExistsException {
         transportPackageAddSensorDTO.getSensors().forEach(s -> {
             try {
                 Sensor sensor = sensorBean.getSensor(s);
-                if (sensor == null){
+                if (sensor == null) {
                     sensor = sensorBean.create(s, true);
                 }
                 sensorBean.addToPackage(sensor.getCode(), code);

@@ -1,5 +1,6 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.ws;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -9,6 +10,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.ejbs.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.*;
 import pt.ipleiria.estg.dei.ei.dae.projeto.entities.types.OrderStatus;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.*;
+import pt.ipleiria.estg.dei.ei.dae.projeto.security.Authenticated;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,17 +19,13 @@ import java.util.stream.Collectors;
 @Path("/orders")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
+@RolesAllowed({"FinalCostumer", "LogisticOperator"})
 public class OrderService {
     @EJB
     private OrderBean orderBean;
     @EJB
-    private ObservationBean observationBean;
-    @EJB
     private TransportPackageCatalogBean transportPackageCatalogBean;
-    @EJB
-    private SensorBean sensorBean;
-    @EJB
-    private ProductBean productBean;
 
     private OrderDTO toDTO(Order clientOrder) {
         OrderDTO orderDTO = new OrderDTO(
@@ -50,7 +48,7 @@ public class OrderService {
         return orderDTO;
     }
 
-    private OrderDTO toDTONoProducts(Order clientOrder) {
+    /*private OrderDTO toDTONoProducts(Order clientOrder) {
         OrderDTO orderDTO = new OrderDTO(
                 clientOrder.getCode(),
                 clientOrder.getLocation(),
@@ -64,11 +62,11 @@ public class OrderService {
         }
 
         return orderDTO;
-    }
+    }*/
 
-    private List<OrderDTO> toDTOsNoProducts(List<Order> clientOrders) {
+    /*private List<OrderDTO> toDTOsNoProducts(List<Order> clientOrders) {
         return clientOrders.stream().map(this::toDTO).collect(Collectors.toList());
-    }
+    }*/
 
     private ProductDTO productToDTO(Product product) {
         ProductDTO productDTO = new ProductDTO(
@@ -88,26 +86,26 @@ public class OrderService {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
 
-    private ObservationPackageDTO observationPackageDTO(long packageCode, String packageType, List<ObservationDetailDTO> observationDetailDTO) {
+    /*private ObservationPackageDTO observationPackageDTO(long packageCode, String packageType, List<ObservationDetailDTO> observationDetailDTO) {
         return new ObservationPackageDTO(
                 packageCode,
                 packageType,
                 observationDetailDTO
         );
-    }
+    }*/
 
-    private ObservationDetailDTO observationDTO(Observation observation) {
+    /*private ObservationDetailDTO observationDTO(Observation observation) {
         return new ObservationDetailDTO(
                 observation.getValue(),
                 observation.getSensor().getCode(),
                 observation.getSensor().getType().getSensorType()
         );
-    }
+    }*/
 
 
-    private List<ObservationDetailDTO> observationDTOs(List<Observation> observations) {
+    /*private List<ObservationDetailDTO> observationDTOs(List<Observation> observations) {
         return observations.stream().map(this::observationDTO).collect(Collectors.toList());
-    }
+    }*/
 
     private TransportPackageDTO transportPackageToDTO(TransportPackage transportPackage) {
         TransportPackageDTO transportPackageDTO = new TransportPackageDTO(
@@ -120,27 +118,28 @@ public class OrderService {
         return transportPackageDTO;
     }
 
-    private SensorDTO sensorToDTO(Sensor sensor) {
-        return new SensorDTO(
-                sensor.getCode(),
-                sensor.getType().getSensorType(),
-                sensor.isInUse()
-        );
-    }
-
     private List<TransportPackageDTO> transportPackageToDTOs(List<TransportPackage> transportPackages) {
         return transportPackages.stream()
                 .map(this::transportPackageToDTO)
                 .collect(Collectors.toList());
     }
 
-    private List<SensorDTO> sensorToDTOs(List<Sensor> sensors) {
+    /*private SensorDTO sensorToDTO(Sensor sensor) {
+        return new SensorDTO(
+                sensor.getCode(),
+                sensor.getType().getSensorType(),
+                sensor.isInUse()
+        );
+    }*/
+
+    /*private List<SensorDTO> sensorToDTOs(List<Sensor> sensors) {
         return sensors.stream().map(this::sensorToDTO).collect(Collectors.toList());
-    }
+    }*/
 
     //TODO create order
     @POST
     @Path("/")
+    @RolesAllowed({"FinalCostumer"})
     public Response create(OrderCreateDTO clientOrderDTO) throws MyEntityNotFoundException, MyConstraintViolationException, NoStockException {
         orderBean.create(
                 clientOrderDTO.getFinalCostumer(),
@@ -154,6 +153,7 @@ public class OrderService {
     //TODO get details
     @GET
     @Path("/{code}")
+    @RolesAllowed({"FinalCostumer", "LogisticOperator"})
     public Response getDetails(@PathParam("code") long code) throws MyEntityExistsException, MyEntityNotFoundException {
         var clientOrder = orderBean.getProducts(code);
         if (clientOrder == null) {
@@ -163,16 +163,17 @@ public class OrderService {
     }
 
     //TODO get all orders
-    @GET
+    /*@GET
     @Path("/")
     public Response getAllClientOrders() {
         var clientOrders = orderBean.getAll();
         return Response.status(Response.Status.OK).entity(toDTOsNoProducts(clientOrders)).build();
-    }
+    }*/
 
     //TODO get transport-packages
     @GET
     @Path("/{code}/transport-packages")
+    @RolesAllowed({"FinalCostumer", "LogisticOperator"})
     public Response getAllTransportPackages(@PathParam("code") long code) throws MyEntityNotFoundException {
         Order clientOrder = orderBean.getTransportPackages(code);
         return Response.status(Response.Status.OK).entity(transportPackageToDTOs(clientOrder.getTransportPackages())).build();
@@ -181,6 +182,7 @@ public class OrderService {
     //TODO change location
     @PATCH
     @Path("/{code}/location/")
+    @RolesAllowed({"LogisticOperator"})
     public Response changeLocation(@PathParam("code") long code, OrderDTO orderDTO) throws MyEntityNotFoundException {
         orderBean.changeLocation(code, orderDTO.getLocation());
         return Response.status(Response.Status.OK).build();
@@ -189,13 +191,14 @@ public class OrderService {
     //TODO change status
     @PATCH
     @Path("/{code}/status")
+    @RolesAllowed({"LogisticOperator"})
     public Response changeStatus(@PathParam("code") long code, OrderDTO orderDTO) throws MyEntityNotFoundException, NotEnoughTransportPackageException {
         orderBean.changeStatus(code, orderDTO.getStatus());
         return Response.status(Response.Status.OK).build();
     }
 
     //TODO get order sensors with observations
-    @GET
+    /*@GET
     @Path("/{code}/sensor-observations")
     public Response getAllSensors(@PathParam("code") long code) throws MyEntityNotFoundException {
         var clientOrder = orderBean.getProducts(code);
@@ -221,10 +224,10 @@ public class OrderService {
         }
 
         return Response.status(Response.Status.OK).entity(sensorDTOs).build();
-    }
+    }*/
 
     //TODO get observations
-    @GET
+    /*@GET
     @Path("/{code}/observations")
     public Response getAllObservations(@PathParam("code") long code) throws MyEntityNotFoundException {
         var clientOrder = orderBean.getProducts(code);
@@ -258,20 +261,22 @@ public class OrderService {
         }
 
         return Response.status(Response.Status.OK).entity(observationPackageDTO).build();
-    }
+    }*/
 
     //TODO get order products
     @GET
     @Path("/{code}/products")
+    @RolesAllowed({"FinalCostumer", "LogisticOperator"})
     public Response getProducts(@PathParam("code") long code) throws MyEntityNotFoundException {
         Order clientOrder = orderBean.getProducts(code);
         return Response.status(Response.Status.OK).entity(productToDTOs(clientOrder.getProducts())).build();
     }
+
     //TODO get order sensors
-    @GET
+    /*@GET
     @Path("/{code}/sensors")
     public Response getSensors(@PathParam("code") long code) throws MyEntityNotFoundException {
         Order clientOrder = orderBean.getProducts(code);
         return Response.status(Response.Status.OK).entity(productToDTOs(clientOrder.getProducts())).build();
-    }
+    }*/
 }
