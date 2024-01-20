@@ -38,7 +38,7 @@ const removeTransportPackageCatalog = (transportPackage) => {
 
             await axios.delete('transport-package-catalogs/' + transportPackage.code).then(response => {
                 isLoading.value = false
-                emit('loadTransportPackageCatalog')
+                emit('loadTransportPackageCatalogs')
             }).catch(
                 error => {
                     toast.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possivel apagar a embalagem de transporte com o código TP' + transportPackage.code, life: 3000 });
