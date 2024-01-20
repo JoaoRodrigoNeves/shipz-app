@@ -1,6 +1,7 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.ws;
 
 import com.opencsv.CSVReader;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -15,6 +16,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyConstraintViolationException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.projeto.security.Authenticated;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -28,6 +30,8 @@ import java.util.stream.Collectors;
 @Path("sensors")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
+@RolesAllowed({"ProductManufacter", "LogisticOperator", "FinalCostumer"})
 public class SensorService {
     @EJB
     private SensorBean sensorBean;
@@ -44,7 +48,7 @@ public class SensorService {
         return sensors.stream().map(this::toDTONoObservations).collect(Collectors.toList());
     }
 
-    public PackageDTO packageDTO(Package p) {
+    /*public PackageDTO packageDTO(Package p) {
         return new PackageDTO(
                 p.getCode(),
                 p.getType(),
@@ -52,11 +56,11 @@ public class SensorService {
                 p.getVolume(),
                 p.getCreatedAt().toString()
         );
-    }
+    }*/
 
-    public List<PackageDTO> packageDTOs(List<Package> packages) {
+    /*public List<PackageDTO> packageDTOs(List<Package> packages) {
         return packages.stream().map(this::packageDTO).collect(Collectors.toList());
-    }
+    }*/
 
     public ObservationDTO observationDTO(Observation observation) {
         return new ObservationDTO(
@@ -73,6 +77,7 @@ public class SensorService {
     //TODO create sensor
     @POST
     @Path("/")
+    @RolesAllowed({"LogisticOperator"})
     public Response create(SensorDTO sensorDTO) throws MyEntityExistsException {
         Sensor sensor = sensorBean.create(sensorDTO.getType(), false);
         return Response.status(Response.Status.CREATED).entity(toDTONoObservations(sensor)).build();
@@ -81,13 +86,14 @@ public class SensorService {
     //TODO get sensor details
     @GET
     @Path("{code}")
+    @RolesAllowed({"ProductManufacter", "LogisticOperator"})
     public Response getDetails(@PathParam("code") long code) throws MyEntityNotFoundException {
         Sensor sensor = sensorBean.find(code);
         return Response.status(Response.Status.OK).entity(toDTONoObservations(sensor)).build();
     }
 
     //TODO update sensor
-    @PUT
+    /*@PUT
     @Path("/")
     public Response update(SensorDTO sensorDTO) throws MyConstraintViolationException, MyEntityNotFoundException {
         Sensor sensor = sensorBean.update(
@@ -95,50 +101,53 @@ public class SensorService {
                 sensorDTO.getType()
         );
         return Response.status(Response.Status.OK).entity(toDTONoObservations(sensor)).build();
-    }
+    }*/
 
     //TODO delete sensor
-    @DELETE
+    /*@DELETE
     @Path("{code}")
     public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException {
         Sensor sensor = sensorBean.delete(code);
         return Response.status(Response.Status.OK).entity(toDTONoObservations(sensor)).build();
-    }
+    }*/
 
     //TODO get all sensors
     @GET
     @Path("/")
+    @RolesAllowed({"LogisticOperator", "FinalCostumer"})
     public List<SensorDTO> getAll() {
         return toDTOsNoObservations(sensorBean.getAll());
     }
 
     //TODO add sensor to package
-    @POST
+    /*@POST
     @Path("{code}/packages")
     public Response addPackage(@PathParam("code") long code, PackageDTO packageDTO) throws MyEntityNotFoundException, MyEntityExistsException {
         sensorBean.addToPackage(code, packageDTO.getCode());
         return Response.status(Response.Status.OK).build();
-    }
+    }*/
 
     //TODO remove sensor from package
     @DELETE
     @Path("{code}/packages/{packageCode}")
+    @RolesAllowed({"LogisticOperator"})
     public Response removePackage(@PathParam("code") long code, @PathParam("packageCode") long packageCode) throws MyEntityNotFoundException, MyEntityExistsException {
         sensorBean.removeFromPackage(code, packageCode);
         return Response.status(Response.Status.OK).build();
     }
 
     //TODO get packages
-    @GET
+    /*@GET
     @Path("{code}/packages")
     public Response getPackages(@PathParam("code") long code) throws MyEntityNotFoundException {
         Sensor sensor = sensorBean.getPackages(code);
         List<PackageDTO> packageDTOs = packageDTOs(sensor.getPackages());
         return Response.status(Response.Status.OK).entity(packageDTOs).build();
-    }
+    }*/
 
     @GET
     @Path("{code}/observations")
+    @RolesAllowed({"ProductManufacter", "LogisticOperator"})
     public Response getObservations(@PathParam("code") long code) throws MyEntityNotFoundException {
         Sensor sensor = sensorBean.getObservations(code);
         List<Observation> observations = sensor.getObservations();
