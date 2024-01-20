@@ -28,8 +28,7 @@ public class TransportPackageCatalogService {
                 transportPackageCatalog.getCode(),
                 transportPackageCatalog.getName(),
                 transportPackageCatalog.getMaterial(),
-                transportPackageCatalog.getVolume(),
-                transportPackageCatalog.getLogisticOperator().getUsername());
+                transportPackageCatalog.getVolume());
 
         transportPackageCatalogDTO.setTransportPackageDTOList(transportPackagesToDTOs(transportPackageCatalog.getTransportPackages()));
 
@@ -45,8 +44,7 @@ public class TransportPackageCatalogService {
                 transportPackageCatalog.getCode(),
                 transportPackageCatalog.getName(),
                 transportPackageCatalog.getMaterial(),
-                transportPackageCatalog.getVolume(),
-                transportPackageCatalog.getLogisticOperator().getUsername());
+                transportPackageCatalog.getVolume());
     }
 
     private List<TransportPackageCatalogDTO> toNoPackageDTOs(List<TransportPackageCatalog> transportPackageCatalog) {
@@ -71,7 +69,7 @@ public class TransportPackageCatalogService {
     @POST
     @Path("/")
     public Response create(TransportPackageCatalogDTO transportPackageCatalogDTO) throws MyEntityExistsException, MyEntityNotFoundException {
-        TransportPackageCatalog transportPackageCatalog = transportPackageCatalogBean.create(transportPackageCatalogDTO.getName(), transportPackageCatalogDTO.getMaterial(), transportPackageCatalogDTO.getVolume(), transportPackageCatalogDTO.getLogisticOperatorUsername());
+        TransportPackageCatalog transportPackageCatalog = transportPackageCatalogBean.create(transportPackageCatalogDTO.getName(), transportPackageCatalogDTO.getMaterial(), transportPackageCatalogDTO.getVolume());
         return Response.status(Response.Status.CREATED).entity(toDTO(transportPackageCatalog)).build();
     }
 

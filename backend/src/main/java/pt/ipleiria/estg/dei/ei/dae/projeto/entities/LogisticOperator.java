@@ -16,9 +16,6 @@ import java.util.List;
 public class LogisticOperator extends User implements Serializable {
     @OneToMany(mappedBy = "logisticOperator", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     List<Order> orders;
-    @OneToMany(mappedBy = "logisticOperator", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @OrderBy("volume DESC")
-    List<TransportPackageCatalog> transportPackageCatalogs;
 
     public LogisticOperator(String username, String password, String name, String email) {
         super(username, password, name, email);
@@ -27,23 +24,6 @@ public class LogisticOperator extends User implements Serializable {
 
     public LogisticOperator() {
     }
-
-    public void addTransportPackageCatalog(TransportPackageCatalog transportPackageCatalog) {
-        transportPackageCatalogs.add(transportPackageCatalog);
-    }
-
-    public void removeTransportPackageCatalog(TransportPackageCatalog transportPackageCatalog) {
-        transportPackageCatalogs.remove(transportPackageCatalog);
-    }
-
-    public List<TransportPackageCatalog> getTransportPackageCatalogs() {
-        return transportPackageCatalogs;
-    }
-
-    public void setTransportPackageCatalogs(List<TransportPackageCatalog> transportPackageCatalogs) {
-        this.transportPackageCatalogs = transportPackageCatalogs;
-    }
-
     public void addOrder(Order order) {
         orders.add(order);
     }

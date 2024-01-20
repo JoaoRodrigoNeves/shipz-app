@@ -27,13 +27,10 @@ public class TransportPackageCatalogBean {
         return (Long) query.getSingleResult() > 0L;
     }
 
-    public TransportPackageCatalog create(String name, String material, long volume, String logisticOperatorUsername) throws MyEntityExistsException, MyEntityNotFoundException {
-        LogisticOperator logisticOperator = entityManager.find(LogisticOperator.class, logisticOperatorUsername);
-        if (logisticOperator == null)
-            throw new MyEntityNotFoundException("Logistic Operator with username: " + logisticOperatorUsername + " not found");
+    public TransportPackageCatalog create(String name, String material, long volume) throws MyEntityExistsException, MyEntityNotFoundException {
         if (this.exists(name))
             throw new MyEntityExistsException("Transport Package Catalog with name: " + name + " already exists");
-        TransportPackageCatalog transportPackageCatalog = new TransportPackageCatalog(name, material, volume, logisticOperator);
+        TransportPackageCatalog transportPackageCatalog = new TransportPackageCatalog(name, material, volume);
         entityManager.persist(transportPackageCatalog);
         return transportPackageCatalog;
     }
