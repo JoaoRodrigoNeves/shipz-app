@@ -11,7 +11,7 @@ const sensors = ref([])
 
 const loadSensors = async () => {
     isLoading.value = true;
-    await axios.get('sensors/').then(response => {
+    await axios.get('sensors').then(response => {
         isLoading.value = false;
         sensors.value = response.data
     }).catch(
@@ -47,6 +47,12 @@ onMounted(async () => {
                     </VBtn>
                 </div>
                 <SensorsTable v-if="sensors && sensors.length > 0 && !isLoading" @loadSensors="loadSensors" :sensors="sensors" />
+              <div
+                v-else
+                class="no-data"
+              >
+                Não tem sensores registados
+              </div>
             </VCard>
             <VCard v-else>
                 <VCard>
@@ -68,5 +74,9 @@ onMounted(async () => {
     justify-content: space-between;
     align-self: center;
     padding: 24px;
+}
+
+.no-data {
+  padding: 0 24px 24px 24px;
 }
 </style>

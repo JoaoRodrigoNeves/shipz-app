@@ -36,7 +36,6 @@ public class Order implements Serializable {
     List<TransportPackage> transportPackages;
     OrderStatus status;
     SensorType sensors;
-    String location;
     @Column(name = "created_at")
     LocalDateTime createdAt;
     @Column(name = "delivered_at")
@@ -142,14 +141,6 @@ public class Order implements Serializable {
         return createdAt;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public LocalDateTime getDeliveredAt() {
         return deliveredAt;
     }
@@ -163,11 +154,11 @@ public class Order implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order that = (Order) o;
-        return code == that.code && Objects.equals(finalCostumer, that.finalCostumer) && Objects.equals(logisticOperator, that.logisticOperator) && Objects.equals(products, that.products) && Objects.equals(transportPackages, that.transportPackages) && status == that.status && Objects.equals(location, that.location) && Objects.equals(createdAt, that.createdAt) && Objects.equals(deliveredAt, that.deliveredAt);
+        return code == that.code && Objects.equals(finalCostumer, that.finalCostumer) && Objects.equals(logisticOperator, that.logisticOperator) && Objects.equals(products, that.products) && Objects.equals(transportPackages, that.transportPackages) && status == that.status && Objects.equals(createdAt, that.createdAt) && Objects.equals(deliveredAt, that.deliveredAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, finalCostumer, logisticOperator, products, transportPackages, status, location, createdAt, deliveredAt);
+        return Objects.hash(code, finalCostumer, logisticOperator, products, transportPackages, status, createdAt, deliveredAt);
     }
 }

@@ -9,7 +9,6 @@ public class OrderDTO implements Serializable {
     private String logisticOperatorName;
     private String finalCostumer;
     private String finalCostumerName;
-    private String location;
     private String status;
     private String createdAt;
     private String deliveredAt;
@@ -28,21 +27,12 @@ public class OrderDTO implements Serializable {
         this.products = new ArrayList<ProductDTO>();
     }
 
-    public OrderDTO(long code, String logisticOperatorName, String status, String location, String createdAt) {
+    public OrderDTO(long code, String logisticOperatorName, String status, String createdAt) {
         this.code = code;
         this.logisticOperatorName = logisticOperatorName;
         this.status = status;
         this.products = new ArrayList<ProductDTO>();
-        this.location = location;
         this.createdAt = createdAt;
-    }
-
-    public OrderDTO(long code, String location, String status, String createdAt) {
-        this.code = code;
-        this.status = status;
-        this.location = location;
-        this.createdAt = createdAt;
-        this.products = new ArrayList<ProductDTO>();
         this.sensors = new ArrayList<SensorDTO>();
     }
 
@@ -116,14 +106,6 @@ public class OrderDTO implements Serializable {
 
     public void setDeliveredAt(String deliveredAt) {
         this.deliveredAt = deliveredAt;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public ArrayList<ProductDTO> getProducts() {

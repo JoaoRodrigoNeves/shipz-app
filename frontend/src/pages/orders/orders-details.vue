@@ -6,13 +6,15 @@ import { useToast } from "primevue/usetoast"
 import moment from "moment/moment"
 import TransportPackageTable from '@/views/pages/tables/TransportPackageTable.vue'
 import SensorTable from '@/views/pages/tables/SensorsTable.vue'
+import OrderForm from '@/views/pages/form-layouts/OrderForm.vue'
 
 const toast = useToast()
 const axios = inject('axios')
 const router = useRouter()
 const isLoading = ref(false)
 const order = ref([])
-
+const hasGpsSensor = ref(false)
+const isUpdatingStatus = ref(false)
 const sensors = ref([])
 const selectedTransportPackages = ref(null)
 const products = ref([])
@@ -21,6 +23,7 @@ const transportPackagesCatalog = ref([])
 const cities = ref([])
 const role = JSON.parse(sessionStorage.getItem('user_info')).role
 const isDialogTransportPackageOpen = ref(false)
+
 const formatDate = value => {
   return moment(String(value)).format('DD/MM/YYYY HH:mm:ss')
 }
@@ -45,6 +48,7 @@ const loadTransportPackages = async () => {
   await axios.get('orders/' + router.currentRoute.value.params.code + '/transport-packages',
   ).then(response => {
     transportPackages.value = response.data
+    loadOrderWithSensors()
     isLoading.value = false
   }).catch(
     error => {
@@ -57,7 +61,7 @@ const loadTransportPackages = async () => {
 const loadTransportPackagesCatalog = async () => {
   isLoading.value = true
 
-  await axios.get('transport-package-catalogs'
+  await axios.get('transport-package-catalogs',
   ).then(response => {
     transportPackagesCatalog.value = response.data
     isLoading.value = false
@@ -95,18 +99,18 @@ const loadCities = async () => {
   }
 }
 
-const loadSensors = async () => {
+const loadOrderWithSensors = async () => {
   isLoading.value = true
   try {
-    await axios.get('sensors').then(response => {
-      const allSensors = response.data;
-      const filteredSensors = allSensors.filter(sensor => !sensor.inUse);
-      sensors.value = filteredSensors;
-      isLoading.value = false;
+    await axios.get('orders/' + router.currentRoute.value.params.code + '/sensors').then(response => {
+      sensors.value = response.data
+      hasGpsSensor.value = sensors.value.some(sensor => sensor.type == 'Gps')
+      isLoading.value = false
     })
 
   } catch (error) {
     isLoading.value = false
+    sensors.value = null
     console.log(error)
   }
 }
@@ -119,10 +123,10 @@ const addTransportPackageToOrder = async () => {
   }
   try {
     await axios.post('transport-packages', payload).then(response => {
-      if(response.status == 201){
+      if (response.status == 201) {
         toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Embalagem de Transporte adicionada com sucesso', life: 3000 })
-      }else{
-      toast.add({ severity: 'warn', summary: 'Atenção', detail: 'Embalagem de Transporte adicionada com sucesso, apesar de não ser necessária', life: 3000 })
+      } else {
+        toast.add({ severity: 'warn', summary: 'Atenção', detail: 'Embalagem de Transporte adicionada com sucesso, apesar de não ser necessária', life: 3000 })
 
       }
     })
@@ -137,19 +141,19 @@ const addTransportPackageToOrder = async () => {
 const changeLocation = async () => {
   isLoading.value = true
   let payload = {
-    sensorCode: 1,
+    sensorCode: order.value.code,
     value: order.value.location,
   }
   try {
     await axios.post('observations', payload)
-        .then(response => {
-            toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Localização adicionada com sucesso', life: 3000 });
-            isLoading.value = false
-            reset()
-        }).catch(error => {
-            isLoading.value = false
-            console.error(error)
-        })
+      .then(response => {
+        toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Localização adicionada com sucesso', life: 3000 });
+        isLoading.value = false
+        reset()
+      }).catch(error => {
+        isLoading.value = false
+        console.error(error)
+      })
 
   } catch (error) {
     isLoading.value = false
@@ -161,23 +165,43 @@ const goBack = () => {
   router.back()
 }
 
+const closeFormAndUpdate = async () => {
+  isUpdatingStatus.value = false
+  await loadOrderDetails()
+}
+
 onMounted(async () => {
-  await loadOrderDetails();
-  await loadTransportPackages();
-  await loadProducts();
-  await loadCities();
-  await loadSensors();
-  await loadTransportPackagesCatalog();
+  await loadOrderDetails()
+  await loadTransportPackages()
+  await loadProducts()
+  await loadCities()
+  await loadTransportPackagesCatalog()
 })
 </script>
 
 <template>
   <VRow>
     <VCol cols="12">
-      <VCard>
+      <VCard v-if="!isUpdatingStatus">
         <div class="product-catalog-details-header">
-          <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="goBack" />
-          <h2>Encomenda nº{{ order.code }}</h2>
+          <div style="display: flex; align-items: center; gap:12px">
+            <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="goBack" />
+            <h2>Encomenda nº{{ order.code }}</h2>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; ">
+            <span style="color: rgb(255, 193, 7); font-size: 14px; text-decoration: underline;"
+              v-if="!isLoading && (!transportPackages || transportPackages.length == 0)">
+              Terá de adicionar pelo menos uma caixa de transporte.
+            </span>
+            <VBtn v-if="role == 'LogisticOperator'" rel="noopener noreferrer" color="primary"
+              @click="isUpdatingStatus = true" :disabled="transportPackages && transportPackages.length == 0">
+              <VIcon size="20" icon="mdi-package" />
+              <VTooltip activator="parent" location="top">
+                <span>Atualizar Estado</span>
+              </VTooltip>
+            </VBtn>
+          </div>
+
         </div>
 
         <div class="product-catalog-details">
@@ -215,14 +239,6 @@ onMounted(async () => {
           </div>
           <div class="catalog-item">
             <label>
-              Localização
-            </label>
-            <span>
-              {{ order.location ? order.location : 'Sem localização definida' }}
-            </span>
-          </div>
-          <div class="catalog-item">
-            <label>
               Data
             </label>
             <span>
@@ -237,10 +253,10 @@ onMounted(async () => {
               {{ order.deliveredAt ? formatDate(order.deliveredAt) : 'Não entregue' }}
             </span>
           </div>
-          <div class="catalog-item" style="margin-top: 4px; width: 300px;" v-if="role == 'LogisticOperator'">
+          <div v-if="role == 'LogisticOperator'" class="catalog-item" style="margin-top: 4px; width: 300px;">
             <span>
-              <VAutocomplete v-model="order.location" label="Localização" :items="cities" class="product-quantity"
-                @update:model-value="changeLocation" />
+              <VAutocomplete v-if="hasGpsSensor" v-model="order.location" label="Localização" :items="cities"
+                class="product-quantity" @update:model-value="changeLocation" />
             </span>
           </div>
         </div>
@@ -250,8 +266,8 @@ onMounted(async () => {
               <div class="table-actions">
                 <h3>Embalagens de Transporte</h3>
 
-                <VDialog width="500" v-model="isDialogTransportPackageOpen">
-                  <template v-slot:activator="{ props }">
+                <VDialog v-model="isDialogTransportPackageOpen" width="500">
+                  <template #activator="{ props }">
                     <VBtn v-bind="props" text="Adicionar Sensores">
                       <VIcon size="20" icon="bx-plus" />
                       <VTooltip activator="parent" location="top">
@@ -259,31 +275,28 @@ onMounted(async () => {
                       </VTooltip>
                     </VBtn>
                   </template>
-                  <v-card title="Embalagem de Transporte">
-                    <v-card-text>
+                  <VCard title="Embalagem de Transporte">
+                    <VCardText>
                       <VAutocomplete v-model="selectedTransportPackages" label="Embalagem de Transporte"
                         :items="transportPackagesCatalog" item-title="name" item-value="code" />
-                    </v-card-text>
+                    </VCardText>
 
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
+                    <VCardActions>
+                      <VSpacer />
 
-                      <v-btn text="Adicionar"
-                        @click="addTransportPackageToOrder(); isDialogTransportPackageOpen = false;"></v-btn>
-                    </v-card-actions>
-                  </v-card>
+                      <VBtn text="Adicionar"
+                        @click="addTransportPackageToOrder(); isDialogTransportPackageOpen = false;" />
+                    </VCardActions>
+                  </VCard>
                 </VDialog>
               </div>
             </VExpansionPanelTitle>
             <VExpansionPanelText>
               <div v-if="transportPackages && transportPackages.length > 0 && !isLoading">
-                <TransportPackageTable v-if="!isLoading" :transport-packages="transportPackages" :canDelete="true"
-                  @loadTransportPackages="loadTransportPackages" :order="order" />
+                <TransportPackageTable v-if="!isLoading" :transport-packages="transportPackages" :can-delete="true"
+                  :order="order" @loadTransportPackages="loadTransportPackages" @load-sensors="loadOrderWithSensors" />
               </div>
-              <div
-                v-else
-                class="no-data"
-              >
+              <div v-else class="no-data">
                 Não tem embalagens de transporte associados a esta encomenda
               </div>
             </VExpansionPanelText>
@@ -296,15 +309,9 @@ onMounted(async () => {
             </VExpansionPanelTitle>
             <VExpansionPanelText>
               <div v-if="products && products.length > 0 && !isLoading">
-                <ProductTable
-                  v-if="!isLoading"
-                  :products="products"
-                />
+                <ProductTable v-if="!isLoading" :products="products" />
               </div>
-              <div
-                v-else
-                class="no-data"
-              >
+              <div v-else class="no-data">
                 Não tem produtos associados a esta encomenda
               </div>
             </VExpansionPanelText>
@@ -317,21 +324,25 @@ onMounted(async () => {
             </VExpansionPanelTitle>
             <VExpansionPanelText>
               <div v-if="!isLoading">
-                <SensorTable
-                  v-if="!isLoading"
-                  :sensors="sensors"
-                />
+                <SensorTable v-if="!isLoading" :sensors="sensors" />
               </div>
-              <div
-                v-else
-                class="no-data"
-              >
+              <div v-else class="no-data">
                 Não tem sensores associados a esta encomenda
               </div>
             </VExpansionPanelText>
           </VExpansionPanel>
         </VExpansionPanels>
       </VCard>
+      <VCard v-else>
+        <div class="orders-form">
+          <div style="display: flex; align-items: center; gap:12px; margin-bottom: 24px;">
+            <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="isUpdatingStatus = false" />
+            <h2>Encomenda nº{{ order.code }}</h2>
+          </div>
+          <OrderForm @closeFormAndUpdate="closeFormAndUpdate" :order="order" :is-updating-status="true" />
+        </div>
+      </VCard>
+
     </VCol>
   </VRow>
 </template>
@@ -339,9 +350,8 @@ onMounted(async () => {
 <style scoped>
 .product-catalog-details-header {
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
   padding: 24px;
 }
 
@@ -352,7 +362,10 @@ onMounted(async () => {
   flex-wrap: wrap;
   margin-bottom: 24px;
 }
+.orders-form{
+  padding: 20px;
 
+}
 .product-catalog-details .catalog-item {
   display: flex;
   flex-direction: column;

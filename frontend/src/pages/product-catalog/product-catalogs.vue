@@ -59,7 +59,8 @@ onMounted(async () => {
             </VCard>
             <VCard v-else>
                 <VCard>
-                    <div class="product-catalogs-header">
+                    <div class="product-catalogs-form-header">
+                        <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="isCreatingOrUpdating = false; isCreating = false" />
                         <h2>{{ isCreating ? 'Criar Catálogo' : 'Editar Catálogo' }}</h2>
                     </div>
                     <VCardText>
@@ -76,6 +77,14 @@ onMounted(async () => {
     display: flex;
     justify-content: space-between;
     align-self: center;
+    padding: 24px;
+}
+
+.product-catalogs-form-header {
+    display: flex;
+    justify-content: start;
+    align-self: center;
+    gap: 12px;
     padding: 24px;
 }
 </style>

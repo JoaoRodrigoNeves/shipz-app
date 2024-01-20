@@ -81,7 +81,6 @@ public class FinalCostumerService {
                 clientOrder.getCode(),
                 clientOrder.getLogisticOperator().getName(),
                 clientOrder.getStatus().getOrderStatus(),
-                clientOrder.getLocation(),
                 clientOrder.getCreatedAt().toString()
         );
     }

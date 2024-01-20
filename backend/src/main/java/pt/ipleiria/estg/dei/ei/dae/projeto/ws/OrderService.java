@@ -30,7 +30,7 @@ public class OrderService {
     private OrderDTO toDTO(Order clientOrder) {
         OrderDTO orderDTO = new OrderDTO(
                 clientOrder.getCode(),
-                clientOrder.getLocation(),
+                clientOrder.getLogisticOperator().getName(),
                 clientOrder.getStatus().getOrderStatus(),
                 clientOrder.getCreatedAt().toString()
         );
@@ -51,7 +51,6 @@ public class OrderService {
     /*private OrderDTO toDTONoProducts(Order clientOrder) {
         OrderDTO orderDTO = new OrderDTO(
                 clientOrder.getCode(),
-                clientOrder.getLocation(),
                 clientOrder.getStatus().getOrderStatus(),
                 clientOrder.getCreatedAt().toString()
         );
@@ -206,16 +205,19 @@ public class OrderService {
         List<SensorDTO> sensorDTOs = new ArrayList<>();
 
         for (Product product : clientOrder.getProducts()) {
-            for (ProductPackage productPackage : product.getProductPackages()) {
-                if (!productPackage.getSensors().isEmpty()) {
-                    sensorDTOs.addAll(sensorToDTOs(productPackage.getSensors()));
+            Product prod = productBean.getProductPackages(product.getCode());
+            for (ProductPackage productPackage : prod.getProductPackages()) {
+                ProductPackage prodPackage = productPackageBean.getSensors(productPackage.getCode());
+                if (!prodPackage.getSensors().isEmpty()) {
+                    sensorDTOs.addAll(sensorToDTOs(prodPackage.getSensors()));
                 }
             }
         }
 
-        for (TransportPackage transportPackage : clientOrder.getTransportPackages()) {
-            if (!transportPackage.getSensors().isEmpty()) {
-                sensorDTOs.addAll(sensorToDTOs(transportPackage.getSensors()));
+        for (TransportPackage transportPackage : orderBean.getTransportPackages(code).getTransportPackages()) {
+            TransportPackage transPackage = transportPackageBean.getSensors(transportPackage.getCode());
+            if (!transPackage.getSensors().isEmpty()) {
+                sensorDTOs.addAll(sensorToDTOs(transPackage.getSensors()));
             }
         }
 

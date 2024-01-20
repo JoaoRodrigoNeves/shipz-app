@@ -69,6 +69,7 @@ public class ConfigBean {
             transportPackageCatalogBean.create("Embalagem M", "Cartão", 100);
             transportPackageCatalogBean.create("Embalagem L", "Cartão", 150);
 
+
         } catch (Exception e) {
             logger.severe(e.getMessage());
         }
