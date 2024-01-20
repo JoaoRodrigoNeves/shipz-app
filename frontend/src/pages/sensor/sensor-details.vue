@@ -16,9 +16,8 @@ const loadSensorDetails = async () => {
     const response = await axios.get('sensors/' + router.currentRoute.value.params.code)
 
     sensor.value = response.data
-    console.log(response.data)
   } catch (error) {
-    console.log(error)
+    console.error(error)
   } finally {
     isLoading.value = false
   }
@@ -31,7 +30,7 @@ const loadObservations = async () => {
 
     observations.value = response.data
   } catch (error) {
-    console.log(error)
+    console.error(error)
   } finally {
     isLoading.value = false
   }
@@ -114,14 +113,14 @@ const setChartOptions = () => {
 const getBorderColorByDataType = dataType => {
   const documentStyle = getComputedStyle(document.documentElement)
   switch (dataType) {
-  case sensor.value.type = 'Temperatura':
-    return documentStyle.getPropertyValue('--blue-500')
-  case sensor.value.type = 'Humidade':
-    return documentStyle.getPropertyValue('--green-500')
-  case sensor.value.type = 'Pressão':
-    return documentStyle.getPropertyValue('--red-500')
-  default:
-    return ''
+    case sensor.value.type = 'Temperatura':
+      return documentStyle.getPropertyValue('--blue-500')
+    case sensor.value.type = 'Humidade':
+      return documentStyle.getPropertyValue('--green-500')
+    case sensor.value.type = 'Pressão':
+      return documentStyle.getPropertyValue('--red-500')
+    default:
+      return ''
   }
 }
 </script>
@@ -134,27 +133,15 @@ const getBorderColorByDataType = dataType => {
           <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="goBack" />
           <h2>Observações</h2>
         </div>
-        <div
-          v-if="sensor && sensor.type != 'Gps'"
-          class="card"
-          style="padding: 20px;"
-        >
-          <Chart
-            v-if="observations && observations.length > 0"
-            type="line"
-            :data="chartData"
-            :options="chartOptions"
-            class="h-30rem"
-          />
-          <div
-            v-else
-            class="no-data"
-          >
+        <div v-if="sensor && sensor.type != 'Gps'" class="card" style="padding: 20px;">
+          <Chart v-if="observations && observations.length > 0" type="line" :data="chartData" :options="chartOptions"
+            class="h-30rem" />
+          <div v-else class="no-data">
             Não tem observações associadas a este sensor
           </div>
         </div>
         <div v-else>
-          <VTable fixed-header v-if="observations">
+          <VTable fixed-header v-if="observations && observations.length > 0">
             <thead>
               <tr>
                 <th class="text-uppercase">
@@ -167,10 +154,7 @@ const getBorderColorByDataType = dataType => {
             </thead>
 
             <tbody>
-              <tr
-                v-for="item in observations"
-                :key="item.value"
-              >
+              <tr v-for="item in observations" :key="item.value">
                 <td style="width: 20%;">
                   {{ item.value }}
                 </td>
@@ -180,13 +164,11 @@ const getBorderColorByDataType = dataType => {
               </tr>
             </tbody>
           </VTable>
+          <div v-else class="no-data">
+            Não tem observações de localização
+          </div>
         </div>
-        <div
-          v-else
-          class="no-data"
-        >
-          Não tem observações de localização
-        </div>
+
       </VCard>
     </VCol>
   </VRow>

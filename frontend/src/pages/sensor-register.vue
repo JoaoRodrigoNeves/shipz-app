@@ -39,7 +39,7 @@ const loadCities = async () => {
 
     } catch (error) {
         isLoading.value = false
-        console.log(error)
+        console.error(error)
     }
 }
 

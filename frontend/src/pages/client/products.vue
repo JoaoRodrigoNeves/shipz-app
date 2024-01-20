@@ -61,7 +61,7 @@ const createOrder = async () => {
     isLoading.value = false
   }).catch(
     error => {
-      console.log(error)
+      console.error(error)
       toast.add({ severity: 'error', summary: 'Erro', detail: error.response.data, life: 3000 })
       isLoading.value = false
     },

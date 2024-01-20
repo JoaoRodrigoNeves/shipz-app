@@ -95,7 +95,7 @@ const loadCities = async () => {
 
   } catch (error) {
     isLoading.value = false
-    console.log(error)
+    console.error(error)
   }
 }
 
@@ -111,7 +111,7 @@ const loadOrderWithSensors = async () => {
   } catch (error) {
     isLoading.value = false
     sensors.value = null
-    console.log(error)
+    console.error(error)
   }
 }
 
@@ -134,31 +134,32 @@ const addTransportPackageToOrder = async () => {
     await loadTransportPackages()
   } catch (error) {
     isLoading.value = false
-    console.log(error)
+    console.error(error)
   }
 }
 
 const changeLocation = async () => {
+  let gpsSensors = sensors.value.filter(s => s.type == "Gps");
   isLoading.value = true
-  let payload = {
-    sensorCode: order.value.code,
-    value: order.value.location,
-  }
-  try {
+  let success = false;
+  gpsSensors.forEach(async (sensor) => {
+    let payload = {
+      sensorCode: sensor.code,
+      value: order.value.location,
+    }
     await axios.post('observations', payload)
       .then(response => {
-        toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Localização adicionada com sucesso', life: 3000 });
-        isLoading.value = false
-        reset()
+        if (!success) {
+          toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Localização adicionada com sucesso', life: 3000 });
+          success = true
+        }
       }).catch(error => {
-        isLoading.value = false
+        toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema ao alterar a localização', life: 3000 });
         console.error(error)
       })
+  })
 
-  } catch (error) {
-    isLoading.value = false
-    console.log(error)
-  }
+  isLoading.value = false
 }
 
 const goBack = () => {
@@ -193,7 +194,7 @@ onMounted(async () => {
               v-if="!isLoading && (!transportPackages || transportPackages.length == 0)">
               Terá de adicionar pelo menos uma caixa de transporte.
             </span>
-            <VBtn v-if="role == 'LogisticOperator'" rel="noopener noreferrer" color="primary"
+            <VBtn v-if="role == 'LogisticOperator' && order && order.status != 'Entregue'" rel="noopener noreferrer" color="primary"
               @click="isUpdatingStatus = true" :disabled="transportPackages && transportPackages.length == 0">
               <VIcon size="20" icon="mdi-package" />
               <VTooltip activator="parent" location="top">
@@ -253,7 +254,7 @@ onMounted(async () => {
               {{ order.deliveredAt ? formatDate(order.deliveredAt) : 'Não entregue' }}
             </span>
           </div>
-          <div v-if="role == 'LogisticOperator'" class="catalog-item" style="margin-top: 4px; width: 300px;">
+          <div v-if="role == 'LogisticOperator' && order && (order.status == 'Em Processamento' || order.status == 'Enviada')" class="catalog-item" style="margin-top: 4px; width: 300px;">
             <span>
               <VAutocomplete v-if="hasGpsSensor" v-model="order.location" label="Localização" :items="cities"
                 class="product-quantity" @update:model-value="changeLocation" />
@@ -268,7 +269,7 @@ onMounted(async () => {
 
                 <VDialog v-model="isDialogTransportPackageOpen" width="500">
                   <template #activator="{ props }">
-                    <VBtn v-bind="props" text="Adicionar Sensores">
+                    <VBtn v-bind="props" v-if="order && order.status != 'Entregue'">
                       <VIcon size="20" icon="bx-plus" />
                       <VTooltip activator="parent" location="top">
                         <span>Adicionar Embalagem de Transporte</span>
@@ -362,10 +363,12 @@ onMounted(async () => {
   flex-wrap: wrap;
   margin-bottom: 24px;
 }
-.orders-form{
+
+.orders-form {
   padding: 20px;
 
 }
+
 .product-catalog-details .catalog-item {
   display: flex;
   flex-direction: column;

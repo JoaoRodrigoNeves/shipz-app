@@ -65,7 +65,7 @@ const loadSensors = async packageCode => {
       removeSensors.value = response.data
     })
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 
@@ -87,7 +87,7 @@ const addOrRemoveSensorToPackage = async (packageCode, addOrRemove) => {
     }
     selectedSensors.value = null
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 

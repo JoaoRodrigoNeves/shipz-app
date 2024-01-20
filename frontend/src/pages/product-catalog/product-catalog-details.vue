@@ -73,7 +73,6 @@ const createProduct = (async () => {
 });
 
 const deleteProductCatalogConfirm = (productCatalogItem) => {
-  console.log(productCatalogItem)
   confirm.require({
     message: 'Tem a certeza que pretende apagar o catálogo ' + productCatalogItem.name + ' ?',
     header: 'Apagar Catálogo',

@@ -54,7 +54,7 @@ onMounted(async () => {
     <VRow>
       <VCol v-if="props.isUpdatingStatus" cols="6">
         <VSelect v-model="statusSelected" label="Estado" placeholder="Selecionar Estado"
-          :items="['Estado Inicial', 'Em Processamento', 'Enviada', 'Entregue']" />
+          :items="['Em Processamento', 'Enviada', 'Entregue']" />
       </VCol>
       <VCol cols="12" class="d-flex gap-4">
         <VBtn type="submit" :disabled="isLoading">

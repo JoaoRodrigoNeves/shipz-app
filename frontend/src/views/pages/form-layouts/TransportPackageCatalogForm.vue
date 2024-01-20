@@ -19,7 +19,6 @@ const validateForm = () => {
 }
 
 const save = (async () => {
-    console.log(transportPackageForm.value)
     if (validateForm()) {
         toast.add({ severity: 'error', summary: 'Erro', detail: 'O12312', life: 3000 });
         return;

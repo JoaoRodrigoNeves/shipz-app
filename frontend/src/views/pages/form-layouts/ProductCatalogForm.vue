@@ -96,7 +96,6 @@ const save = (async () => {
       },
     )
   } else {
-    console.log(JSON.parse(sessionStorage.getItem('user_info')).username)
     await axios.put('product-catalogs/' + productCatalogForm.value.code, productCatalogForm.value).then(response => {
       if (response.status == 200) {
         toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Catálogo atualizado com sucesso', life: 3000 })
