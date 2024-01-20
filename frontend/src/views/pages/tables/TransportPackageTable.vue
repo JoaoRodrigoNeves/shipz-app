@@ -20,7 +20,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['loadTransportPackages', 'loadSensors'])
-const router = useRouter()
 
 const confirm = useConfirm()
 const isLoading = ref(false)
