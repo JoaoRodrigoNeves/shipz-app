@@ -13,7 +13,7 @@ import java.util.Objects;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllSensors",
-                query = "SELECT s FROM Sensor s WHERE s.inUse = true ORDER BY s.code DESC" //JPQL
+                query = "SELECT s FROM Sensor s ORDER BY s.code DESC" //JPQL
         ),
         @NamedQuery(
                 name = "getSensorByType",
