@@ -25,25 +25,25 @@ import java.util.stream.Collectors;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @Authenticated
-@RolesAllowed({"FinalCostumer", "Administrator"})
+@RolesAllowed({"FinalCostumer"})
 public class FinalCostumerService {
     @Context
     private SecurityContext securityContext;
     @EJB
     private FinalCostumerBean finalCostumerBean;
 
-    private FinalCostumerDTO toDTO(FinalCostumer finalCostumer) {
+    /*private FinalCostumerDTO toDTO(FinalCostumer finalCostumer) {
         return new FinalCostumerDTO(
                 finalCostumer.getUsername(),
                 finalCostumer.getName(),
                 finalCostumer.getEmail(),
                 finalCostumer.getAddress()
         );
-    }
+    }*/
 
-    private List<FinalCostumerDTO> toDTOs(List<FinalCostumer> finalCostumers) {
+    /*private List<FinalCostumerDTO> toDTOs(List<FinalCostumer> finalCostumers) {
         return finalCostumers.stream().map(this::toDTO).collect(Collectors.toList());
-    }
+    }*/
 
     private FinalCostumerDTO toDTONoClientOrders(FinalCostumer finalCostumer) {
         return new FinalCostumerDTO(
@@ -54,11 +54,11 @@ public class FinalCostumerService {
         );
     }
 
-    private List<FinalCostumerDTO> toDTOsNoClientOrders(List<FinalCostumer> finalCostumers) {
+    /*private List<FinalCostumerDTO> toDTOsNoClientOrders(List<FinalCostumer> finalCostumers) {
         return finalCostumers.stream().map(this::toDTONoClientOrders).collect(Collectors.toList());
-    }
+    }*/
 
-    private ProductDTO productToDTO(Product product) {
+    /*private ProductDTO productToDTO(Product product) {
         ProductDTO productDTO = new ProductDTO(
                 product.getCode(),
                 product.getProductCatalog().getCode(),
@@ -70,11 +70,11 @@ public class FinalCostumerService {
             productDTO.setClientOrderCode(product.getOrder().getCode());
         }
         return productDTO;
-    }
+    }*/
 
-    private List<ProductDTO> productToDTOs(List<Product> products) {
+    /*private List<ProductDTO> productToDTOs(List<Product> products) {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
-    }
+    }*/
 
     private OrderDTO clientOrderToDTO(Order clientOrder) {
         return new OrderDTO(
@@ -90,7 +90,7 @@ public class FinalCostumerService {
         return clientOrders.stream().map(this::clientOrderToDTO).collect(Collectors.toList());
     }
 
-    @POST
+    /*@POST
     @Path("/")
     public Response create(FinalCostumerDTO finalCostumerDTO) throws MyEntityNotFoundException, MyConstraintViolationException {
         finalCostumerBean.create(
@@ -101,7 +101,7 @@ public class FinalCostumerService {
                 finalCostumerDTO.getAddress());
         FinalCostumer finalCostumer = finalCostumerBean.find(finalCostumerDTO.getUsername());
         return Response.status(Response.Status.CREATED).entity(toDTO(finalCostumer)).build();
-    }
+    }*/
 
     //TODO update a logistic-operator
     @PUT
@@ -119,23 +119,28 @@ public class FinalCostumerService {
         return Response.status(Response.Status.CREATED).entity(toDTONoClientOrders(finalCostumer)).build();
     }
 
-    @GET // means: to call this endpoint, we need to use the HTTP GET method
+    /*@GET // means: to call this endpoint, we need to use the HTTP GET method
     @Path("/{username}") // means: the relative url path is “/api/final-costumers/{username}”
     public Response getDetails(@PathParam("username") String username) throws MyEntityExistsException, MyEntityNotFoundException {
         FinalCostumer finalCostumer = finalCostumerBean.find(username);
         return Response.ok(toDTO(finalCostumer)).build();
-    }
+    }*/
 
-    @GET
+    /*@GET
     @Path("/")
     public List<FinalCostumerDTO> getAll() {
         var finalCostumers = finalCostumerBean.getAll();
         return toDTOsNoClientOrders(finalCostumers);
-    }
+    }*/
 
     @GET
     @Path("/{username}/orders")
+    @RolesAllowed({"FinalCostumer"})
     public Response getOrders(@PathParam("username") String username) throws MyEntityNotFoundException {
+        var principal = securityContext.getUserPrincipal();
+        if (!principal.getName().equals(username)) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
         FinalCostumer finalCostumer = finalCostumerBean.getOrders(username);
         return Response.ok(clientOrderToDTOs(finalCostumer.getOrders())).build();
     }

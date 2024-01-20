@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
 @Authenticated
-@RolesAllowed({"ProductManufacter", "Administrator"})
+@RolesAllowed({"ProductManufacter"})
 public class ProductService {
 
     @EJB
@@ -52,9 +52,9 @@ public class ProductService {
         return productDTO;
     }
 
-    private List<ProductDTO> productToDTOs(List<Product> products) {
+    /*private List<ProductDTO> productToDTOs(List<Product> products) {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
-    }
+    }*/
 
     private ProductPackageDTO productPackageToDTONoProducts(ProductPackage productPackage) {
         return new ProductPackageDTO(
@@ -73,7 +73,7 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    private OrderDTO clientOrderToDTONoProducts(Order clientOrder) {
+    /*private OrderDTO clientOrderToDTONoProducts(Order clientOrder) {
         OrderDTO orderDTO = new OrderDTO(
                 clientOrder.getCode(),
                 clientOrder.getLocation(),
@@ -87,11 +87,11 @@ public class ProductService {
             orderDTO.setDeliveredAt(clientOrder.getDeliveredAt().toString());
 
         return orderDTO;
-    }
+    }*/
 
-    private List<OrderDTO> clientOrderToDTOsNoProducts(List<Order> clientOrders) {
+    /*private List<OrderDTO> clientOrderToDTOsNoProducts(List<Order> clientOrders) {
         return clientOrders.stream().map(this::clientOrderToDTONoProducts).collect(Collectors.toList());
-    }
+    }*/
 
     private ProductCatalogDTO productCatalogToDTO(ProductCatalog productCatalog) {
         return new ProductCatalogDTO(
@@ -111,13 +111,13 @@ public class ProductService {
         );
     }
 
-    private ProductManufacterDTO productManufacterToDTO(ProductManufacter productManufacter) {
+    /*private ProductManufacterDTO productManufacterToDTO(ProductManufacter productManufacter) {
         return new ProductManufacterDTO(
                 productManufacter.getUsername(),
                 productManufacter.getName(),
                 productManufacter.getEmail()
         );
-    }
+    }*/
 
     //TODO create a new product
     @POST
@@ -168,7 +168,7 @@ public class ProductService {
     }
 
     //TODO update product
-    @PUT
+    /*@PUT
     @RolesAllowed({"ProductManufacter"})
     public Response update(ProductDTO productDTO) throws MyEntityNotFoundException {
         Product product = productBean.update(
@@ -176,7 +176,7 @@ public class ProductService {
                 productDTO.getProductCatalogCode()
         );
         return Response.status(Response.Status.OK).entity(productToDTO(product)).build();
-    }
+    }*/
 
     //TODO delete product
     @DELETE
@@ -188,11 +188,11 @@ public class ProductService {
     }
 
     //TODO get all products
-    @GET
+    /*@GET
     @Path("/")
     public Response getAll() {
         return Response.status(Response.Status.OK).entity(productToDTOs(productBean.getAllProducts())).build();
-    }
+    }*/
 
     //TODO get product-package
     @GET
@@ -211,51 +211,35 @@ public class ProductService {
         return Response.status(Response.Status.OK).entity(productCatalogToDTO(productCatalog)).build();
     }
 
-    //TODO add product to product-package
-    /*@POST
-    @Path("{code}/product-package/{packageCode}")
-    public Response addToProductPackage(@PathParam("code") long code, @PathParam("packageCode") long packageCode) throws MyEntityNotFoundException, MyEntityExistsException {
-        productBean.addProductToPackage(code, packageCode);
-        return Response.status(Response.Status.OK).build();
-    }*/
-
-    //TODO remove product from product-package
-    /*@DELETE
-    @Path("{code}/product-package/{packageCode}")
-    public Response removeFromProductPackage(@PathParam("code") long code, @PathParam("packageCode") long packageCode) throws MyEntityNotFoundException, MyEntityExistsException {
-        productBean.removeProductFromPackage(code, packageCode);
-        return Response.status(Response.Status.OK).build();
-    }*/
-
     //TODO get order
-    @GET
+    /*@GET
     @Path("{code}/order/")
     public Response getOrder(@PathParam("code") long code) throws MyEntityNotFoundException {
         Order clientOrder = productBean.getOrder(code);
         return Response.status(Response.Status.OK).entity(clientOrderToDTONoProducts(clientOrder)).build();
-    }
+    }*/
 
     //TODO add product to order
-    @POST
+    /*@POST
     @Path("{code}/order/{orderCode}")
     public Response addToOrder(@PathParam("code") long code, @PathParam("orderCode") long orderCode) throws MyEntityNotFoundException, MyEntityExistsException {
         productBean.addProductToOrder(code, orderCode);
         return Response.status(Response.Status.OK).build();
-    }
+    }*/
 
     //TODO remove product from order
-    @DELETE
+    /*@DELETE
     @Path("{code}/order/{orderCode}")
     public Response removeFromOrder(@PathParam("code") long code, @PathParam("orderCode") long orderCode) throws MyEntityNotFoundException, MyEntityExistsException {
         productBean.removeProductFromOrder(code, orderCode);
         return Response.status(Response.Status.OK).build();
-    }
+    }*/
 
     //TODO get product-manufacter from product
-    @GET
+    /*@GET
     @Path("{code}/product-manufacter")
     public Response getProductManufacter(@PathParam("code") long code) throws MyEntityNotFoundException {
         ProductManufacter productManufacter = productBean.getProductManufacter(code);
         return Response.status(Response.Status.OK).entity(productManufacterToDTO(productManufacter)).build();
-    }
+    }*/
 }
