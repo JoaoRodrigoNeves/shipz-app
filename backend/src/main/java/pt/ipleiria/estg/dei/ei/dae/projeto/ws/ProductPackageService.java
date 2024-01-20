@@ -25,16 +25,14 @@ import java.util.stream.Collectors;
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
 @Authenticated
-@RolesAllowed({"LogisticOperator", "ProductManufacter", "Administrator"})
+@RolesAllowed({"ProductManufacter"})
 public class ProductPackageService {
     @Context
     private SecurityContext securityContext;
     @EJB
     private ProductPackageBean productPackageBean;
-    @EJB
-    private ProductBean productBean;
 
-    private ProductPackageDTO productPackageToDTO(ProductPackage productPackage) {
+    /*private ProductPackageDTO productPackageToDTO(ProductPackage productPackage) {
         ProductPackageDTO productPackageDTO = new ProductPackageDTO(
                 productPackage.getCode(),
                 productPackage.getType(),
@@ -46,13 +44,13 @@ public class ProductPackageService {
         productPackageDTO.setProducts(productToDTOs(productPackage.getProducts()));
 
         return productPackageDTO;
-    }
+    }*/
 
-    private List<ProductPackageDTO> productPackageToDTOs(List<ProductPackage> productPackages) {
+    /*private List<ProductPackageDTO> productPackageToDTOs(List<ProductPackage> productPackages) {
         return productPackages.stream()
                 .map(this::productPackageToDTO)
                 .collect(Collectors.toList());
-    }
+    }*/
 
     private ProductPackageDTO productPackageToDTONoProducts(ProductPackage productPackage) {
         return new ProductPackageDTO(
@@ -65,11 +63,11 @@ public class ProductPackageService {
         );
     }
 
-    private List<ProductPackageDTO> productPackageToDTOsNoProducts(List<ProductPackage> productPackages) {
+    /*private List<ProductPackageDTO> productPackageToDTOsNoProducts(List<ProductPackage> productPackages) {
         return productPackages.stream()
                 .map(this::productPackageToDTONoProducts)
                 .collect(Collectors.toList());
-    }
+    }*/
 
     private ProductDTO productToDTO(Product product) {
         ProductDTO productDTO = new ProductDTO(
@@ -89,20 +87,20 @@ public class ProductPackageService {
         return products.stream().map(this::productToDTO).collect(Collectors.toList());
     }
 
-    private SensorDTO sensorToDTO(Sensor sensor) {
+    /*private SensorDTO sensorToDTO(Sensor sensor) {
         return new SensorDTO(
                 sensor.getCode(),
                 sensor.getType().getSensorType(),
                 sensor.isInUse()
         );
-    }
+    }*/
 
-    private List<SensorDTO> sensorToDTOs(List<Sensor> sensors) {
+    /*private List<SensorDTO> sensorToDTOs(List<Sensor> sensors) {
         return sensors.stream().map(this::sensorToDTO).collect(Collectors.toList());
-    }
+    }*/
 
     //TODO create a product-package
-    @POST
+    /*@POST
     @Path("/")
     public Response create(ProductPackageDTO productPackageDTO) {
         ProductPackage productPackage = productPackageBean.create(
@@ -111,7 +109,7 @@ public class ProductPackageService {
                 productPackageDTO.getVolume()
         );
         return Response.status(Response.Status.OK).entity(productPackage).build();
-    }
+    }*/
 
     //TODO get product-package details
     @GET
@@ -139,11 +137,11 @@ public class ProductPackageService {
     }*/
 
     //TODO get all product-packages
-    @GET
+    /*@GET
     @Path("/")
     public List<ProductPackageDTO> getAll() {
         return productPackageToDTOsNoProducts(productPackageBean.getAll());
-    }
+    }*/
 
     //TODO get products from product-package
     @GET
@@ -171,10 +169,10 @@ public class ProductPackageService {
     }*/
 
     //TODO get sensors from package
-    @GET
+    /*@GET
     @Path("{code}/sensors")
     public Response getSensors(@PathParam("code") long code) throws MyEntityNotFoundException {
         ProductPackage productPackage = productPackageBean.getSensors(code);
         return Response.status(Response.Status.OK).entity(sensorToDTOs(productPackage.getSensors())).build();
-    }
+    }*/
 }

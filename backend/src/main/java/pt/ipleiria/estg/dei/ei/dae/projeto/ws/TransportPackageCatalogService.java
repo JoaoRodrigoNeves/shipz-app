@@ -1,5 +1,6 @@
 package pt.ipleiria.estg.dei.ei.dae.projeto.ws;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -12,6 +13,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.entities.TransportPackageCatalog;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.ListNotEmptyException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityExistsException;
 import pt.ipleiria.estg.dei.ei.dae.projeto.exceptions.MyEntityNotFoundException;
+import pt.ipleiria.estg.dei.ei.dae.projeto.security.Authenticated;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
 @Path("transport-package-catalogs")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
+@RolesAllowed({"ProductManufacter", "LogisticOperator", "FinalCostumer"})
 public class TransportPackageCatalogService {
     @EJB
     private TransportPackageCatalogBean transportPackageCatalogBean;
@@ -61,6 +65,7 @@ public class TransportPackageCatalogService {
         );
 
     }
+
     private List<TransportPackageDTO> transportPackagesToDTOs(List<TransportPackage> transportPackages) {
         return transportPackages.stream().map(this::transportPackagesToDTO).collect(Collectors.toList());
     }
@@ -68,6 +73,7 @@ public class TransportPackageCatalogService {
     //TODO create transport Package Catalog
     @POST
     @Path("/")
+    @RolesAllowed({"ProductManufacter"})
     public Response create(TransportPackageCatalogDTO transportPackageCatalogDTO) throws MyEntityExistsException, MyEntityNotFoundException {
         TransportPackageCatalog transportPackageCatalog = transportPackageCatalogBean.create(transportPackageCatalogDTO.getName(), transportPackageCatalogDTO.getMaterial(), transportPackageCatalogDTO.getVolume());
         return Response.status(Response.Status.CREATED).entity(toDTO(transportPackageCatalog)).build();
@@ -76,6 +82,7 @@ public class TransportPackageCatalogService {
     //TODO get transport Package Catalog details
     @GET
     @Path("{code}")
+    @RolesAllowed({"ProductManufacter"})
     public Response getDetails(@PathParam("code") long code) throws MyEntityNotFoundException {
         TransportPackageCatalog transportPackageCatalog = transportPackageCatalogBean.find(code);
         return Response.status(Response.Status.OK).entity(toDTO(transportPackageCatalog)).build();
@@ -84,13 +91,16 @@ public class TransportPackageCatalogService {
     //TODO delete transport Package Catalog
     @DELETE
     @Path("{code}")
+    @RolesAllowed({"ProductManufacter"})
     public Response delete(@PathParam("code") long code) throws MyEntityNotFoundException, ListNotEmptyException {
         transportPackageCatalogBean.delete(code);
         return Response.status(Response.Status.OK).build();
     }
+
     //TODO get all transport Package Catalog
     @GET
     @Path("/")
+    @RolesAllowed({"ProductManufacter", "LogisticOperator", "FinalCostumer"})
     public Response getAll() {
         return Response.status(Response.Status.OK).entity(toNoPackageDTOs(transportPackageCatalogBean.getAll())).build();
     }

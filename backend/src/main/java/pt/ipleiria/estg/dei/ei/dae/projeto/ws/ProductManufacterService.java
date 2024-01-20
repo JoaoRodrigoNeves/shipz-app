@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
 @Authenticated
-@RolesAllowed({"ProductManufacter", "Administrator"})
+@RolesAllowed({"ProductManufacter"})
 public class ProductManufacterService {
     @Context
     private SecurityContext securityContext;
@@ -42,11 +42,11 @@ public class ProductManufacterService {
         );
     }
 
-    private List<ProductManufacterDTO> productManufacterToDTOsNoPackages(List<ProductManufacter> productManufacters) {
+    /*private List<ProductManufacterDTO> productManufacterToDTOsNoPackages(List<ProductManufacter> productManufacters) {
         return productManufacters.stream()
                 .map(this::productManufacterToDTONoPackages)
                 .collect(Collectors.toList());
-    }
+    }*/
 
     private ProductCatalogDTO productCatalogToDTO(ProductCatalog productCatalog) {
         ProductCatalogDTO productCatalogDTO = new ProductCatalogDTO(
@@ -93,7 +93,7 @@ public class ProductManufacterService {
                 product.getProductManufacter().getName()
         );
 
-        if(product.getOrder() != null){
+        if (product.getOrder() != null) {
             productDTO.setClientOrderCode(product.getOrder().getCode());
         }
         return productDTO;
@@ -104,7 +104,7 @@ public class ProductManufacterService {
     }
 
     //TODO create a new product-manufacter
-    @POST
+    /*@POST
     @Path("/")
     public Response create(ProductManufacterDTO productManufacterDTO)
             throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException {
@@ -116,15 +116,15 @@ public class ProductManufacterService {
         );
         ProductManufacter productManufacter = productManufacterBean.find(productManufacterDTO.getUsername());
         return Response.status(Response.Status.CREATED).entity(productManufacterToDTONoPackages(productManufacter)).build();
-    }
+    }*/
 
     //TODO get product-manufacter by username
-    @GET
+    /*@GET
     @Path("{username}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response getDetails(@PathParam("username") String username) throws MyEntityNotFoundException {
         var principal = securityContext.getUserPrincipal();
-        if(!principal.getName().equals(username)) {
+        if (!principal.getName().equals(username)) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
@@ -133,7 +133,7 @@ public class ProductManufacterService {
             throw new MyEntityNotFoundException("Product Manufacter: '" + username + "' not found");
 
         return Response.ok(productManufacter).build();
-    }
+    }*/
 
     //TODO update a product-manufacter
     @PUT
@@ -150,22 +150,19 @@ public class ProductManufacterService {
         return Response.status(Response.Status.CREATED).entity(productManufacterToDTONoPackages(productManufacter)).build();
     }
 
-    //TODO delete a product-manufacter
-    // ...
-
     //TODO get all product-manufacter
-    @GET
+    /*@GET
     @Path("/")
     public List<ProductManufacterDTO> getAllProductManufacters() {
         return productManufacterToDTOsNoPackages(productManufacterBean.getAll());
-    }
+    }*/
 
     //TODO get product manufacter -> product-catalogs
     @GET
     @Path("{username}/product-catalogs")
     public Response getCatalogs(@PathParam("username") String username) throws MyEntityNotFoundException {
         var principal = securityContext.getUserPrincipal();
-        if(!principal.getName().equals(username)) {
+        if (!principal.getName().equals(username)) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
@@ -179,7 +176,7 @@ public class ProductManufacterService {
     @Path("{username}/products")
     public Response getProducts(@PathParam("username") String username) throws MyEntityNotFoundException {
         var principal = securityContext.getUserPrincipal();
-        if(!principal.getName().equals(username)) {
+        if (!principal.getName().equals(username)) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
