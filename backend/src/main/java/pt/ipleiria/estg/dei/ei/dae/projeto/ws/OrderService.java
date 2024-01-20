@@ -28,11 +28,14 @@ public class OrderService {
     private SensorBean sensorBean;
     @EJB
     private ProductBean productBean;
+    @EJB
+    private ProductPackageBean productPackageBean;
+    @EJB
+    private TransportPackageBean transportPackageBean;
 
     private OrderDTO toDTO(Order clientOrder) {
         OrderDTO orderDTO = new OrderDTO(
                 clientOrder.getCode(),
-                clientOrder.getLocation(),
                 clientOrder.getStatus().getOrderStatus(),
                 clientOrder.getCreatedAt().toString()
         );
@@ -53,7 +56,6 @@ public class OrderService {
     private OrderDTO toDTONoProducts(Order clientOrder) {
         OrderDTO orderDTO = new OrderDTO(
                 clientOrder.getCode(),
-                clientOrder.getLocation(),
                 clientOrder.getStatus().getOrderStatus(),
                 clientOrder.getCreatedAt().toString()
         );
@@ -178,14 +180,6 @@ public class OrderService {
         return Response.status(Response.Status.OK).entity(transportPackageToDTOs(clientOrder.getTransportPackages())).build();
     }
 
-    //TODO change location
-    @PATCH
-    @Path("/{code}/location/")
-    public Response changeLocation(@PathParam("code") long code, OrderDTO orderDTO) throws MyEntityNotFoundException {
-        orderBean.changeLocation(code, orderDTO.getLocation());
-        return Response.status(Response.Status.OK).build();
-    }
-
     //TODO change status
     @PATCH
     @Path("/{code}/status")
@@ -196,23 +190,26 @@ public class OrderService {
 
     //TODO get order sensors with observations
     @GET
-    @Path("/{code}/sensor-observations")
+    @Path("/{code}/sensors")
     public Response getAllSensors(@PathParam("code") long code) throws MyEntityNotFoundException {
         var clientOrder = orderBean.getProducts(code);
 
         List<SensorDTO> sensorDTOs = new ArrayList<>();
 
         for (Product product : clientOrder.getProducts()) {
-            for (ProductPackage productPackage : product.getProductPackages()) {
-                if (!productPackage.getSensors().isEmpty()) {
-                    sensorDTOs.addAll(sensorToDTOs(productPackage.getSensors()));
+            Product prod = productBean.getProductPackages(product.getCode());
+            for (ProductPackage productPackage : prod.getProductPackages()) {
+                ProductPackage prodPackage = productPackageBean.getSensors(productPackage.getCode());
+                if (!prodPackage.getSensors().isEmpty()) {
+                    sensorDTOs.addAll(sensorToDTOs(prodPackage.getSensors()));
                 }
             }
         }
 
-        for (TransportPackage transportPackage : clientOrder.getTransportPackages()) {
-            if (!transportPackage.getSensors().isEmpty()) {
-                sensorDTOs.addAll(sensorToDTOs(transportPackage.getSensors()));
+        for (TransportPackage transportPackage : orderBean.getTransportPackages(code).getTransportPackages()) {
+            TransportPackage transPackage = transportPackageBean.getSensors(transportPackage.getCode());
+            if (!transPackage.getSensors().isEmpty()) {
+                sensorDTOs.addAll(sensorToDTOs(transPackage.getSensors()));
             }
         }
 
@@ -264,13 +261,6 @@ public class OrderService {
     @GET
     @Path("/{code}/products")
     public Response getProducts(@PathParam("code") long code) throws MyEntityNotFoundException {
-        Order clientOrder = orderBean.getProducts(code);
-        return Response.status(Response.Status.OK).entity(productToDTOs(clientOrder.getProducts())).build();
-    }
-    //TODO get order sensors
-    @GET
-    @Path("/{code}/sensors")
-    public Response getSensors(@PathParam("code") long code) throws MyEntityNotFoundException {
         Order clientOrder = orderBean.getProducts(code);
         return Response.status(Response.Status.OK).entity(productToDTOs(clientOrder.getProducts())).build();
     }

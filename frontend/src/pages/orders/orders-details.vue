@@ -12,9 +12,9 @@ const axios = inject('axios')
 const router = useRouter()
 const isLoading = ref(false)
 const order = ref([])
+const hasGpsSensor = ref(false)
 
 const sensors = ref([])
-const selectedSensor = ref(null)
 const selectedTransportPackages = ref(null)
 const products = ref([])
 const transportPackages = ref([])
@@ -102,6 +102,7 @@ const loadOrderWithSensors = async () => {
   try {
     await axios.get('orders/' + router.currentRoute.value.params.code + '/sensors').then(response => {
       sensors.value = response.data
+      hasGpsSensor.value = sensors.value.some(sensor => sensor.type == 'Gps')
       isLoading.value = false
     })
 
@@ -137,13 +138,19 @@ const addTransportPackageToOrder = async () => {
 const changeLocation = async () => {
   isLoading.value = true
   let payload = {
-    location: order.value.location,
+    sensorCode: order.value.code,
+    value: order.value.location,
   }
   try {
-    await axios.patch('orders/' + router.currentRoute.value.params.code + '/location', payload).then(response => {
-      isLoading.value = false
-      toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Localização alterada com sucesso', life: 3000 })
-    })
+    await axios.post('observations', payload)
+        .then(response => {
+            toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Localização adicionada com sucesso', life: 3000 });
+            isLoading.value = false
+            reset()
+        }).catch(error => {
+            isLoading.value = false
+            console.error(error)
+        })
 
   } catch (error) {
     isLoading.value = false
@@ -170,50 +177,8 @@ onMounted(async () => {
     <VCol cols="12">
       <VCard>
         <div class="product-catalog-details-header">
+          <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="navigateTo('/product-catalogs')" />
           <h2>Encomenda nº{{ order.code }}</h2>
-          <VDialog width="500">
-            <template #activator="{ props }">
-              <VBtn
-                v-bind="props"
-                text="Adicionar Sensores"
-              >
-                <VIcon
-                  size="20"
-                  icon="bx-plus"
-                />
-                <VTooltip
-                  activator="parent"
-                  location="top"
-                >
-                  <span>Adicionar sensores</span>
-                </VTooltip>
-              </VBtn>
-            </template>
-
-            <template #default="{ isActive }">
-              <VCard title="Adicionar Sensores">
-                <VCardText>
-                  <VAutocomplete
-                    v-model="selectedSensor"
-                    label="Tipo de sensor"
-                    placeholder="Selecionar Sensor"
-                    :items="sensors"
-                    item-title="type"
-                    item-value="code"
-                  />
-                </VCardText>
-
-                <VCardActions>
-                  <VSpacer />
-
-                  <VBtn
-                    text="Adicionar"
-                    @click="addSensorToPackage(selectedSensor); isActive.value = false;"
-                  />
-                </VCardActions>
-              </VCard>
-            </template>
-          </VDialog>
         </div>
 
         <div class="product-catalog-details">
@@ -251,14 +216,6 @@ onMounted(async () => {
           </div>
           <div class="catalog-item">
             <label>
-              Localização
-            </label>
-            <span>
-              {{ order.location ? order.location : 'Sem localização definida' }}
-            </span>
-          </div>
-          <div class="catalog-item">
-            <label>
               Data
             </label>
             <span>
@@ -280,6 +237,7 @@ onMounted(async () => {
           >
             <span>
               <VAutocomplete
+                v-if="hasGpsSensor"
                 v-model="order.location"
                 label="Localização"
                 :items="cities"
@@ -347,6 +305,7 @@ onMounted(async () => {
                   :can-delete="true"
                   :order="order"
                   @loadTransportPackages="loadTransportPackages"
+                  @load-sensors="loadOrderWithSensors"
                 />
               </div>
               <div
@@ -408,8 +367,9 @@ onMounted(async () => {
 <style scoped>
 .product-catalog-details-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   align-items: center;
+  gap: 12px;
   padding: 24px;
 }
 

@@ -76,7 +76,6 @@ public class ProductService {
     private OrderDTO clientOrderToDTONoProducts(Order clientOrder) {
         OrderDTO orderDTO = new OrderDTO(
                 clientOrder.getCode(),
-                clientOrder.getLocation(),
                 clientOrder.getStatus().getOrderStatus(),
                 clientOrder.getCreatedAt().toString()
         );

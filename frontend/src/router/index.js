@@ -60,12 +60,12 @@ const router = createRouter({
         {
           path: 'transport-packages',
           component: () => import('../pages/transport-package-catalog/transport-package-catalog.vue'),
-          meta: { manufacterAuth: false, logisticAuth: true, clientAuth: false, requiredAuth: true },
+          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true },
         },
         {
           path: 'transport-packages/:code',
           component: () => import('../pages/transport-package-catalog/transport-package-catalog-details.vue'),
-          meta: { manufacterAuth: false, logisticAuth: true, clientAuth: false, requiredAuth: true },
+          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true },
         },
         {
           path: 'sensors',
@@ -125,18 +125,19 @@ router.beforeEach(async (to, from, next) => {
   } else {
     if (authUser) {
       if (user && user.role === 'ProductManufacter') {
-        return next({path: 'product-catalogs'})
+        return next({ path: 'product-catalogs' })
       } else if (user && user.role === 'LogisticOperator') {
-        return next({path: 'orders'})
+        return next({ path: 'orders' })
       } else if (user && user.role === 'FinalCostumer') {
-        return next({path: 'products-list'})
+        return next({ path: 'products-list' })
       }
-    }else{
+    } else if (to.path == '/') {
+      next({ path: 'login' })
+    } else {
       next()
     }
   }
-
-  return next()
-})
+}
+)
 
 export default router

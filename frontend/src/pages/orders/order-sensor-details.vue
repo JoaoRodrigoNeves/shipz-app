@@ -37,6 +37,10 @@ const loadObservations = async () => {
   }
 }
 
+const goBack = () => {
+  router.back()
+}
+
 const formatDate = value => moment(String(value)).format('DD/MM/YYYY HH:mm:ss')
 
 onMounted(async () => {
@@ -127,6 +131,7 @@ const getBorderColorByDataType = dataType => {
     <VCol cols="12">
       <VCard>
         <div class="product-catalog-details-header">
+          <VIcon size="35" icon="mdi-arrow-left-bold-circle" @click="goBack" />
           <h2>Observações</h2>
         </div>
         <div
@@ -148,7 +153,7 @@ const getBorderColorByDataType = dataType => {
           </div>
         </div>
         <div v-else>
-          <VTable fixed-header>
+          <VTable fixed-header v-if="observations">
             <thead>
               <tr>
                 <th class="text-uppercase">
@@ -175,6 +180,12 @@ const getBorderColorByDataType = dataType => {
             </tbody>
           </VTable>
         </div>
+        <div
+          v-else
+          class="no-data"
+        >
+          Não tem observações de localização
+        </div>
       </VCard>
     </VCol>
   </VRow>
@@ -183,9 +194,10 @@ const getBorderColorByDataType = dataType => {
 <style scoped>
 .product-catalog-details-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   align-items: center;
   padding: 24px;
+  gap: 12px;
 }
 
 .product-catalog-details .catalog-item label {

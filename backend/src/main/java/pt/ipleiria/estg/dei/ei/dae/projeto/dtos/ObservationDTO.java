@@ -6,7 +6,7 @@ import pt.ipleiria.estg.dei.ei.dae.projeto.entities.Sensor;
 import java.time.LocalDateTime;
 
 public class ObservationDTO {
-    double value;
+    String value;
     long sensorCode;
 
     String createdAt;
@@ -15,17 +15,17 @@ public class ObservationDTO {
 
     }
 
-    public ObservationDTO( double value, long sensorCode , String createdAt) {
+    public ObservationDTO( String value, long sensorCode , String createdAt) {
         this.value = value;
         this.sensorCode = sensorCode;
         this.createdAt = createdAt;
     }
 
-    public double getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

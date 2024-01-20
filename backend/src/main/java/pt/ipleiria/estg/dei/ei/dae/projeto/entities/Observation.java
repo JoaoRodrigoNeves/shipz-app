@@ -12,7 +12,7 @@ public class Observation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "observation_id_seq")
     long id;
-    double value;
+    String value;
     @ManyToOne
     @JoinColumn(name = "sensor_code")
     Sensor sensor;
@@ -26,16 +26,16 @@ public class Observation implements Serializable {
     public Observation(){
 
     }
-    public Observation(double value, Sensor sensor) {
+    public Observation(String value, Sensor sensor) {
         this.value = value;
         this.sensor = sensor;
     }
 
-    public double getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
