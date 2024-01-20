@@ -65,7 +65,7 @@ const router = createRouter({
         {
           path: 'transport-packages/:code',
           component: () => import('../pages/transport-package-catalog/transport-package-catalog-details.vue'),
-          meta: { manufacterAuth: true, logisticAuth: false, clientAuth: false, requiredAuth: true },
+          meta: { manufacterAuth: true, logisticAuth: true, clientAuth: false, requiredAuth: true },
         },
         {
           path: 'sensors',
