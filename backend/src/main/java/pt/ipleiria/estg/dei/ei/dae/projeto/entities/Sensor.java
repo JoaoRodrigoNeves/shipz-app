@@ -17,7 +17,7 @@ import java.util.Objects;
         ),
         @NamedQuery(
                 name = "getSensorByType",
-                query = "SELECT s FROM Sensor s WHERE s.type = :sensorType ORDER BY s.code ASC"
+                query = "SELECT s FROM Sensor s WHERE s.type = :sensorType AND inUse = false ORDER BY s.code ASC"
         )
 })
 public class Sensor implements Serializable {

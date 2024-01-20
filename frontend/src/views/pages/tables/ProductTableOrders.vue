@@ -43,16 +43,16 @@ watch(
     <tbody>
       <tr v-for="item in products" :key="item.code">
         <td style="width: 30%;">
-          {{ item.code }}
+          {{ "P" + item.code }}
         </td>
         <td style="width: 20%; text-align: center;">
-          {{ item.productCatalogCode }}
+          {{ "PC" + item.productCatalogCode }}
         </td>
         <td style="width: 30%; text-align: center;">
           {{ item.productCatalogName }}
         </td>
         <td style="width: 100%; text-align: center;">
-          {{ item.clientOrderCode ? item.clientOrderCode : "Sem encomenda" }}
+          {{  item.clientOrderCode ? "#" +item.clientOrderCode : "Sem encomenda" }}
         </td>
 
       </tr>

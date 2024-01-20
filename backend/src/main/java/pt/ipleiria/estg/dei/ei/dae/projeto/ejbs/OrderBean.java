@@ -71,12 +71,13 @@ public class OrderBean {
 
             long finalVolumeTotal = volumeTotal;
             for (int i = 0; i < listTransportPackageCatalogs.size(); i++) {
-                if (listTransportPackageCatalogs.get(i).getVolume() > finalVolumeTotal || i == listTransportPackageCatalogs.size() - 1) {
+
+                if (listTransportPackageCatalogs.get(i).getVolume() >= finalVolumeTotal || i == listTransportPackageCatalogs.size() - 1) {
                     TransportPackage transportPackage = new TransportPackage(PackageType.TRANSPORT, listTransportPackageCatalogs.get(i).getMaterial(), listTransportPackageCatalogs.get(i).getVolume(), listTransportPackageCatalogs.get(i));
                     clientOrder.addTransportPackage(transportPackage);
                     transportPackage.addOrder(clientOrder);
                     finalVolumeTotal -= transportPackage.getVolume();
-                    i = 0;
+                    i = -1;
                     entityManager.persist(transportPackage);
                 }
                 if (finalVolumeTotal <= 0) break;
@@ -132,6 +133,16 @@ public class OrderBean {
         }
         OrderStatus orderStatus = OrderStatus.fromString(status);
         order.setStatus(orderStatus);
+
+        if (orderStatus == OrderStatus.STATUS_1){
+            order.getTransportPackages().forEach(transportPackage -> transportPackage.getSensors().forEach(sensor -> sensor.setInUse(true)));
+            order.getProducts().forEach(product -> product.getProductPackages().forEach(productPackage -> {
+                if (productPackage.getType() == PackageType.PRIMARY) {
+                    productPackage.getSensors().forEach(sensor -> sensor.setInUse(true));
+                }
+            }));
+        }
+
         if (orderStatus == OrderStatus.STATUS_2) {
             order.setDeliveredAt(LocalDateTime.now());
             order.getTransportPackages().forEach(transportPackage -> transportPackage.getSensors().forEach(sensor -> sensor.setInUse(false)));
@@ -141,14 +152,7 @@ public class OrderBean {
                 }
             }));
         }
-        if (orderStatus == OrderStatus.STATUS_1){
-            order.getTransportPackages().forEach(transportPackage -> transportPackage.getSensors().forEach(sensor -> sensor.setInUse(true)));
-            order.getProducts().forEach(product -> product.getProductPackages().forEach(productPackage -> {
-                if (productPackage.getType() == PackageType.PRIMARY) {
-                    productPackage.getSensors().forEach(sensor -> sensor.setInUse(true));
-                }
-            }));
-        }
+
     }
 
     public Order getSensors(long code) throws MyEntityNotFoundException {

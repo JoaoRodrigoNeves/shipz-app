@@ -33,7 +33,11 @@ const save = (async () => {
         isLoading.value = false
         emit('closeFormAndUpdate')
       }).catch(error => {
-        toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema!', life: 3000 });
+        if(error.response.data == "Not enough Transport Packages"){
+          toast.add({ severity: 'error', summary: 'Erro', detail: 'Não tem caixas de transporte suficientes para suportar a encomenda', life: 3000 });
+        }else{
+          toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema!', life: 3000 });
+        }
         isLoading.value = false;
         console.error(error)
       })

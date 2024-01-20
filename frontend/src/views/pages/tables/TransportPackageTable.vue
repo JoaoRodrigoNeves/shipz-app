@@ -132,7 +132,7 @@ watch(
         :key="item.code"
       >
         <td style="width: 10%;">
-          {{ item.code }}
+          {{ "TP" + item.code }}
         </td>
         <td style="width: 20%; text-align: center;">
           {{ item.material }}

@@ -79,7 +79,7 @@ public class ProductPackageBean {
                 product.addProductPackage(productPackageSecondary);
                 productPackageSecondary.addProduct(product);
             } else {
-                Long productPackageSecondaryVolume = productCatalog.getPrimaryPackageVolume() * productCatalog.getMaxSecondaryPackage();
+                long productPackageSecondaryVolume = productCatalog.getPrimaryPackageVolume() * productCatalog.getMaxSecondaryPackage();
                 ProductPackage newProductPackageSecondary = new ProductPackage(PackageType.SECONDARY, productCatalog.getSecondaryPackageMaterial(), productPackageSecondaryVolume);
                 entityManager.persist(newProductPackageSecondary);
                 product.addProductPackage(newProductPackageSecondary);

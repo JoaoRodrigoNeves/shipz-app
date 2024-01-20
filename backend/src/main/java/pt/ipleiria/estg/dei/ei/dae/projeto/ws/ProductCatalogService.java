@@ -94,8 +94,8 @@ public class ProductCatalogService {
     public Response create(ProductCatalogDTO productCatalogDTO)
             throws MyEntityExistsException, MyEntityNotFoundException, MyConstraintViolationException, NoVolumeException {
         List<TransportPackageCatalog> transportPackageCatalogs = transportPackageCatalogBean.getAll();
-        if (transportPackageCatalogs.get(0).getVolume() < productCatalogDTO.getPrimaryPackageVolume())
-            throw new NoVolumeException("ProductCatalog primary volume not acceptable, max acceptable: " + transportPackageCatalogs.get(0).getVolume());
+        if (transportPackageCatalogs.get(transportPackageCatalogs.size() - 1).getVolume() < productCatalogDTO.getPrimaryPackageVolume())
+            throw new NoVolumeException("ProductCatalog primary volume not acceptable, max acceptable: " + transportPackageCatalogs.get(transportPackageCatalogs.size() - 1).getVolume());
 
         productCatalogBean.create(
                 productCatalogDTO.getName(),

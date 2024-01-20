@@ -33,7 +33,8 @@ public class TransportPackageBean {
 
         long productsVolume = order.getProducts().stream().mapToLong(product -> product.getProductCatalog().getPrimaryPackageVolume()).sum();
         long transportPackagesVolume = order.getTransportPackages().stream().mapToLong(Package::getVolume).sum();
-        boolean dontNeedAddPackage = transportPackagesVolume > productsVolume;
+
+        boolean dontNeedAddPackage = transportPackagesVolume >= productsVolume;
 
         TransportPackage transportPackage = new TransportPackage(PackageType.TRANSPORT, transportPackageCatalog.getMaterial(), transportPackageCatalog.getVolume(), transportPackageCatalog);
         order.addTransportPackage(transportPackage);

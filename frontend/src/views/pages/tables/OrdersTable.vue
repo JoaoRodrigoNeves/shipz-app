@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import moment from "moment/moment"
 
@@ -15,15 +15,11 @@ const emit = defineEmits(['loadOrders', 'updateOrder'])
 const router = useRouter()
 
 const orders = ref(Object.assign({}, props.orders))
-const userRole = JSON.parse(sessionStorage.getItem('user_info')).role
 
 const navigateTo = path => {
   router.push({ path: path })
 }
 
-const updateOrder = (order, flagStatus) => {
-  emit('updateOrder', order, flagStatus)
-}
 const formatDate = value => {
   return moment(String(value)).format('DD/MM/YYYY HH:mm:ss')
 }
