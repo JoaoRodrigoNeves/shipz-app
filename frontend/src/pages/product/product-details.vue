@@ -41,27 +41,27 @@ const loadProductPackages = async () => {
 }
 
 const deleteProductConfirm = (product) => {
-  confirm.require({
-    message: 'Tem a certeza que pretende apagar o produto ' + router.currentRoute.value.params.code + ' ?',
-    header: 'Apagar Produto',
-    rejectLabel: 'Não',
-    acceptLabel: 'Sim',
-    accept: async () => {
-      isLoading.value = true;
+    confirm.require({
+        message: 'Tem a certeza que pretende apagar o produto ' + router.currentRoute.value.params.code + ' ?',
+        header: 'Apagar Produto',
+        rejectLabel: 'Não',
+        acceptLabel: 'Sim',
+        accept: async () => {
+            isLoading.value = true;
 
-      await axios.delete('products/' + router.currentRoute.value.params.code).then(response => {
-        isLoading.value = false
-        toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Produto apagado com sucesso', life: 3000 });
-        router.back()
-      }).catch(
-        error => {
-          toast.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possivel apagar o produto com o código P' + router.currentRoute.value.params.code, life: 3000 });
-          isLoading.value = false;
-          console.error(error)
+            await axios.delete('products/' + router.currentRoute.value.params.code).then(response => {
+                isLoading.value = false
+                toast.add({ severity: 'success', summary: 'Sucesso', detail: 'Produto apagado com sucesso', life: 3000 });
+                router.back()
+            }).catch(
+                error => {
+                    toast.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possivel apagar o produto com o código P' + router.currentRoute.value.params.code, life: 3000 });
+                    isLoading.value = false;
+                    console.error(error)
+                }
+            )
         }
-      )
-    }
-  });
+    });
 }
 
 const goBack = () => {
@@ -84,8 +84,7 @@ onMounted(async () => {
                         <h2>{{ "Produto - P" + router.currentRoute.value.params.code }}</h2>
                     </div>
 
-                    <VBtn rel="noopener noreferrer" color="primary"
-                        @click="deleteProductConfirm()" :disabled="isLoading">
+                    <VBtn rel="noopener noreferrer" color="primary" @click="deleteProductConfirm()" :disabled="isLoading">
                         <VIcon size="20" icon="bx-trash" />
                         <VTooltip activator="parent" location="top">
                             <span>Remover Produto</span>
@@ -99,7 +98,7 @@ onMounted(async () => {
                             Código
                         </label>
                         <span>
-                            {{ "P" + productCatalog.code }}
+                            {{ "PC" + productCatalog.code }}
                         </span>
                     </div>
                     <div class="catalog-item">
