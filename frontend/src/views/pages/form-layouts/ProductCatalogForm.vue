@@ -86,9 +86,9 @@ const save = (async () => {
       }
     }).catch(
       error => {
-        if(error.response.data.split(':')[0] == "ProductCatalog primary volume not acceptable, max acceptable"){
+        if (error.response.data.split(':')[0] == "ProductCatalog primary volume not acceptable, max acceptable") {
           toast.add({ severity: 'error', summary: 'Erro', detail: 'O volume máximo permitido é ' + error.response.data.split(':')[1] + ', adicione uma caixa de transporte que suporte este produto para resolver o problema', life: 6000 });
-        }else{
+        } else {
           toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema!', life: 3000 });
         }
         isLoading.value = false
@@ -119,6 +119,7 @@ const save = (async () => {
       }
     }).catch(
       error => {
+        toast.add({ severity: 'error', summary: 'Erro', detail: 'Ocorreu um problema!', life: 3000 });
         isLoading.value = false
         console.error(error)
       },
