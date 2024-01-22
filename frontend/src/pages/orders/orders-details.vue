@@ -191,7 +191,7 @@ onMounted(async () => {
           </div>
           <div style="display: flex; align-items: center; gap: 12px; ">
             <span style="color: rgb(255, 193, 7); font-size: 14px; text-decoration: underline;"
-              v-if="!isLoading && (!transportPackages || transportPackages.length == 0)">
+              v-if="!isLoading && role == 'LogisticOperator' && (!transportPackages || transportPackages.length == 0)">
               Terá de adicionar pelo menos uma caixa de transporte.
             </span>
             <VBtn v-if="role == 'LogisticOperator' && order && order.status != 'Entregue'" rel="noopener noreferrer" color="primary"
