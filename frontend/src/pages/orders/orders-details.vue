@@ -202,7 +202,6 @@ onMounted(async () => {
               </VTooltip>
             </VBtn>
           </div>
-
         </div>
 
         <div class="product-catalog-details">

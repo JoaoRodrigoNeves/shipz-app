@@ -30,8 +30,6 @@ import java.util.stream.Collectors;
 @Path("sensors")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@Authenticated
-@RolesAllowed({"ProductManufacter", "LogisticOperator", "FinalCostumer"})
 public class SensorService {
     @EJB
     private SensorBean sensorBean;
@@ -114,7 +112,6 @@ public class SensorService {
     //TODO get all sensors
     @GET
     @Path("/")
-    @RolesAllowed({"LogisticOperator", "FinalCostumer"})
     public List<SensorDTO> getAll() {
         return toDTOsNoObservations(sensorBean.getAll());
     }
